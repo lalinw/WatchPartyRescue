@@ -17,7 +17,13 @@ class ListSummary extends React.Component {
     //reference basic data from "all_references"
     
     var MALallreference
-    
+    // field names from data.anime    @summaryMAL.collection("all_references")
+    // - image_url        => image
+    // - mal_id           => document name
+    // - rating           => rating
+    // - title            => title
+    // - total_episodes   => episodes
+    // - url              => link
 
     //update "update_time" field with timestamp when new data is added
   }
