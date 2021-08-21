@@ -9,10 +9,30 @@ class FetchList extends React.Component {
       user: "Irene",
       usernameMAL: "zaphriz"
     };
-    this.getListEndPointMAL = this.getListEndPointMAL.bind(this)
+    this.getListEndPointMAL = this.getListEndPointMAL.bind(this);
+    this.onFetchSubmit = this.onFetchSubmit.bind(this);
   }
   
   componentDidMount() {
+
+    console.log("componentDidMount ran");
+    //save data to firestore  @usersRef.doc("user1").collection("myanimelist")
+    // data.anime array
+    // field names from data.anime
+    // - mal_id   => document name
+
+    //save data to firestore  @summaryMAL.collection("plan_to_watch")
+    // data.anime array
+    //fields from JSON
+    // - mal_id   => document name
+    // && add to "common_users" and "occurrences"
+
+    
+    //save data to firestore
+  }
+
+  onFetchSubmit() {
+    console.log("button clicked!");
     var sessionRef = firebase.firestore().collection("session").doc("wJGmnGUM6JpqiXab2gby");
     var summaryMAL = sessionRef.collection("summary").doc("myanimelist");
     var usersRef = sessionRef.collection("users");
@@ -30,7 +50,7 @@ class FetchList extends React.Component {
     fetch(endpointMAL)
       .then(res => res.json())
       .then((data) => {
-        console.log(data);
+        console.log("inside fetch statement");
         
         //clear the MAL list of IDs 
         usersRef.doc("user1").update({
@@ -38,7 +58,7 @@ class FetchList extends React.Component {
         })
 
         for (var i = 0; i < data.anime.length; i++) {
-          //console.log(data.anime[0]);
+          console.log(data.anime[i]);
 
           var thisAnime = data.anime[i];
           usersRef.doc("user1").update({
@@ -55,53 +75,17 @@ class FetchList extends React.Component {
               image: thisAnime.image_url,
               link: thisAnime.url
           });
-          
 
-          // summaryMAL.collection("plan_to_watch").doc(thisAnime.mal_id.toString())
-          //   .get()
-          //   .then((doc) => {
-          //     console.log("updating plan_to_watch " + doc.exists);
-
-          //     if (doc.exists) {
-          //       summaryMAL.collection("plan_to_watch").doc(thisAnime.mal_id.toString()).update({
-          //         common_users: firebase.firestore.FieldValue.arrayUnion(this.state.user),
-          //         occurrences: firebase.firestore.FieldValue.increment(1)
-          //       });
-          //     } else {
-          //       console.log("inside the else");
-          //       summaryMAL.collection("plan_to_watch").doc(thisAnime.mal_id.toString()).set({
-          //         common_users: [this.state.user],
-          //         occurrences: 1
-          //       }).then(() => {console.log("set completed")});
-          //     }
-             
-          // });
-        }
-
-        
-
-        //save data to firestore  @usersRef.doc("user1").collection("myanimelist")
-        // data.anime array
-        // field names from data.anime
-        // - mal_id   => document name
-
-        //save data to firestore  @summaryMAL.collection("plan_to_watch")
-        // data.anime array
-        //fields from JSON
-        // - mal_id   => document name
-        // && add to "common_users" and "occurrences"
-
-        },
-        // Note: it's important to handle errors here
-        // instead of a catch() block so that we don't swallow
-        // exceptions from actual bugs in components.
-        (error) => {
-          this.setState({
+          summaryMAL.collection("plan_to_watch").doc(thisAnime.mal_id.toString())
+            .set({
+            common_users: firebase.firestore.FieldValue.arrayUnion(this.state.user),
+            occurrences: firebase.firestore.FieldValue.increment(1)
+          }, { 
+            merge: true 
           });
+
         }
-      )
-    
-    //save data to firestore
+      });
   }
   
   getListEndPointMAL(usernameMAL, listTypeMAL) {
@@ -111,7 +95,8 @@ class FetchList extends React.Component {
   render() {
     return (
       <div>
-        <h2>FetchList.js is mounted!</h2>
+        <h2>FetchList.js is shown!</h2>
+        <button onClick={this.onFetchSubmit}>Fetch Anime List</button>
       </div>
     );
   }
