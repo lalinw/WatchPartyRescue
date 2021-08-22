@@ -31,7 +31,7 @@ class ListSummary extends React.Component {
 
   render() {
     <div>
-      <h2>Hello World!</h2>
+      <h2>List Summary below</h2>
     </div>
   };
 }

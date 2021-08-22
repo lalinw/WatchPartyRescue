@@ -1,6 +1,7 @@
 import { getByTitle } from '@testing-library/react';
 import React from 'react';
 import firebase from '../firebase';
+import ListSummary from './ListSummary';
 
 class FetchList extends React.Component {
   constructor(props) {
@@ -34,10 +35,8 @@ class FetchList extends React.Component {
   onFetchSubmit() {
     console.log("button clicked!");
     var sessionRef = firebase.firestore().collection("session").doc("wJGmnGUM6JpqiXab2gby");
-    var summaryMAL = sessionRef.collection("summary").doc("myanimelist");
     var usersRef = sessionRef.collection("users");
-
-    var MALplantowatch = summaryMAL.collection("plan_to_watch");
+    var summaryMAL = sessionRef.collection("summary").doc("myanimelist");
 
     //take username as input
     //MAKE API call to Jikan
@@ -53,20 +52,19 @@ class FetchList extends React.Component {
         console.log("inside fetch statement");
         
         //clear the MAL list of IDs 
-        usersRef.doc("user1").update({
+        usersRef.doc(this.state.user).update({
           myanimelist: firebase.firestore.FieldValue.delete()
         })
 
         for (var i = 0; i < data.anime.length; i++) {
-          console.log(data.anime[i]);
+          //console.log(data.anime[i]);
 
           var thisAnime = data.anime[i];
-          usersRef.doc("user1").update({
+          usersRef.doc(this.state.user).update({
             myanimelist: firebase.firestore.FieldValue.arrayUnion(thisAnime.mal_id)
           })
           
           //add to "all_references"
-          //should add check for exising document
           // Firestore document ID must be a STRING!
           summaryMAL.collection("all_references").doc(thisAnime.mal_id.toString())
             .set({
@@ -95,8 +93,17 @@ class FetchList extends React.Component {
   render() {
     return (
       <div>
+
         <h2>FetchList.js is shown!</h2>
-        <button onClick={this.onFetchSubmit}>Fetch Anime List</button>
+
+        <form>
+          <label>MAL username: </label>
+          <input type="text"></input>
+          <button onClick={this.onFetchSubmit}>Fetch Anime List</button>
+        </form>
+        
+
+
       </div>
     );
   }
