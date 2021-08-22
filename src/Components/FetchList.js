@@ -33,7 +33,7 @@ class FetchList extends React.Component {
   }
 
   onFetchSubmit() {
-    console.log("button clicked!");
+    // still need to handle multiple page case
     var sessionRef = firebase.firestore().collection("session").doc("wJGmnGUM6JpqiXab2gby");
     var usersRef = sessionRef.collection("users");
     var summaryMAL = sessionRef.collection("summary").doc("myanimelist");

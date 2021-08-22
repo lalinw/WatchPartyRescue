@@ -21,11 +21,13 @@ class Signin extends React.Component {
     <div>
       <h2>Sign in:</h2>
       <form>
-        <label>Enter your display name: </label>
+        <label>Display name for this session: </label>
         <input type="text"></input>
         <button onClick={this}>Continue</button>
       </form>
-
+      <br/>
+      <p>OR</p>
+      <br/>
       <h2>♥ Start a new session ♥</h2>
       <button onClick={this}>CREATE SESSION</button>
     </div>
