@@ -16,6 +16,7 @@ class App extends Component {
     return (
       <div>
       <h2>Hello World!</h2>
+      <SignIn/>
       <FetchList/>
       <ListSummary/>
     </div>

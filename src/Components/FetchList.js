@@ -8,7 +8,8 @@ class FetchList extends React.Component {
     super(props);
     this.state = {
       user: "Irene",
-      usernameMAL: "zaphriz"
+      usernameMAL: "zaphriz",
+      sessionID: "wJGmnGUM6JpqiXab2gby"
     };
     this.getListEndPointMAL = this.getListEndPointMAL.bind(this);
     this.onFetchSubmit = this.onFetchSubmit.bind(this);
@@ -34,7 +35,7 @@ class FetchList extends React.Component {
 
   onFetchSubmit() {
     // still need to handle multiple page case
-    var sessionRef = firebase.firestore().collection("session").doc("wJGmnGUM6JpqiXab2gby");
+    var sessionRef = firebase.firestore().collection("session").doc(this.state.sessionID);
     var usersRef = sessionRef.collection("users");
     var summaryMAL = sessionRef.collection("summary").doc("myanimelist");
 
@@ -46,11 +47,19 @@ class FetchList extends React.Component {
     //fetch user's watch list 
     var endpointMAL = this.getListEndPointMAL(this.state.usernameMAL, "onhold");
     //console.log(endpointMAL);
-    fetch(endpointMAL)
+
+    var morePages = true; 
+    var page = 1;
+
+    while (morePages) {
+      fetch(endpointMAL + "/" + page)
       .then(res => res.json())
       .then((data) => {
         console.log("inside fetch statement");
         
+        if (data.anime.length == 100) {
+          morePages = true;
+        }
         //clear the MAL list of IDs 
         usersRef.doc(this.state.user).update({
           myanimelist: firebase.firestore.FieldValue.delete()
@@ -84,6 +93,8 @@ class FetchList extends React.Component {
 
         }
       });
+    }
+    
   }
   
   getListEndPointMAL(usernameMAL, listTypeMAL) {
