@@ -41,3 +41,8 @@ img.poster-image {
   height: 160pt;
   width: 120pt;
 }
+
+div {
+  margin: 0 auto;
+  padding: 10pt;
+}

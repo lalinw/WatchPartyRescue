@@ -160,14 +160,14 @@ class SignIn extends React.Component {
 
       if (this.state.hasUser) {
         return (
-          <div>
+          <div style={{backgroundColor: "#89556D"}}>
             <this.hasSessionTrue/>
             <this.hasUserTrue/>
           </div>
         );
       } else {
         return (
-          <div>
+          <div style={{backgroundColor: "#89B74D"}}>
             <this.hasSessionTrue/>
             <this.hasUserFalse/>
           </div>
@@ -176,7 +176,7 @@ class SignIn extends React.Component {
 
     } else {
       return (
-        <div>
+        <div style={{backgroundColor: "#C2A9A7"}}>
           <this.hasSessionFalse/>
         </div>
       );

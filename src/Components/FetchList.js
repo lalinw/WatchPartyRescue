@@ -134,9 +134,10 @@ class FetchList extends React.Component {
 
   render() {
     return (
-      <div>
+      <div style={{backgroundColor: "#689F9F"}}>
 
-        <h2>FetchList.js is shown!</h2>
+        <h3>Fetch your list</h3>
+        <p><i>(only <b>MyAnimeList: Plan to Watch</b> list is currently supported)</i></p>
 
         <form>
           <label>MAL username: </label>

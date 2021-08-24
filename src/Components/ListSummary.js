@@ -59,8 +59,8 @@ class ListSummary extends React.Component {
 
   render() {
     return (
-      <div>
-        <h2>List Summary below</h2>
+      <div style={{backgroundColor: "#D53878"}}>
+        <h3>List Summary below</h3>
         <div>
           {this.state.listSummaryItems}
         </div>
