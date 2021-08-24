@@ -13,26 +13,36 @@ class SignIn extends React.Component {
     this.handleNameChange = this.handleNameChange.bind(this);
     this.handleNameSubmit = this.handleNameSubmit.bind(this);
     this.resetUser = this.resetUser.bind(this);
+    this.createSession = this.createSession.bind(this);
+    this.resetSession = this.resetSession.bind(this);
+
+    //micro-components
     this.hasUserTrue = this.hasUserTrue.bind(this);
     this.hasUserFalse = this.hasUserFalse.bind(this);
     this.hasSessionTrue = this.hasSessionTrue.bind(this);
     this.hasSessionFalse = this.hasSessionFalse.bind(this);
-    this.createSession = this.createSession.bind(this);
-    this.resetSession = this.resetSession.bind(this);
   }
   
+
   componentDidMount() {
     //var sessionRef = firebase.firestore().collection("session").doc(this.state.sessionID);
     //var summaryMAL = sessionRef.collection("summary").doc("myanimelist");
 
+    //for dev purposes
+    this.setState({
+      sessionID: "FEHY0ymsqQuX28YISnC7",
+      hasSession: true
+    })
   }
   
+
   handleNameChange(event) {
     event.preventDefault();
     this.setState({ 
       user: event.target.value 
     });
   }
+
 
   handleNameSubmit(event) {
     if (this.state.user == "") {
@@ -61,6 +71,7 @@ class SignIn extends React.Component {
     console.log(this.state.user + " " + this.state.hasUser);
   }
 
+
   resetUser() {
     this.setState({
       user: "",
@@ -68,12 +79,14 @@ class SignIn extends React.Component {
     })
   }
 
+
   resetSession() {
     this.setState({
       sessionID: "",
       hasSession: false
     })
   }
+
 
   createSession() {
     var newSession = firebase.firestore().collection("session").add({
@@ -88,6 +101,7 @@ class SignIn extends React.Component {
     }).catch((error) => {});
   }
 
+
   hasSessionTrue() {
     return (
       <div>
@@ -99,6 +113,7 @@ class SignIn extends React.Component {
     );
   }
 
+
   hasSessionFalse() {
     return (
       <div>
@@ -106,6 +121,7 @@ class SignIn extends React.Component {
       </div>
     );
   }
+
 
   hasUserTrue() {
     return (
@@ -115,6 +131,8 @@ class SignIn extends React.Component {
       </div>
     );
   }
+
+
   hasUserFalse() {
     return (
       <div>
@@ -137,9 +155,9 @@ class SignIn extends React.Component {
   }
 
 
-
   render() {
     if (this.state.hasSession) {
+
       if (this.state.hasUser) {
         return (
           <div>
