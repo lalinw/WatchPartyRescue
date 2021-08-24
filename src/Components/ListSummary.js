@@ -30,10 +30,13 @@ class ListSummary extends React.Component {
   
 
   render() {
-    <div>
-      <h2>List Summary below</h2>
-    </div>
-  };
+    return (
+      <div>
+        <h2>List Summary below</h2>
+      </div>
+    );
+    
+  }
 }
 
 export default ListSummary;

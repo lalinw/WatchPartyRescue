@@ -6,31 +6,33 @@ class SignIn extends React.Component {
     super(props);
     this.state = {
       user: "Irene",
-      sessionID: ""
+      sessionID: "wJGmnGUM6JpqiXab2gby"
     };
   }
   
   componentDidMount() {
-    var sessionRef = firebase.firestore().collection("session").doc("wJGmnGUM6JpqiXab2gby");
+    var sessionRef = firebase.firestore().collection("session").doc(this.state.sessionID);
     var summaryMAL = sessionRef.collection("summary").doc("myanimelist");
 
   }
   
 
   render() {
-    <div>
-      <h2>Sign in:</h2>
-      <form>
-        <label>Display name for this session: </label>
-        <input type="text"></input>
-        <button onClick={this}>Continue</button>
-      </form>
-      <br/>
-      <p>OR</p>
-      <br/>
-      <h2>♥ Start a new session ♥</h2>
-      <button onClick={this}>CREATE SESSION</button>
-    </div>
+    return (
+      <div>
+        <h2>Sign in:</h2>
+        <form>
+          <label>Display name for this session: </label>
+          <input type="text"></input>
+          <button >Continue</button>
+        </form>
+        <br/>
+        <p>OR</p>
+        <br/>
+        <h2>♥ Start a new session ♥</h2>
+        <button >CREATE SESSION</button>
+      </div>
+    );
   };
 }
 

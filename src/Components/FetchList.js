@@ -13,6 +13,7 @@ class FetchList extends React.Component {
     };
     this.getListEndPointMAL = this.getListEndPointMAL.bind(this);
     this.onFetchSubmit = this.onFetchSubmit.bind(this);
+    this.fetchHelper = this.fetchHelper.bind(this);
   }
   
   componentDidMount() {
@@ -33,7 +34,8 @@ class FetchList extends React.Component {
     //save data to firestore
   }
 
-  onFetchSubmit() {
+  onFetchSubmit = event => {
+    event.preventDefault();
     // still need to handle multiple page case
     var sessionRef = firebase.firestore().collection("session").doc(this.state.sessionID);
     var usersRef = sessionRef.collection("users");
@@ -46,32 +48,43 @@ class FetchList extends React.Component {
     // Jikan API endpoint: https://api.jikan.moe/v3/
     //fetch user's watch list 
     var endpointMAL = this.getListEndPointMAL(this.state.usernameMAL, "onhold");
-    //console.log(endpointMAL);
+    console.log(this.state.user);
 
-    var morePages = true; 
-    var page = 1;
+    usersRef.doc(this.state.user).get().then((doc) => {
+      if (!doc.exists) {
+        console.log("doc does not exist");
+        usersRef.doc(this.state.user).set({
+          myanimelist: []
+        });
+      }
+    }).then(() => {
+      //clear the MAL list of IDs 
+      usersRef.doc(this.state.user).update({
+        myanimelist: []
+      });
+    }).then(() => {
+      console.log("Document successfully reset!");
+      var paginationThreshold = 300;
+      this.fetchHelper(endpointMAL, 1, paginationThreshold, usersRef.doc(this.state.user), summaryMAL);
+    }).catch((error) => {
+        console.error("Error updating document: ", error);
+    });
 
-    while (morePages) {
-      fetch(endpointMAL + "/" + page)
+  }
+
+  fetchHelper(endpointMAL, page, paginationThreshold, thisUserDoc, summaryMAL) {
+    fetch(endpointMAL + page)
       .then(res => res.json())
       .then((data) => {
         console.log("inside fetch statement");
-        
-        if (data.anime.length == 100) {
-          morePages = true;
-        }
-        //clear the MAL list of IDs 
-        usersRef.doc(this.state.user).update({
-          myanimelist: firebase.firestore.FieldValue.delete()
-        })
 
         for (var i = 0; i < data.anime.length; i++) {
           //console.log(data.anime[i]);
 
           var thisAnime = data.anime[i];
-          usersRef.doc(this.state.user).update({
+          thisUserDoc.update({
             myanimelist: firebase.firestore.FieldValue.arrayUnion(thisAnime.mal_id)
-          })
+          });
           
           //add to "all_references"
           // Firestore document ID must be a STRING!
@@ -90,15 +103,17 @@ class FetchList extends React.Component {
           }, { 
             merge: true 
           });
-
+        }
+        
+        //check for more items after 1st page
+        if (data.anime.length == paginationThreshold) {
+          this.fetchHelper(endpointMAL, page++, paginationThreshold);
         }
       });
-    }
-    
   }
   
   getListEndPointMAL(usernameMAL, listTypeMAL) {
-    return "https://api.jikan.moe/v3/user/" + usernameMAL + "/animelist/" + listTypeMAL;
+    return "https://api.jikan.moe/v3/user/" + usernameMAL + "/animelist/" + listTypeMAL + "/";
   }
 
   render() {
