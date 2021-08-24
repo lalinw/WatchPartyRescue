@@ -30,7 +30,7 @@ class SignIn extends React.Component {
 
     //for dev purposes
     this.setState({
-      sessionID: "FEHY0ymsqQuX28YISnC7",
+      sessionID: "wJGmnGUM6JpqiXab2gby",
       hasSession: true
     })
   }

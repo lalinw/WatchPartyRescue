@@ -1,4 +1,4 @@
-//import './App.css';
+import './App.css';
 import React, { Component } from "react";
 import FetchList from "./Components/FetchList";
 import ListSummary from "./Components/ListSummary";
@@ -23,7 +23,7 @@ class App extends Component {
       <h2>Hello World!</h2>
       <SignIn/>
       <FetchList/>
-      {/* <ListSummary/> */}
+      <ListSummary/>
     </div>
 
 
