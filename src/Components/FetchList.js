@@ -35,7 +35,7 @@ class FetchList extends React.Component {
     //save data to firestore
   }
   
-  onFetchSubmit = event => {
+  onFetchSubmit(event) {
     if (this.state.usernameMAL == "") {
       window.alert("Your MAL username cannot be empty!");
       event.preventDefault();
@@ -121,7 +121,7 @@ class FetchList extends React.Component {
       });
   }
   
-  handleTextChange = event => {
+  handleTextChange(event) {
     event.preventDefault();
     this.setState({ 
       usernameMAL: event.target.value 
