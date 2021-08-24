@@ -8,12 +8,13 @@ class FetchList extends React.Component {
     super(props);
     this.state = {
       user: "Irene",
-      usernameMAL: "zaphriz",
+      usernameMAL: "",
       sessionID: "wJGmnGUM6JpqiXab2gby"
     };
     this.getListEndPointMAL = this.getListEndPointMAL.bind(this);
     this.onFetchSubmit = this.onFetchSubmit.bind(this);
     this.fetchHelper = this.fetchHelper.bind(this);
+    this.handleTextChange = this.handleTextChange.bind(this);
   }
   
   componentDidMount() {
@@ -33,42 +34,50 @@ class FetchList extends React.Component {
     
     //save data to firestore
   }
-
+  
   onFetchSubmit = event => {
-    event.preventDefault();
-    // still need to handle multiple page case
-    var sessionRef = firebase.firestore().collection("session").doc(this.state.sessionID);
-    var usersRef = sessionRef.collection("users");
-    var summaryMAL = sessionRef.collection("summary").doc("myanimelist");
+    if (this.state.usernameMAL == "") {
+      window.alert("Your MAL username cannot be empty!");
+      event.preventDefault();
+    } else {
+      event.preventDefault();
+      // still need to handle multiple page case
+      var sessionRef = firebase.firestore().collection("session").doc(this.state.sessionID);
+      var usersRef = sessionRef.collection("users");
+      var summaryMAL = sessionRef.collection("summary").doc("myanimelist");
 
-    //take username as input
-    //MAKE API call to Jikan
+      //take username as input
+      //MAKE API call to Jikan
 
-    console.log("fetching from MAL...");
-    // Jikan API endpoint: https://api.jikan.moe/v3/
-    //fetch user's watch list 
-    var endpointMAL = this.getListEndPointMAL(this.state.usernameMAL, "onhold");
-    console.log(this.state.user);
+      console.log("fetching from MAL...");
+      // Jikan API endpoint: https://api.jikan.moe/v3/
+      //fetch user's watch list 
+      var endpointMAL = this.getListEndPointMAL(this.state.usernameMAL, "onhold");
+      console.log(this.state.user);
+      console.log(this.state.usernameMAL);
 
-    usersRef.doc(this.state.user).get().then((doc) => {
-      if (!doc.exists) {
-        console.log("doc does not exist");
-        usersRef.doc(this.state.user).set({
+      usersRef.doc(this.state.user).get().then((doc) => {
+        if (!doc.exists) {
+          console.log("doc does not exist");
+          usersRef.doc(this.state.user).set({
+            myanimelist_username: this.state.usernameMAL,
+            myanimelist: []
+          });
+        }
+      }).then(() => {
+        //reset the MAL list of IDs 
+        usersRef.doc(this.state.user).update({
+          myanimelist_username: this.state.usernameMAL,
           myanimelist: []
         });
-      }
-    }).then(() => {
-      //clear the MAL list of IDs 
-      usersRef.doc(this.state.user).update({
-        myanimelist: []
+      }).then(() => {
+        console.log("Document successfully reset!");
+        var paginationThreshold = 300;
+        this.fetchHelper(endpointMAL, 1, paginationThreshold, usersRef.doc(this.state.user), summaryMAL);
+      }).catch((error) => {
+          console.error("Error updating document: ", error);
       });
-    }).then(() => {
-      console.log("Document successfully reset!");
-      var paginationThreshold = 300;
-      this.fetchHelper(endpointMAL, 1, paginationThreshold, usersRef.doc(this.state.user), summaryMAL);
-    }).catch((error) => {
-        console.error("Error updating document: ", error);
-    });
+    }
 
   }
 
@@ -112,6 +121,13 @@ class FetchList extends React.Component {
       });
   }
   
+  handleTextChange = event => {
+    event.preventDefault();
+    this.setState({ 
+      usernameMAL: event.target.value 
+    });
+  }
+
   getListEndPointMAL(usernameMAL, listTypeMAL) {
     return "https://api.jikan.moe/v3/user/" + usernameMAL + "/animelist/" + listTypeMAL + "/";
   }
@@ -124,7 +140,11 @@ class FetchList extends React.Component {
 
         <form>
           <label>MAL username: </label>
-          <input type="text"></input>
+          <input 
+            type="text" 
+            placeholder="your MAL username"
+            onChange={this.handleTextChange}
+            />
           <button onClick={this.onFetchSubmit}>Fetch Anime List</button>
         </form>
         
