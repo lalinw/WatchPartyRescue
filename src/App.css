@@ -37,12 +37,41 @@
   }
 }
 
-img.poster-image {
+/* img.poster-image {
   height: 160pt;
   width: 120pt;
+} */
+
+div.banner {
+  width: 100%;
+  background-color: #605577;
 }
 
-div {
+div.outer {
   margin: 0 auto;
   padding: 10pt;
+}
+
+div.poster-image {
+  height: 160pt;
+  width: 120pt;
+  display: inline-block;
+  position: relative;
+}
+
+div.overlay-dim {
+  background-color: rgba(0,0,0,0);
+  height: 100%;
+  width: 100%;
+  opacity: 0;
+  top: 0;
+  left: 0;
+  position: absolute;
+  padding: 70px;
+  transition: opacity .5s;
+}
+
+div.overlay-dim:hover {
+  opacity: 0.5;
+  transition: opacity .5s;
 }

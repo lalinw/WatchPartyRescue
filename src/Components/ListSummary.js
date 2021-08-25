@@ -37,10 +37,9 @@ class ListSummary extends React.Component {
           MALallreference.doc(plantowatchDoc.id).get().then((doc) => {
             // console.log(doc.data().image);
             images.push(
-              <img src={doc.data().image} class="poster-image"/>
+              <img src={doc.data().image}/>
             );
-            console.log("state.image = " + images);
-            
+            // console.log("state.image = " + images);
           });
         
         });
@@ -56,6 +55,13 @@ class ListSummary extends React.Component {
     //date_updated: firebase.firestore.FieldValue.serverTimestamp()
   }
   
+  // <div class="poster-image">
+  //   <img src={doc.data().image}>
+  //   <div class="overlay-dim">
+  //       <h3><span>{doc.data().title}</span></h3>
+  //       <p>[votes]</p>
+  //   </div>
+  // </div>
 
   render() {
     return (

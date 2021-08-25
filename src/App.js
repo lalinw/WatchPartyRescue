@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import FetchList from "./Components/FetchList";
 import ListSummary from "./Components/ListSummary";
 import SignIn from "./Components/SignIn";
-//import firebase from './firebase';
+import firebase from './firebase';
 
 //import logo from './logo.svg';
 
@@ -16,6 +16,7 @@ class App extends Component {
       sessionID: "wJGmnGUM6JpqiXab2gby",
       hasSession: false
     };
+    this.topBanner = this.topBanner.bind(this);
   }
 
   componentDidMount() {
@@ -35,23 +36,34 @@ class App extends Component {
       });
     }
   }
+
+  topBanner() {
+    return(
+      <h3>Watch Party Rescue <span class="material-icons"></span></h3>
+    );
+  }
   
   render() {
     return (
       <div>
-      <h3>Watch Party Rescue <span class="material-icons"></span></h3>
-      <SignIn
-        sessionID = {this.state.sessionID}
-        hasSession = {this.state.hasSession}
-      />
-      <FetchList/>
-      <ListSummary/>
-    </div>
 
+        <div class="banner">
+          <this.topBanner/>
+        </div>
 
+        <div class="outer">
+          <SignIn
+            sessionID = {this.state.sessionID}
+            hasSession = {this.state.hasSession}
+          />
+          <FetchList/>
+          <ListSummary/>
+        </div>
 
+      </div>
     );
   }
+
 }
 
 export default App;
