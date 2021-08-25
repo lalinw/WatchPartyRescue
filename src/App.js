@@ -14,7 +14,8 @@ class App extends Component {
       user: "Irene",
       usernameMAL: "zaphriz",
       sessionID: "",
-      hasSession: false
+      hasSession: false,
+      usersInSessionCount: 0
     };
     this.topBanner = this.topBanner.bind(this);
   }
@@ -26,17 +27,23 @@ class App extends Component {
     //  All URL parameters are strings
     //  When a parameter doesn't exist in the URL address, queryParams.get() method will return null
     const urlParam = new URLSearchParams(window.location.search);
-    const session = urlParam.get('s');
+    const sessionID = urlParam.get('s');
 
     console.log("URL parameter = " + urlParam);
-    console.log(session);
+    console.log(sessionID);
     // http://localhost:3000/?s=FEHY0ymsqQuX28YISnC7
 
-    if (session != null) {
-      this.setState({
-        sessionID: session,
-        hasSession: true
+    if (sessionID != null) {
+      firebase.firestore().collection("session").doc(sessionID)
+                          .collection("users")
+                          .get().then((usersCollection) => {
+                            this.setState({
+                              sessionID: sessionID,
+                              hasSession: true,
+                              usersInSessionCount: usersCollection.size
+                            });
       });
+      
     }
   }
 
@@ -58,6 +65,7 @@ class App extends Component {
           <SignIn
             sessionID = {this.state.sessionID}
             hasSession = {this.state.hasSession}
+            usersInSessionCount = {this.state.usersInSessionCount}
           />
           {this.state.hasSession ? 
             <FetchList
@@ -69,6 +77,7 @@ class App extends Component {
             <ListSummary
             sessionID = {this.state.sessionID}
             hasSession = {this.state.hasSession}
+            usersInSessionCount = {this.state.usersInSessionCount}
           /> : <React.Fragment/>}
           
           

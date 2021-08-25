@@ -10,6 +10,7 @@ class ListSummary extends React.Component {
       sessionID: "",
       hasSession: false
     };
+    this.constructItemTier = this.constructItemTier.bind(this);
   }
   
   componentDidMount() {
@@ -37,15 +38,29 @@ class ListSummary extends React.Component {
     // - url              => link
     console.log("ListSummary below:");
     
-    MALplantowatch.orderBy('occurrences', 'desc').get()
+    for (var i = this.props.usersInSessionCount; i > 0; i--) {
+      this.constructItemTier(i);
+    }
+    
+    //update "update_time" field with timestamp when new data is added
+    //date_updated: firebase.firestore.FieldValue.serverTimestamp()
+  }
+
+  constructItemTier(userCount) {
+    var sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
+    var summaryMAL = sessionRef.collection("summary").doc("myanimelist");
+    var MALplantowatch = summaryMAL.collection("plan_to_watch");
+    var MALallreference = summaryMAL.collection("all_references");
+    
+    MALplantowatch.where('occurrences', "==", userCount).get()
       .then((querySnapshot) => {
-        var images = [];
+        var thisItemTier = [];
         querySnapshot.forEach((plantowatchDoc) => {
 
           MALallreference.doc(plantowatchDoc.id).get().then((doc) => {
             console.log(doc.data().image);
             
-            images.push(
+            thisItemTier.push(
               // <img src={doc.data().image}/>
               <div class="poster-image">
                 <img src={doc.data().image}/>
@@ -58,14 +73,12 @@ class ListSummary extends React.Component {
             );
           }).then(() => {
             this.setState({
-              listSummaryItems: images
+              listSummaryItems: thisItemTier
             });
           });
         });
     }).catch((error) => {});
 
-    //update "update_time" field with timestamp when new data is added
-    //date_updated: firebase.firestore.FieldValue.serverTimestamp()
   }
   
   // <div class="poster-image">
