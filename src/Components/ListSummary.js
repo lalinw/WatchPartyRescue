@@ -7,6 +7,7 @@ class ListSummary extends React.Component {
     super(props);
     this.state = {
       listSummaryItems: [],
+      tempTier: [],
       sessionID: "",
       hasSession: false
     };
@@ -46,19 +47,30 @@ class ListSummary extends React.Component {
     //date_updated: firebase.firestore.FieldValue.serverTimestamp()
   }
 
-  constructItemTier(userCount) {
+  async constructItemTier(usersCount) {
     var sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
     var summaryMAL = sessionRef.collection("summary").doc("myanimelist");
     var MALplantowatch = summaryMAL.collection("plan_to_watch");
     var MALallreference = summaryMAL.collection("all_references");
     
-    MALplantowatch.where('occurrences', "==", userCount).get()
+    //clear tempTier state
+    this.setState({
+      tempTier: []
+    });
+
+    console.log("users => " + usersCount);
+    var thisTier = await MALplantowatch.where('occurrences', "==", usersCount).get()
       .then((querySnapshot) => {
         var thisItemTier = [];
-        querySnapshot.forEach((plantowatchDoc) => {
+        thisItemTier.push(
+          <div class="item-tier">
+            <p>Items with {usersCount} votes</p>
+          </div>
+        );
 
+        
+        querySnapshot.forEach((plantowatchDoc) => {
           MALallreference.doc(plantowatchDoc.id).get().then((doc) => {
-            console.log(doc.data().image);
             
             thisItemTier.push(
               // <img src={doc.data().image}/>
@@ -71,14 +83,21 @@ class ListSummary extends React.Component {
                 </div>
               </div>
             );
-          }).then(() => {
             this.setState({
-              listSummaryItems: thisItemTier
+              tempTier: thisItemTier
             });
-          });
+            console.log("temp tier -> " + this.state.tempTier);
+          }).then(() => {});
         });
+    }).then(() => {
+      this.setState({
+        listSummaryItems: this.state.listSummaryItems.concat(this.state.tempTier)
+      });
+      console.log("listSummaryItems -> " + this.state.listSummaryItems);
+      console.log("thisTier finished running with no errors");
+  
     }).catch((error) => {});
-
+    
   }
   
   // <div class="poster-image">
