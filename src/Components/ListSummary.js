@@ -37,7 +37,7 @@ class ListSummary extends React.Component {
     // - url              => link
     console.log("ListSummary below:");
     
-    MALplantowatch.get()
+    MALplantowatch.orderBy('occurrences', 'desc').get()
       .then((querySnapshot) => {
         var images = [];
         querySnapshot.forEach((plantowatchDoc) => {

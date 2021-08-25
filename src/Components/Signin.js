@@ -106,7 +106,7 @@ class SignIn extends React.Component {
       <div>
         <button onClick={this.resetSession}>Leave Session</button>
         <br/>
-        <label>Current Session: {this.state.sessionID}</label>
+        <label>Current Session: {this.props.sessionID}</label>
       </div>
 
     );
@@ -144,7 +144,7 @@ class SignIn extends React.Component {
             placeholder="Display name"
             onChange={this.handleNameChange}
             />
-          {this.state.hasSession? 
+          {this.props.hasSession ? 
             <button onClick={this.handleNameSubmit}>Continue</button>
           : <this.hasSessionFalse/>}
           
@@ -155,9 +155,9 @@ class SignIn extends React.Component {
 
 
   render() {
-    if (this.state.hasSession) {
+    if (this.props.hasSession) {
 
-      if (this.state.hasUser) {
+      if (this.props.hasUser) {
         return (
           <div style={{backgroundColor: "#89556D"}}>
             <this.hasSessionTrue/>
