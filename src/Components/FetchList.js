@@ -9,7 +9,7 @@ class FetchList extends React.Component {
     this.state = {
       user: "Irene",
       usernameMAL: "",
-      sessionID: "wJGmnGUM6JpqiXab2gby"
+      sessionID: "FEHY0ymsqQuX28YISnC7"
     };
     this.getListEndPointMAL = this.getListEndPointMAL.bind(this);
     this.onFetchSubmit = this.onFetchSubmit.bind(this);

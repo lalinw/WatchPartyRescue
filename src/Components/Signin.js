@@ -54,7 +54,7 @@ class SignIn extends React.Component {
       });
       
       
-      var sessionRef = firebase.firestore().collection("session").doc(this.state.sessionID);
+      var sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
       var usersRef = sessionRef.collection("users");
 
       usersRef.doc(this.state.user).get().then((doc) => {

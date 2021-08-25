@@ -6,12 +6,20 @@ class ListSummary extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      listSummaryItems: []
+      listSummaryItems: [],
+      sessionID: "",
+      hasSession: false
     };
   }
   
   componentDidMount() {
-    var sessionRef = firebase.firestore().collection("session").doc("wJGmnGUM6JpqiXab2gby");
+
+    // this.setState({
+    //   sessionID: this.props.sessionID,
+    //   hasSession: this.props.hasSession
+    // })
+
+    var sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
     var summaryMAL = sessionRef.collection("summary").doc("myanimelist");
 
     //display all "plan to watch"
@@ -33,30 +41,29 @@ class ListSummary extends React.Component {
       .then((querySnapshot) => {
         var images = [];
         querySnapshot.forEach((plantowatchDoc) => {
-          
+
           MALallreference.doc(plantowatchDoc.id).get().then((doc) => {
-            // console.log(doc.data().image);
+            console.log(doc.data().image);
+            
             images.push(
-                <div class="poster-image">
-                  <img src={doc.data().image}/>
-                  <div class="overlay-dim">
-                      <h3><span>{doc.data().title}</span></h3>
-                      <p>[votes]</p>
-                  </div>
+              // <img src={doc.data().image}/>
+              <div class="poster-image">
+                <img src={doc.data().image}/>
+                <div class="overlay-dim">
+                    <h2><span>{doc.data().title}</span></h2>
+                    <p>{plantowatchDoc.data().common_users.join(", ")}</p>
+                    <h1>{plantowatchDoc.data().occurrences}</h1>
                 </div>
+              </div>
             );
-            // console.log("state.image = " + images);
+          }).then(() => {
+            this.setState({
+              listSummaryItems: images
+            });
           });
-        
-        });
-        this.setState({
-          listSummaryItems: images
         });
     }).catch((error) => {});
-    
-    
 
-    
     //update "update_time" field with timestamp when new data is added
     //date_updated: firebase.firestore.FieldValue.serverTimestamp()
   }

@@ -13,7 +13,7 @@ class App extends Component {
     this.state = {
       user: "Irene",
       usernameMAL: "zaphriz",
-      sessionID: "wJGmnGUM6JpqiXab2gby",
+      sessionID: "",
       hasSession: false
     };
     this.topBanner = this.topBanner.bind(this);
@@ -27,7 +27,10 @@ class App extends Component {
     //  When a parameter doesn't exist in the URL address, queryParams.get() method will return null
     const urlParam = new URLSearchParams(window.location.search);
     const session = urlParam.get('s');
-    // http://localhost:3000/?s=wJGmnGUM6JpqiXab2gby
+
+    console.log("URL parameter = " + urlParam);
+    console.log(session);
+    // http://localhost:3000/?s=FEHY0ymsqQuX28YISnC7
 
     if (session != null) {
       this.setState({
@@ -56,8 +59,20 @@ class App extends Component {
             sessionID = {this.state.sessionID}
             hasSession = {this.state.hasSession}
           />
-          <FetchList/>
-          <ListSummary/>
+          {this.state.hasSession ? 
+            <FetchList
+            sessionID = {this.state.sessionID}
+            hasSession = {this.state.hasSession}
+          /> : <React.Fragment/>}
+            
+          {this.state.hasSession ? 
+            <ListSummary
+            sessionID = {this.state.sessionID}
+            hasSession = {this.state.hasSession}
+          /> : <React.Fragment/>}
+          
+          
+          
         </div>
 
       </div>
