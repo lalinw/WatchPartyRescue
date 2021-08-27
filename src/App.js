@@ -83,7 +83,13 @@ class App extends Component {
           
           
         </div>
-
+        
+        {this.state.hasSession? 
+          <button onClick={() => {
+            navigator.clipboard.writeText("http://localhost:3000/" + window.location.search)}}>
+            Share Session Link!
+          </button> 
+        : <React.Fragment/>}
       </div>
     );
   }
