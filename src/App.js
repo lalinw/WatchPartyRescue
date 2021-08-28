@@ -11,13 +11,20 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      user: "Irene",
-      usernameMAL: "zaphriz",
+      user: "",
+      hasUser: false,
+      usernameMAL: "",
       sessionID: "",
       hasSession: false,
       usersInSessionCount: 0
     };
     this.topBanner = this.topBanner.bind(this);
+    this.resetSession = this.resetSession.bind(this);
+    this.resetUser = this.resetUser.bind(this);
+    this.createSession = this.createSession.bind(this);
+    this.setUser = this.setUser.bind(this);
+    this.setSession = this.setSession.bind(this);
+
   }
 
   componentDidMount() {
@@ -27,7 +34,7 @@ class App extends Component {
     //  All URL parameters are strings
     //  When a parameter doesn't exist in the URL address, queryParams.get() method will return null
     const urlParam = new URLSearchParams(window.location.search);
-    const sessionID = urlParam.get('s');
+    const sessionID = urlParam.get('session');
 
     console.log("URL parameter = " + urlParam);
     console.log(sessionID);
@@ -47,6 +54,47 @@ class App extends Component {
     }
   }
 
+  resetUser() {
+    this.setState({
+      user: "",
+      hasUser: false
+    })
+  }
+
+  setUser(name) {
+    this.setState({
+      user: name,
+      hasUser: true
+    })
+  }
+
+  resetSession() {
+    this.setState({
+      sessionID: "",
+      hasSession: false
+    })
+  }
+
+  createSession() {
+    var newSession = firebase.firestore().collection("session").add({
+      session_name: "Session/Event Name",
+      date_created: firebase.firestore.FieldValue.serverTimestamp()
+    }).then((doc) => {
+      console.log("new session ID: " + doc.id);
+      this.setState({
+        sessionID: doc.id,
+        hasSession: true
+      })
+    }).catch((error) => {});
+  }
+
+  setSession(sessionID) {
+    this.setState({
+      sessionID: sessionID,
+      hasSession: true
+    })
+  }
+
   topBanner() {
     return(
       <h3>Watch Party Rescue <span class="material-icons"></span></h3>
@@ -63,12 +111,21 @@ class App extends Component {
 
         <div class="outer">
           <SignIn
+            user = {this.state.user}
+            hasUser = {this.state.hasUser}
             sessionID = {this.state.sessionID}
             hasSession = {this.state.hasSession}
             usersInSessionCount = {this.state.usersInSessionCount}
+            //methods
+            resetSession = {this.resetSession}
+            createSession = {this.createSession}
+            resetUser = {this.resetUser}
+            setUser = {this.setUser}
           />
           {this.state.hasSession ? 
             <FetchList
+            user = {this.state.user}
+            hasUser = {this.state.hasUser}
             sessionID = {this.state.sessionID}
             hasSession = {this.state.hasSession}
           /> : <React.Fragment/>}
@@ -79,9 +136,7 @@ class App extends Component {
             hasSession = {this.state.hasSession}
             usersInSessionCount = {this.state.usersInSessionCount}
           /> : <React.Fragment/>}
-          
-          
-          
+
         </div>
         
         {this.state.hasSession? 

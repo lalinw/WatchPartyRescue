@@ -7,9 +7,11 @@ class FetchList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: "Irene",
+      user: "",
+      hasUser: false,
       usernameMAL: "",
-      sessionID: "FEHY0ymsqQuX28YISnC7"
+      sessionID: "",
+      hasSession: false,
     };
     this.getListEndPointMAL = this.getListEndPointMAL.bind(this);
     this.onFetchSubmit = this.onFetchSubmit.bind(this);
@@ -20,6 +22,12 @@ class FetchList extends React.Component {
   componentDidMount() {
 
     console.log("componentDidMount ran");
+    this.setState({
+      user: this.props.user,
+      hasUser: this.props.hasUser,
+      sessionID: this.props.sessionID,
+      hasSession: this.props.hasSession
+    })
     //save data to firestore  @usersRef.doc("user1").collection("myanimelist")
     // data.anime array
     // field names from data.anime
@@ -52,7 +60,7 @@ class FetchList extends React.Component {
       console.log("fetching from MAL...");
       // Jikan API endpoint: https://api.jikan.moe/v3/
       //fetch user's watch list 
-      var endpointMAL = this.getListEndPointMAL(this.state.usernameMAL, "onhold");
+      var endpointMAL = this.getListEndPointMAL(this.state.usernameMAL, "plantowatch");
       console.log(this.state.user);
       console.log(this.state.usernameMAL);
 

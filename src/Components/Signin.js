@@ -12,9 +12,9 @@ class SignIn extends React.Component {
     };
     this.handleNameChange = this.handleNameChange.bind(this);
     this.handleNameSubmit = this.handleNameSubmit.bind(this);
-    this.resetUser = this.resetUser.bind(this);
-    this.createSession = this.createSession.bind(this);
-    this.resetSession = this.resetSession.bind(this);
+    // this.resetUser = this.resetUser.bind(this);
+    // this.createSession = this.createSession.bind(this);
+    
 
     //micro-components
     this.hasUserTrue = this.hasUserTrue.bind(this);
@@ -32,7 +32,9 @@ class SignIn extends React.Component {
 
     this.setState({
       sessionID: this.props.sessionID,
-      hasSession: this.props.hasSession
+      hasSession: this.props.hasSession,
+      user: this.props.user,
+      hasUser: this.props.hasUser
     })
   }
   
@@ -51,9 +53,7 @@ class SignIn extends React.Component {
       event.preventDefault();
     } else {
       event.preventDefault();
-      this.setState({ 
-        hasUser: true 
-      });
+      this.props.setUser(this.state.user);
       
       
       var sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
@@ -74,55 +74,48 @@ class SignIn extends React.Component {
 
   removeUser(event) {
     var thisUser = event.target.id;
-    
+
     var sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
+    var summaryMAL = sessionRef.collection("summary").doc("myanimelist");
+    var MALplantowatch = summaryMAL.collection("plan_to_watch");
     var usersRef = sessionRef.collection("users");
 
-    usersRef.doc(thisUser).get().then((doc) => {
-      if (!doc.exists) {
-        console.log("doc does not exist");
-        usersRef.doc(this.state.user).set({
-          myanimelist_username: "",
-          myanimelist: [],
-        });
-      }
-    });
-  }
+    //remove user 
+    //remove all user's votes
+    //remove anime from plan_to_watch if occurrences is 0 after remove user
 
-  resetUser() {
-    this.setState({
-      user: "",
-      hasUser: false
-    })
+    // usersRef.doc(thisUser).get().then((doc) => {
+    //   if (!doc.exists) {
+    //     console.log("doc does not exist");
+    //     usersRef.doc(this.state.user).set({
+    //       myanimelist_username: "",
+    //       myanimelist: [],
+    //     });
+    //   }
+    // });
   }
 
 
-  resetSession() {
-    this.setState({
-      sessionID: "",
-      hasSession: false
-    })
-  }
 
-
-  createSession() {
-    var newSession = firebase.firestore().collection("session").add({
-      session_name: "Session/Event Name",
-      date_created: firebase.firestore.FieldValue.serverTimestamp()
-    }).then((doc) => {
-      console.log("new session ID: " + doc.id);
-      this.setState({
-        sessionID: doc.id,
-        hasSession: true
-      })
-    }).catch((error) => {});
-  }
+  //should be in App.js
+  // createSession() {
+  //   var newSession = firebase.firestore().collection("session").add({
+  //     session_name: "Session/Event Name",
+  //     date_created: firebase.firestore.FieldValue.serverTimestamp()
+  //   }).then((doc) => {
+  //     console.log("new session ID: " + doc.id);
+  //     this.setState({
+  //       sessionID: doc.id,
+  //       hasSession: true
+  //     })
+  //   }).catch((error) => {});
+  // }
 
 
   hasSessionTrue() {
     return (
       <div>
-        <button onClick={this.resetSession}>Leave Session</button>
+        <button onClick={this.props.resetSession}>Leave Session</button>
         <br/>
         <label>Current Session: {this.props.sessionID}</label>
       </div>
@@ -134,7 +127,7 @@ class SignIn extends React.Component {
   hasSessionFalse() {
     return (
       <div>
-        <button onClick={this.createSession}>♥ Start a new session ♥</button>
+        <button onClick={this.props.createSession}>♥ Start a new session ♥</button>
       </div>
     );
   }
@@ -143,8 +136,8 @@ class SignIn extends React.Component {
   hasUserTrue() {
     return (
       <div>
-        <button onClick={this.resetUser}>Sign Out</button>
-        <p>Joined as: {this.state.user}</p>
+        <button onClick={this.props.resetUser}>Sign Out</button>
+        <p>Joined as: {this.props.user}</p>
       </div>
     );
   }

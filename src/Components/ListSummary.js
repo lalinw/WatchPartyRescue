@@ -34,7 +34,7 @@ class ListSummary extends React.Component {
     // - url              => link
     console.log("ListSummary below:");
     
-    for (var i = this.props.usersInSessionCount; i > 0; i--) {
+    for (var i = this.props.usersInSessionCount; i > 1; i--) {
       this.constructItemTier(i);
     }
     
@@ -90,14 +90,14 @@ class ListSummary extends React.Component {
             this.setState({
               tempTier: thisItemTier
             });
-            console.log("temp tier -> " + this.state.tempTier);
+            //console.log("temp tier -> " + this.state.tempTier);
         });
 
     }).then(() => {
       this.setState({
         listSummaryItems: this.state.listSummaryItems.concat(this.state.tempTier)
       });
-      console.log("listSummaryItems -> " + this.state.listSummaryItems);
+      //console.log("listSummaryItems -> " + this.state.listSummaryItems);
       console.log("thisTier finished running with no errors");
   
     }).catch((error) => {});
