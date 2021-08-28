@@ -50,7 +50,7 @@ class FetchList extends React.Component {
     } else {
       event.preventDefault();
       // still need to handle multiple page case
-      var sessionRef = firebase.firestore().collection("session").doc(this.state.sessionID);
+      var sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
       var usersRef = sessionRef.collection("users");
       var summaryMAL = sessionRef.collection("summary").doc("myanimelist");
 
@@ -61,27 +61,25 @@ class FetchList extends React.Component {
       // Jikan API endpoint: https://api.jikan.moe/v3/
       //fetch user's watch list 
       var endpointMAL = this.getListEndPointMAL(this.state.usernameMAL, "plantowatch");
-      console.log(this.state.user);
-      console.log(this.state.usernameMAL);
-
-      usersRef.doc(this.state.user).get().then((doc) => {
+      console.log(endpointMAL);
+      usersRef.doc(this.props.user).get().then((doc) => {
         if (!doc.exists) {
           console.log("doc does not exist");
-          usersRef.doc(this.state.user).set({
+          usersRef.doc(this.props.user).set({
             myanimelist_username: this.state.usernameMAL,
             myanimelist: []
           });
         }
       }).then(() => {
         //reset the MAL list of IDs 
-        usersRef.doc(this.state.user).update({
+        usersRef.doc(this.props.user).update({
           myanimelist_username: this.state.usernameMAL,
           myanimelist: []
         });
       }).then(() => {
         console.log("Document successfully reset!");
         var paginationThreshold = 300;
-        this.fetchHelper(endpointMAL, 1, paginationThreshold, usersRef.doc(this.state.user), summaryMAL);
+        this.fetchHelper(endpointMAL, 1, paginationThreshold, usersRef.doc(this.props.user), summaryMAL);
       }).catch((error) => {
           console.error("Error updating document: ", error);
       });
@@ -123,7 +121,7 @@ class FetchList extends React.Component {
 
           summaryMAL.collection("plan_to_watch").doc(thisAnime.mal_id.toString())
             .set({
-            common_users: firebase.firestore.FieldValue.arrayUnion(this.state.user),
+            common_users: firebase.firestore.FieldValue.arrayUnion(this.props.user),
             occurrences: firebase.firestore.FieldValue.increment(1),
             title: thisAnime.title,
             episodes: thisAnime.total_episodes,
