@@ -54,14 +54,14 @@ img {
 }
 
 div.poster-image {
-  height: 200px;
-  width: 200px;
+  height: 350px;
+  width: 225px;
   display: inline-block;
   position: relative;
 }
 
 div.overlay-dim {
-  background-color: rgba(0,0,0,0.7);
+  background-color: rgba(0,0,0,0.8);
   color: white;
   text-align: center;
   height: 100%;
@@ -76,4 +76,20 @@ div.overlay-dim {
 div.overlay-dim:hover {
   opacity: 1;
   transition: opacity .3s;
+}
+
+/* div.item-info {
+  background-color: #D0D7FF;
+  color: black;
+  text-align: left;
+  padding: 20px;
+  position: fixed;
+  display: block;
+  z-index: 99;
+  bottom: 50px;
+} */
+
+span.field-name {
+  color: grey;
+  font-weight: bold;
 }

@@ -16,21 +16,16 @@ class ListSummary extends React.Component {
   
   componentDidMount() {
 
-    // this.setState({
-    //   sessionID: this.props.sessionID,
-    //   hasSession: this.props.hasSession
-    // })
+    this.setState({
+      sessionID: this.props.sessionID,
+      hasSession: this.props.hasSession
+    })
 
     var sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
     var summaryMAL = sessionRef.collection("summary").doc("myanimelist");
 
     //display all "plan to watch"
     var MALplantowatch = summaryMAL.collection("plan_to_watch");
-    //go through all docs in plantowatch 
-    //reference basic data from "all_references"
-    
-    var MALallreference = summaryMAL.collection("all_references");
-    // field names from data.anime    @summaryMAL.collection("all_references")
     // - image_url        => image
     // - mal_id           => document name
     // - rating           => rating
@@ -68,18 +63,27 @@ class ListSummary extends React.Component {
           </div>
         );
 
-        
-        querySnapshot.forEach((plantowatchDoc) => {
-          MALallreference.doc(plantowatchDoc.id).get().then((doc) => {
-            
+        querySnapshot.docs.map( (plantowatchDoc)=> {
             thisItemTier.push(
               // <img src={doc.data().image}/>
               <div class="poster-image">
-                <img src={doc.data().image}/>
+                <img src={plantowatchDoc.data().image}/>
                 <div class="overlay-dim">
-                    <h2><span>{doc.data().title}</span></h2>
-                    <p>{plantowatchDoc.data().common_users.join(", ")}</p>
-                    <h1>{plantowatchDoc.data().occurrences}</h1>
+                    <h2><span>{plantowatchDoc.data().title}</span></h2>
+                    <p><span class="field-name">Episodes:</span> 
+                    <br/>{plantowatchDoc.data().episodes}</p>
+                    <p><span class="field-name">Released:</span> 
+                    <br/>{plantowatchDoc.data().season}</p>
+                    <p>({plantowatchDoc.data().common_users.join(", ")})</p>
+                    {/* <h1>{plantowatchDoc.data().occurrences}</h1> */}
+                    <a href={plantowatchDoc.data().link}><button>see details on MyAnimeList</button></a>
+                    {/* <div class="item-info">
+                      <img src={plantowatchDoc.data().image}/>
+                      <p><b>Title:</b> {plantowatchDoc.data().title}</p>
+                      <p><b>Episodes:</b> {plantowatchDoc.data().episodes}</p>
+                      <p><b>Released:</b> {plantowatchDoc.data().season}</p>
+                      <a href={plantowatchDoc.data().link}>see details on MyAnimeList</a>
+                    </div>  */}
                 </div>
               </div>
             );
@@ -87,8 +91,8 @@ class ListSummary extends React.Component {
               tempTier: thisItemTier
             });
             console.log("temp tier -> " + this.state.tempTier);
-          }).then(() => {});
         });
+
     }).then(() => {
       this.setState({
         listSummaryItems: this.state.listSummaryItems.concat(this.state.tempTier)

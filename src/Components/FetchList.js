@@ -97,21 +97,35 @@ class FetchList extends React.Component {
           
           //add to "all_references"
           // Firestore document ID must be a STRING!
-          summaryMAL.collection("all_references").doc(thisAnime.mal_id.toString())
-            .set({
-              title: thisAnime.title,
-              episodes: thisAnime.total_episodes,
-              image: thisAnime.image_url,
-              link: thisAnime.url
-          });
+          // summaryMAL.collection("all_references").doc(thisAnime.mal_id.toString())
+          //   .set({
+          //     title: thisAnime.title,
+          //     episodes: thisAnime.total_episodes,
+          //     image: thisAnime.image_url,
+          //     link: thisAnime.url
+          // });
+
+          // summaryMAL.collection("plan_to_watch").doc(thisAnime.mal_id.toString())
+          //   .set({
+          //   common_users: firebase.firestore.FieldValue.arrayUnion(this.state.user),
+          //   occurrences: firebase.firestore.FieldValue.increment(1)
+          // }, { 
+          //   merge: true 
+          // });
 
           summaryMAL.collection("plan_to_watch").doc(thisAnime.mal_id.toString())
             .set({
             common_users: firebase.firestore.FieldValue.arrayUnion(this.state.user),
-            occurrences: firebase.firestore.FieldValue.increment(1)
+            occurrences: firebase.firestore.FieldValue.increment(1),
+            title: thisAnime.title,
+            episodes: thisAnime.total_episodes,
+            image: thisAnime.image_url,
+            link: thisAnime.url,
+            season: thisAnime.season_name + " " + thisAnime.season_year
           }, { 
             merge: true 
           });
+
         }
         
         //check for more items after 1st page

@@ -21,6 +21,8 @@ class SignIn extends React.Component {
     this.hasUserFalse = this.hasUserFalse.bind(this);
     this.hasSessionTrue = this.hasSessionTrue.bind(this);
     this.hasSessionFalse = this.hasSessionFalse.bind(this);
+
+    this.removeUser = this.removeUser.bind(this);
   }
   
 
@@ -70,6 +72,22 @@ class SignIn extends React.Component {
     console.log(this.state.user + " " + this.state.hasUser);
   }
 
+  removeUser(event) {
+    var thisUser = event.target.id;
+    
+    var sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
+    var usersRef = sessionRef.collection("users");
+
+    usersRef.doc(thisUser).get().then((doc) => {
+      if (!doc.exists) {
+        console.log("doc does not exist");
+        usersRef.doc(this.state.user).set({
+          myanimelist_username: "",
+          myanimelist: [],
+        });
+      }
+    });
+  }
 
   resetUser() {
     this.setState({
