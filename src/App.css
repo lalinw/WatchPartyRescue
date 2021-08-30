@@ -107,20 +107,14 @@ div.overlay-dim:hover {
   transition: opacity .3s;
 }
 
-/* div.item-info {
-  background-color: #D0D7FF;
-  color: black;
-  text-align: left;
-  padding: 20px;
-  position: fixed;
-  display: block;
-  z-index: 99;
-  bottom: 50px;
-} */
+div.item-tier{
+  font-variant: small-caps; 
+}
 
 span.field-name {
   color: grey;
   font-weight: bold;
 }
+
 
 /* ============================================== */

@@ -11,9 +11,6 @@ class SignIn extends React.Component {
     };
     this.handleNameChange = this.handleNameChange.bind(this);
     this.handleNameSubmit = this.handleNameSubmit.bind(this);
-    // this.resetUser = this.resetUser.bind(this);
-    // this.createSession = this.createSession.bind(this);
-    
 
     //micro-components
     this.hasUserTrue = this.hasUserTrue.bind(this);
@@ -21,23 +18,12 @@ class SignIn extends React.Component {
     this.hasSessionTrue = this.hasSessionTrue.bind(this);
     this.hasSessionFalse = this.hasSessionFalse.bind(this);
     this.hasUsernameMAL = this.hasUsernameMAL.bind(this);
-    
-
-    this.removeUser = this.removeUser.bind(this);
   }
   
 
   componentDidMount() {
     //var sessionRef = firebase.firestore().collection("session").doc(this.state.sessionID);
     //var summaryMAL = sessionRef.collection("summary").doc("myanimelist");
-
-    // this.setState({
-    //   sessionID: this.props.sessionID,
-    //   hasSession: this.props.hasSession,
-    //   user: this.props.user,
-    //   hasUser: this.props.hasUser
-    // })
-
   }
   
 
@@ -50,7 +36,6 @@ class SignIn extends React.Component {
 
 
   handleNameSubmit(event) {
-    
     if (this.state.tempUser == "") {
       window.alert("Your display name cannot be empty!");
     } else {
@@ -62,28 +47,6 @@ class SignIn extends React.Component {
     });
   }
 
-  removeUser(event) {
-    var thisUser = event.target.id;
-
-    var sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
-    var summaryMAL = sessionRef.collection("summary").doc("myanimelist");
-    var MALplantowatch = summaryMAL.collection("plan_to_watch");
-    var usersRef = sessionRef.collection("users");
-
-    //remove user 
-    //remove all user's votes
-    //remove anime from plan_to_watch if occurrences is 0 after remove user
-
-    // usersRef.doc(thisUser).get().then((doc) => {
-    //   if (!doc.exists) {
-    //     console.log("doc does not exist");
-    //     usersRef.doc(this.state.user).set({
-    //       myanimelist_username: "",
-    //       myanimelist: [],
-    //     });
-    //   }
-    // });
-  }
 
   hasSessionTrue() {
     return (
@@ -95,7 +58,6 @@ class SignIn extends React.Component {
           Copy Session Link!
         </button> 
       </div>
-
     );
   }
 
@@ -165,6 +127,7 @@ class SignIn extends React.Component {
     );
   }
 
+
   hasUsernameMAL() {
     if (this.props.usernameMAL == null) {
       return (
@@ -179,9 +142,9 @@ class SignIn extends React.Component {
 
 
   render() {
-
     return (
       <React.Fragment>
+
         <div class="session">
           {this.props.sessionID != null ? 
             <this.hasSessionTrue/> :
@@ -194,8 +157,6 @@ class SignIn extends React.Component {
               <this.hasUserTrue/> : 
               <this.hasUserFalse/>}</div> :
           <React.Fragment/> }
-
-
 
       </React.Fragment>
     );

@@ -45,9 +45,7 @@ class App extends Component {
     const sessionID = urlParam.get('session');
 
     console.log("URL parameter = " + urlParam);
-    console.log(sessionID);
-    // http://localhost:3000/?session=FEHY0ymsqQuX28YISnC7
-    // http://localhost:3000/?session=nAXdMY0ZCO7PmsmiWbQL 
+    // console.log(sessionID);
 
     if (sessionID != null) {
 
@@ -65,6 +63,7 @@ class App extends Component {
     }
   }
 
+
   resetUser() {
     this.setState({
       user: null,
@@ -72,6 +71,7 @@ class App extends Component {
       usernameMAL: null,
     })
   }
+
 
   setUser(name) {
     var sessionRef = firebase.firestore().collection("session").doc(this.state.sessionID);
@@ -99,9 +99,9 @@ class App extends Component {
           usernameMAL: thisDoc.data().myanimelist_username
         })
       })
-      
     });
   }
+
 
   resetSession() {
     //log out of session && sign out of current user
@@ -112,11 +112,13 @@ class App extends Component {
       hasUser: false,
       usernameMAL: null
     })
+    //remove sessionID from address bar
     window.location.href =  window.location.href.split("?")[0];
   }
 
+
   createSession() {
-    var newSession = firebase.firestore().collection("session").add({
+    firebase.firestore().collection("session").add({
       session_name: "Session/Event Name",
       date_created: firebase.firestore.FieldValue.serverTimestamp(),
       users_count: 0
@@ -125,6 +127,7 @@ class App extends Component {
       this.setSession(doc.id);
     }).catch((error) => {});
   }
+
 
   setSession(sessionID) {
     this.setState({
@@ -139,6 +142,7 @@ class App extends Component {
     });
   }
 
+  
   setUsernameMAL(event, name) {
     event.preventDefault();
     
@@ -146,9 +150,7 @@ class App extends Component {
     var usersRef = sessionRef.collection("users");
 
     usersRef.doc(this.state.user).get().then((doc) => {
-      // if (!doc.exists) {
-        
-      // }
+      // doc of user already exists if the user is trying to set their MAL username
       console.log("setting user's MAL username..." + name);
       usersRef.doc(this.state.user).update({
         myanimelist_username: name,
@@ -159,11 +161,13 @@ class App extends Component {
     })
   }
 
+
   resetUsernameMAL() {
     this.setState({
       usernameMAL: null,
     })
   }
+
 
   topBanner() {
     return(
@@ -174,10 +178,10 @@ class App extends Component {
     );
   }
   
+
   render() {
     return (
       <div>
-
         <div class="banner">
           <this.topBanner/>
         </div>

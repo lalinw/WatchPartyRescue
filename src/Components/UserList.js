@@ -10,7 +10,6 @@ class UserList extends React.Component {
       userList: []
     }
     this.deleteUser = this.deleteUser.bind(this);
-
   }
   
   componentDidMount() {
@@ -30,8 +29,8 @@ class UserList extends React.Component {
       });
       console.log("userlist state = " + this.state.userList);
     });
-
   }
+
 
   deleteUser(event) {
     var user = event.target.id;
@@ -63,9 +62,6 @@ class UserList extends React.Component {
           console.log("summary list has been decremented with user");
         }).catch((error) => {});
       
-
-      console.log("after array-contains");
-
       summaryMAL.collection("plan_to_watch").where("occurrences", "==", 0)
         .onSnapshot((querySnapshot) => {
           querySnapshot.forEach( (doc) => {

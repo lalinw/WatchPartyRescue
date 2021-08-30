@@ -9,7 +9,6 @@ class ListSummary extends React.Component {
     this.state = {
       listSummaryItems: [],
       tempTier: [],
-      isLoading: false
     };
     this.constructItemTier = this.constructItemTier.bind(this);
     this.showLoadingGIF = this.showLoadingGIF.bind(this);
@@ -17,19 +16,15 @@ class ListSummary extends React.Component {
   }
   
   componentDidMount() {
-
     //this.updateSummaryList();
   }
 
   updateSummaryList() {
-
     console.log("ListSummary below:");
-    
     //list all items with 2+ common users
     for (var i = this.props.usersInSessionCount; i > 1; i--) {
       this.constructItemTier(i);
     }
-
   }
 
   async constructItemTier(usersCount) {
@@ -37,7 +32,6 @@ class ListSummary extends React.Component {
     var sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
     var summaryMAL = sessionRef.collection("summary").doc("myanimelist");
     var MALplantowatch = summaryMAL.collection("plan_to_watch");
-    // var MALallreference = summaryMAL.collection("all_references");
     
     //clear tempTier state
     this.setState({
@@ -56,7 +50,6 @@ class ListSummary extends React.Component {
         console.log(thisItemTier);
         querySnapshot.docs.map( (plantowatchDoc)=> {
             thisItemTier.push(
-              // <img src={doc.data().image}/>
               <div class="poster-image">
                 <img src={plantowatchDoc.data().image}/>
                 <div class="overlay-dim">
@@ -66,15 +59,7 @@ class ListSummary extends React.Component {
                     <p><span class="field-name">Released:</span> 
                     <br/>{plantowatchDoc.data().season}</p>
                     <p>({plantowatchDoc.data().common_users.join(", ")})</p>
-                    {/* <h1>{plantowatchDoc.data().occurrences}</h1> */}
                     <a href={plantowatchDoc.data().link}><button>see details on MyAnimeList</button></a>
-                    {/* <div class="item-info">
-                      <img src={plantowatchDoc.data().image}/>
-                      <p><b>Title:</b> {plantowatchDoc.data().title}</p>
-                      <p><b>Episodes:</b> {plantowatchDoc.data().episodes}</p>
-                      <p><b>Released:</b> {plantowatchDoc.data().season}</p>
-                      <a href={plantowatchDoc.data().link}>see details on MyAnimeList</a>
-                    </div>  */}
                 </div>
               </div>
             );
@@ -83,14 +68,13 @@ class ListSummary extends React.Component {
             });
             console.log("temp tier -> " + this.state.tempTier);
         });
-
     }).catch((error) => {});
     
     this.setState({
       listSummaryItems: this.state.listSummaryItems.concat(this.state.tempTier)
     });
-    console.log("listSummaryItems -> " + this.state.listSummaryItems);
-    console.log("temp tier -> " + this.state.tempTier);
+    //console.log("listSummaryItems -> " + this.state.listSummaryItems);
+    //console.log("temp tier -> " + this.state.tempTier);
     console.log("thisTier finished running with no errors");
   }
 
@@ -99,14 +83,6 @@ class ListSummary extends React.Component {
       <img src={loading}/>
     );
   }
-  
-  // <div class="poster-image">
-  //   <img src={doc.data().image}>
-  //   <div class="overlay-dim">
-  //       <h3><span>{doc.data().title}</span></h3>
-  //       <p>[votes]</p>
-  //   </div>
-  // </div>
 
   render() {
     console.log(this.state.listSummaryItems);
@@ -126,8 +102,6 @@ class ListSummary extends React.Component {
         </div>
       );
     }
-    
-    
   }
 }
 
