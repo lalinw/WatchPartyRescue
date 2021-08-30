@@ -86,13 +86,20 @@ class App extends Component {
         sessionRef.update({
           users_count: firebase.firestore.FieldValue.increment(1)
         });
-      } else {
+      }
+      this.setState({
+        user: name,
+        hasUser: true
+      })
+    }).then(() => {
+      usersRef.doc(this.state.user).get().then((thisDoc) => {
         this.setState({
           user: name,
           hasUser: true,
           usernameMAL: thisDoc.data().myanimelist_username
         })
-      }
+      })
+      
     });
   }
 
@@ -182,6 +189,11 @@ class App extends Component {
             setUsernameMAL = {this.setUsernameMAL}
             resetUsernameMAL = {this.resetUsernameMAL}
           />
+          {this.state.hasSession ? 
+          <UserList
+            user = {this.state.user}
+            sessionID = {this.state.sessionID}
+          /> : <React.Fragment/>}
           {this.state.hasSession && this.state.hasUser ? 
             <FetchList
             user = {this.state.user}

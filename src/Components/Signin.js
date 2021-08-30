@@ -58,6 +58,9 @@ class SignIn extends React.Component {
       this.props.setUser(this.state.tempUser);
     }
     event.preventDefault();
+    this.setState({ 
+      tempUser: "" 
+    });
   }
 
   removeUser(event) {
@@ -156,7 +159,6 @@ class SignIn extends React.Component {
           <div>
             <this.hasSessionTrue/>
             <this.hasUserTrue/>
-            <UserList/>
           </div>
         );
       } else {
@@ -164,7 +166,6 @@ class SignIn extends React.Component {
           <div>
             <this.hasSessionTrue/>
             <this.hasUserFalse/>
-            <UserList/>
           </div>
         );
       }

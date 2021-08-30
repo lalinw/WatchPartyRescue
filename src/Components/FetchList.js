@@ -60,12 +60,12 @@ class FetchList extends React.Component {
 
   async onFetchSubmit(event) {
     if (this.props.usernameMAL == null) {
-      window.alert("Your MAL username cannot be empty!");
+      window.alert("Cannot fetch your MyAnimeList without your account name. \nAdd your MyAnimeList username!");
       event.preventDefault();
     } else {
       event.preventDefault();
 
-      console.log("MAL usernam = " + this.state.tempUsernameMAL);
+      console.log("MAL usernam = " + this.props.usernameMAL);
       var sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
       var usersRef = sessionRef.collection("users");
       var summaryMAL = sessionRef.collection("summary").doc("myanimelist");
@@ -76,7 +76,7 @@ class FetchList extends React.Component {
       console.log("fetching from MAL...");
       // Jikan API endpoint: https://api.jikan.moe/v3/
       //fetch user's watch list 
-      var endpointMAL = this.getListEndPointMAL(this.state.tempUsernameMAL, "plantowatch");
+      var endpointMAL = this.getListEndPointMAL(this.props.usernameMAL, "plantowatch");
       console.log(endpointMAL);
 
       var prefetch = await this.preFetch();
@@ -130,6 +130,12 @@ class FetchList extends React.Component {
           for (var i = 0; i < data.anime.length; i++) {
             // console.log(data.anime[i]);
             var thisAnime = data.anime[i];
+            var released = thisAnime.season_year;
+            if (released == null) {
+              released = "unknown";
+            } else {
+              released = thisAnime.season_name + " " + thisAnime.season_year;
+            }
             summaryMAL.collection("plan_to_watch").doc(thisAnime.mal_id.toString())
               .set({
               common_users: firebase.firestore.FieldValue.arrayUnion(this.props.user),
@@ -138,7 +144,7 @@ class FetchList extends React.Component {
               episodes: thisAnime.total_episodes,
               image: thisAnime.image_url,
               link: thisAnime.url,
-              season: thisAnime.season_name + " " + thisAnime.season_year
+              season: released
             }, { 
               merge: true 
             });

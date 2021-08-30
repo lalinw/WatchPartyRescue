@@ -13,30 +13,24 @@ class UserList extends React.Component {
 
   }
   
-  ///initial populate is not working
   componentDidMount() {
     var sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
     var usersRef = sessionRef.collection("users");
 
-    var localUsers = [];
     //populate userList state for user management 
-    usersRef.get().then((querySnapshot) => {
-        
-      
-      console.log("userDocs size = " + querySnapshot.size);
-
-      querySnapshot.docs.map((doc) => {
-        console.log("the doc = " + doc.data());
-        localUsers = localUsers.concat(doc.id);
-        
-        this.setState({
-          userList: localUsers
-        });
+    usersRef.onSnapshot((userDocs) => {
+      var localUsers = [];
+      console.log("userDocs = " + userDocs.size);
+      userDocs.forEach((theUser) => {
+        localUsers = localUsers.concat(theUser.id);
+        console.log("userdocs = " + theUser);
+      });
+      this.setState({
+        userList: localUsers
       });
       console.log("userlist state = " + this.state.userList);
     });
 
-    
   }
 
   deleteUser(event) {
@@ -57,18 +51,18 @@ class UserList extends React.Component {
 
       console.log("after update");
 
-    summaryMAL.collection("plan_to_watch").where("common_users", "array-contains", this.props.user)
-      .get().then((querySnapshot) => {
-        querySnapshot.forEach( (thisDoc) => {
-          summaryMAL.collection("plan_to_watch").doc(thisDoc.id).update({
-            common_users: firebase.firestore.FieldValue.arrayRemove(user),
-            occurrences: firebase.firestore.FieldValue.increment(-1)
-          });
-        })
-      }).then(() => {
-        console.log("summary list has been decremented with user");
-      }).catch((error) => {});
-    
+      summaryMAL.collection("plan_to_watch").where("common_users", "array-contains", user)
+        .get().then((querySnapshot) => {
+          querySnapshot.forEach( (thisDoc) => {
+            summaryMAL.collection("plan_to_watch").doc(thisDoc.id).update({
+              common_users: firebase.firestore.FieldValue.arrayRemove(user),
+              occurrences: firebase.firestore.FieldValue.increment(-1)
+            });
+          })
+        }).then(() => {
+          console.log("summary list has been decremented with user");
+        }).catch((error) => {});
+      
 
       console.log("after array-contains");
 
@@ -82,7 +76,10 @@ class UserList extends React.Component {
             });
         })
       });
-    }
+      sessionRef.update({
+        users_count: firebase.firestore.FieldValue.increment(-1)
+      });
+    } 
   }
 
  
@@ -99,14 +96,14 @@ class UserList extends React.Component {
       } else {
         displayUsers.push(
           <li>
-            {username} <button id={username} onClick={this.deleteUser}> Remove User </button>
+            {username} <button id={username} onClick={this.deleteUser}>Remove</button>
           </li>
         );
       }
     }
     return (
       <div>
-        {displayUsers.length == 0 ? 
+        {this.state.userList.length == 0 ? 
         <p><i>There are no users in this session yet</i></p> :
         <React.Fragment>
           <p>Users in this session:</p>
