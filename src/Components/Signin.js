@@ -1,5 +1,6 @@
 import React from 'react';
 import firebase from '../firebase';
+import UserList from "./UserList";
 
 class SignIn extends React.Component {
   constructor(props) {
@@ -50,12 +51,13 @@ class SignIn extends React.Component {
 
 
   handleNameSubmit(event) {
-    event.preventDefault();
+    
     if (this.state.tempUser == "") {
       window.alert("Your display name cannot be empty!");
     } else {
       this.props.setUser(this.state.tempUser);
     }
+    event.preventDefault();
   }
 
   removeUser(event) {
@@ -85,10 +87,10 @@ class SignIn extends React.Component {
     return (
       <div>
         <button onClick={this.props.resetSession}>Leave Session</button>
-        <span> </span> Current Session: {this.props.sessionID} <span> </span>
+        <span> </span> Session: {this.props.sessionID} <span> </span>
         <button onClick={() => {
           navigator.clipboard.writeText("http://localhost:3000/" + "?session=" + this.props.sessionID)}}>
-          Share Session Link!
+          Copy Session Link!
         </button> 
       </div>
 
@@ -126,10 +128,8 @@ class SignIn extends React.Component {
             placeholder="Display name"
             onChange={this.handleNameChange}
             />
-          {this.props.hasSession ? 
-            <button onClick={this.handleNameSubmit}>Continue</button>
-          : <this.hasSessionFalse/>}
-          
+          <br/>
+          <button onClick={this.handleNameSubmit}>Continue</button>
         </form>
       </div>
     );
@@ -156,6 +156,7 @@ class SignIn extends React.Component {
           <div>
             <this.hasSessionTrue/>
             <this.hasUserTrue/>
+            <UserList/>
           </div>
         );
       } else {
@@ -163,6 +164,7 @@ class SignIn extends React.Component {
           <div>
             <this.hasSessionTrue/>
             <this.hasUserFalse/>
+            <UserList/>
           </div>
         );
       }

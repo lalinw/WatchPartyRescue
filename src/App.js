@@ -17,7 +17,8 @@ class App extends Component {
       usernameMAL: null,
       sessionID: null,
       hasSession: false,
-      usersInSessionCount: 0
+      usersInSessionCount: 0,
+      sessionName: null
     };
     //mini components
     this.topBanner = this.topBanner.bind(this);
@@ -60,7 +61,7 @@ class App extends Component {
                               usersInSessionCount: usersCollection.size
                             });
       });
-      
+      console.log("users count = " + this.state.usersInSessionCount);
     }
   }
 
@@ -80,7 +81,10 @@ class App extends Component {
       if (!thisDoc.exists) {
         console.log("doc does not exist yet. Creating user...");
         usersRef.doc(name).set({
-          myanimelist_username: null,
+          myanimelist_username: null
+        });
+        sessionRef.update({
+          users_count: firebase.firestore.FieldValue.increment(1)
         });
       } else {
         this.setState({
@@ -106,7 +110,8 @@ class App extends Component {
   createSession() {
     var newSession = firebase.firestore().collection("session").add({
       session_name: "Session/Event Name",
-      date_created: firebase.firestore.FieldValue.serverTimestamp()
+      date_created: firebase.firestore.FieldValue.serverTimestamp(),
+      users_count: 0
     }).then((doc) => {
       console.log("new session ID: " + doc.id);
       this.setSession(doc.id);
@@ -148,7 +153,9 @@ class App extends Component {
 
   topBanner() {
     return(
-      <h3>Watch Party Rescue <span class="material-icons"></span></h3>
+      <div class="banner-inner">
+        <h3>Watch Party Rescue <span class="material-icons"></span></h3>
+      </div>
     );
   }
   
@@ -160,7 +167,7 @@ class App extends Component {
           <this.topBanner/>
         </div>
 
-        <div class="outer">
+        <div class="app-content">
           <SignIn
             user = {this.state.user}
             hasUser = {this.state.hasUser}

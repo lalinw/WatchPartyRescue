@@ -63,7 +63,7 @@ class ListSummary extends React.Component {
     });
     
     console.log("users => " + usersCount);
-    var thisTier = await MALplantowatch.where('occurrences', "==", usersCount).get()
+    await MALplantowatch.where('occurrences', "==", usersCount).get()
       .then((querySnapshot) => {
         var thisItemTier = [];
         thisItemTier.push(

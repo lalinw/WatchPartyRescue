@@ -177,13 +177,14 @@ class FetchList extends React.Component {
           placeholder="your MAL username"
           onChange={this.handleTextChange}
           />
+        <br/>
         <button onClick={(e) => {
           this.props.setUsernameMAL(e, this.state.tempUsernameMAL);
           this.setState({ 
             showFormUsernameMAL: false
           });
-          }}>set this username</button>
-        <button onClick={this.onFetchSubmit}>Fetch Anime List</button>
+          }}>Save</button>
+        {/* <button onClick={this.onFetchSubmit}>Fetch Anime List</button> */}
       </form>
     );
   }
