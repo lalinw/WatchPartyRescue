@@ -102,7 +102,7 @@ class UserList extends React.Component {
       }
     }
     return (
-      <div>
+      <div class="user-list">
         {this.state.userList.length == 0 ? 
         <p><i>There are no users in this session yet</i></p> :
         <React.Fragment>

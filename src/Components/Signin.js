@@ -7,9 +7,7 @@ class SignIn extends React.Component {
     super(props);
     this.state = {
       tempUser: "",
-      // hasUser: false,
-      // sessionID: "",
-      // hasSession: false
+      existingUsers: []
     };
     this.handleNameChange = this.handleNameChange.bind(this);
     this.handleNameSubmit = this.handleNameSubmit.bind(this);
@@ -39,6 +37,7 @@ class SignIn extends React.Component {
     //   user: this.props.user,
     //   hasUser: this.props.hasUser
     // })
+
   }
   
 
@@ -120,9 +119,34 @@ class SignIn extends React.Component {
 
 
   hasUserFalse() {
+    var sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
+    var usersRef = sessionRef.collection("users");
+
+    usersRef.onSnapshot((userDocs) => {
+      var localUsers = [];
+      localUsers.push(
+        <option selected value="">select user</option>
+      );
+      userDocs.forEach((theUser) => {
+        localUsers.push(
+          <option value={theUser.id}>{theUser.id}</option>
+        );
+      });
+      this.setState({
+        existingUsers: localUsers
+      })
+    });
+    
     return (
       <div>
         <h2>Sign in:</h2>
+        <form>
+          <label>Log in as: </label>
+          <select value={this.props.user} onChange={this.handleNameChange}>
+            {this.state.existingUsers}
+          </select>
+        </form>
+        <p>OR</p>
         <form>
           <label>Enter your display name:</label>
           <br/>
@@ -132,7 +156,10 @@ class SignIn extends React.Component {
             onChange={this.handleNameChange}
             />
           <br/>
-          <button onClick={this.handleNameSubmit}>Continue</button>
+          <p><button 
+            onClick={this.handleNameSubmit} 
+            disabled={this.state.tempUser == ""}
+            >Continue</button></p>
         </form>
       </div>
     );
@@ -152,31 +179,26 @@ class SignIn extends React.Component {
 
 
   render() {
-    if (this.props.hasSession) {
 
-      if (this.props.hasUser) {
-        return (
-          <div>
-            <this.hasSessionTrue/>
-            <this.hasUserTrue/>
-          </div>
-        );
-      } else {
-        return (
-          <div>
-            <this.hasSessionTrue/>
-            <this.hasUserFalse/>
-          </div>
-        );
-      }
-
-    } else {
-      return (
-        <div>
-          <this.hasSessionFalse/>
+    return (
+      <React.Fragment>
+        <div class="session">
+          {this.props.sessionID != null ? 
+            <this.hasSessionTrue/> :
+            <this.hasSessionFalse/> }
         </div>
-      );
-    }
+
+        {this.props.sessionID != null ? 
+          <div class="sign-in">
+            {this.props.user != null ? 
+              <this.hasUserTrue/> : 
+              <this.hasUserFalse/>}</div> :
+          <React.Fragment/> }
+
+
+
+      </React.Fragment>
+    );
   }
     
 }

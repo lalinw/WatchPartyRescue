@@ -112,6 +112,7 @@ class App extends Component {
       hasUser: false,
       usernameMAL: null
     })
+    window.location.href =  window.location.href.split("?")[0];
   }
 
   createSession() {
@@ -167,7 +168,8 @@ class App extends Component {
   topBanner() {
     return(
       <div class="banner-inner">
-        <h3>Watch Party Rescue <span class="material-icons"></span></h3>
+        <h2>Watch Party Rescue <span class="material-icons"></span></h2>
+        <p><i>(currently supporting <b>MyAnimeList's Plan to Watch</b> list only)</i></p>
       </div>
     );
   }

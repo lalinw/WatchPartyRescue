@@ -18,7 +18,7 @@ class ListSummary extends React.Component {
   
   componentDidMount() {
 
-    this.updateSummaryList();
+    //this.updateSummaryList();
   }
 
   updateSummaryList() {
