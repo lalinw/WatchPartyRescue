@@ -5,10 +5,10 @@ class SignIn extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      user: "",
-      hasUser: false,
-      sessionID: "",
-      hasSession: false
+      tempUser: "",
+      // hasUser: false,
+      // sessionID: "",
+      // hasSession: false
     };
     this.handleNameChange = this.handleNameChange.bind(this);
     this.handleNameSubmit = this.handleNameSubmit.bind(this);
@@ -21,6 +21,8 @@ class SignIn extends React.Component {
     this.hasUserFalse = this.hasUserFalse.bind(this);
     this.hasSessionTrue = this.hasSessionTrue.bind(this);
     this.hasSessionFalse = this.hasSessionFalse.bind(this);
+    this.hasUsernameMAL = this.hasUsernameMAL.bind(this);
+    
 
     this.removeUser = this.removeUser.bind(this);
   }
@@ -30,46 +32,30 @@ class SignIn extends React.Component {
     //var sessionRef = firebase.firestore().collection("session").doc(this.state.sessionID);
     //var summaryMAL = sessionRef.collection("summary").doc("myanimelist");
 
-    this.setState({
-      sessionID: this.props.sessionID,
-      hasSession: this.props.hasSession,
-      user: this.props.user,
-      hasUser: this.props.hasUser
-    })
+    // this.setState({
+    //   sessionID: this.props.sessionID,
+    //   hasSession: this.props.hasSession,
+    //   user: this.props.user,
+    //   hasUser: this.props.hasUser
+    // })
   }
   
 
   handleNameChange(event) {
     event.preventDefault();
     this.setState({ 
-      user: event.target.value 
+      tempUser: event.target.value 
     });
   }
 
 
   handleNameSubmit(event) {
-    if (this.state.user == "") {
+    event.preventDefault();
+    if (this.state.tempUser == "") {
       window.alert("Your display name cannot be empty!");
-      event.preventDefault();
     } else {
-      event.preventDefault();
-      this.props.setUser(this.state.user);
-      
-      
-      var sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
-      var usersRef = sessionRef.collection("users");
-
-      usersRef.doc(this.state.user).get().then((doc) => {
-        if (!doc.exists) {
-          console.log("doc does not exist");
-          usersRef.doc(this.state.user).set({
-            myanimelist_username: "",
-            myanimelist: [],
-          });
-        }
-      });
+      this.props.setUser(this.state.tempUser);
     }
-    console.log(this.state.user + " " + this.state.hasUser);
   }
 
   removeUser(event) {
@@ -95,29 +81,15 @@ class SignIn extends React.Component {
     // });
   }
 
-
-
-  //should be in App.js
-  // createSession() {
-  //   var newSession = firebase.firestore().collection("session").add({
-  //     session_name: "Session/Event Name",
-  //     date_created: firebase.firestore.FieldValue.serverTimestamp()
-  //   }).then((doc) => {
-  //     console.log("new session ID: " + doc.id);
-  //     this.setState({
-  //       sessionID: doc.id,
-  //       hasSession: true
-  //     })
-  //   }).catch((error) => {});
-  // }
-
-
   hasSessionTrue() {
     return (
       <div>
         <button onClick={this.props.resetSession}>Leave Session</button>
-        <br/>
-        <label>Current Session: {this.props.sessionID}</label>
+        <span> </span> Current Session: {this.props.sessionID} <span> </span>
+        <button onClick={() => {
+          navigator.clipboard.writeText("http://localhost:3000/" + "?session=" + this.props.sessionID)}}>
+          Share Session Link!
+        </button> 
       </div>
 
     );
@@ -136,8 +108,7 @@ class SignIn extends React.Component {
   hasUserTrue() {
     return (
       <div>
-        <button onClick={this.props.resetUser}>Sign Out</button>
-        <p>Joined as: {this.props.user}</p>
+        <p>Joined as: {this.props.user} <button onClick={this.props.resetUser}>Sign Out</button></p>
       </div>
     );
   }
@@ -164,20 +135,32 @@ class SignIn extends React.Component {
     );
   }
 
+  hasUsernameMAL() {
+    if (this.props.usernameMAL == null) {
+      return (
+        <p>MyAnimeList account: <button>+ Add your username</button></p>
+      );
+    } else {
+      return (
+        <p>MyAnimeList account: {this.props.usernameMAL}</p>
+      );
+    }
+  }
+
 
   render() {
     if (this.props.hasSession) {
 
       if (this.props.hasUser) {
         return (
-          <div style={{backgroundColor: "#89556D"}}>
+          <div>
             <this.hasSessionTrue/>
             <this.hasUserTrue/>
           </div>
         );
       } else {
         return (
-          <div style={{backgroundColor: "#89B74D"}}>
+          <div>
             <this.hasSessionTrue/>
             <this.hasUserFalse/>
           </div>
@@ -186,7 +169,7 @@ class SignIn extends React.Component {
 
     } else {
       return (
-        <div style={{backgroundColor: "#C2A9A7"}}>
+        <div>
           <this.hasSessionFalse/>
         </div>
       );

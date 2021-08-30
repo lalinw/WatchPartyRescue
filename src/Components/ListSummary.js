@@ -1,25 +1,27 @@
 import '../App.css';
 import React from 'react';
 import firebase from '../firebase';
+import loading from './../loading_doggo.gif';
 
 class ListSummary extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      listSummaryItems: [],
+      listSummaryItems: null,
       tempTier: [],
-      sessionID: "",
-      hasSession: false
+      isLoading: false
     };
     this.constructItemTier = this.constructItemTier.bind(this);
+    this.showLoadingGIF = this.showLoadingGIF.bind(this);
+    this.updateSummaryList = this.updateSummaryList.bind(this);
   }
   
   componentDidMount() {
 
-    this.setState({
-      sessionID: this.props.sessionID,
-      hasSession: this.props.hasSession
-    })
+    // this.setState({
+    //   sessionID: this.props.sessionID,
+    //   hasSession: this.props.hasSession
+    // })
 
     var sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
     var summaryMAL = sessionRef.collection("summary").doc("myanimelist");
@@ -32,27 +34,34 @@ class ListSummary extends React.Component {
     // - title            => title
     // - total_episodes   => episodes
     // - url              => link
-    console.log("ListSummary below:");
-    
-    for (var i = this.props.usersInSessionCount; i > 1; i--) {
-      this.constructItemTier(i);
-    }
-    
+
     //update "update_time" field with timestamp when new data is added
     //date_updated: firebase.firestore.FieldValue.serverTimestamp()
   }
 
+  updateSummaryList() {
+
+    console.log("ListSummary below:");
+    
+    //list all items with 2+ common users
+    for (var i = this.props.usersInSessionCount; i > 1; i--) {
+      this.constructItemTier(i);
+    }
+
+  }
+
   async constructItemTier(usersCount) {
+    console.log("item tier called");
     var sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
     var summaryMAL = sessionRef.collection("summary").doc("myanimelist");
     var MALplantowatch = summaryMAL.collection("plan_to_watch");
-    var MALallreference = summaryMAL.collection("all_references");
+    // var MALallreference = summaryMAL.collection("all_references");
     
     //clear tempTier state
     this.setState({
       tempTier: []
     });
-
+    
     console.log("users => " + usersCount);
     var thisTier = await MALplantowatch.where('occurrences', "==", usersCount).get()
       .then((querySnapshot) => {
@@ -62,7 +71,7 @@ class ListSummary extends React.Component {
             <p>Items with {usersCount} votes</p>
           </div>
         );
-
+        console.log(thisItemTier);
         querySnapshot.docs.map( (plantowatchDoc)=> {
             thisItemTier.push(
               // <img src={doc.data().image}/>
@@ -90,7 +99,7 @@ class ListSummary extends React.Component {
             this.setState({
               tempTier: thisItemTier
             });
-            //console.log("temp tier -> " + this.state.tempTier);
+            console.log("temp tier -> " + this.state.tempTier);
         });
 
     }).then(() => {
@@ -103,6 +112,12 @@ class ListSummary extends React.Component {
     }).catch((error) => {});
     
   }
+
+  showLoadingGIF() {
+    return (
+      <img src={loading}/>
+    );
+  }
   
   // <div class="poster-image">
   //   <img src={doc.data().image}>
@@ -113,14 +128,24 @@ class ListSummary extends React.Component {
   // </div>
 
   render() {
-    return (
-      <div style={{backgroundColor: "#D53878"}}>
-        <h3>List Summary below</h3>
+    console.log(this.state.listSummaryItems);
+    if (this.state.listSummaryItems == null) {
+      return (
         <div>
-          {this.state.listSummaryItems}
+          <button onClick={this.updateSummaryList}>Find titles everyone has in common!</button>
         </div>
-      </div>
-    );
+      );
+    } else {
+      return (
+        <div>
+          <h3>Titles you have in common!</h3>
+          <div>
+            {this.state.listSummaryItems}
+          </div>
+        </div>
+      );
+    }
+    
     
   }
 }
