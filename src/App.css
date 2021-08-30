@@ -78,8 +78,8 @@ img {
 }
 
 div.poster-image {
-  height: 350px;
-  width: 225px;
+  height: 300px;
+  width: 210px;
   display: inline-block;
   position: relative;
 }

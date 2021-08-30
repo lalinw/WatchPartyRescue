@@ -130,6 +130,12 @@ class App extends Component {
       sessionID: sessionID,
       hasSession: true
     })
+    var sessionRef = firebase.firestore().collection("session").doc(this.state.sessionID);
+    sessionRef.get().then((thisSession) => {
+      this.setState({
+        usersInSessionCount: thisSession.data().users_count
+      })
+    });
   }
 
   setUsernameMAL(event, name) {

@@ -7,7 +7,7 @@ class ListSummary extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      listSummaryItems: null,
+      listSummaryItems: [],
       tempTier: [],
       isLoading: false
     };
@@ -18,25 +18,7 @@ class ListSummary extends React.Component {
   
   componentDidMount() {
 
-    // this.setState({
-    //   sessionID: this.props.sessionID,
-    //   hasSession: this.props.hasSession
-    // })
-
-    var sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
-    var summaryMAL = sessionRef.collection("summary").doc("myanimelist");
-
-    //display all "plan to watch"
-    var MALplantowatch = summaryMAL.collection("plan_to_watch");
-    // - image_url        => image
-    // - mal_id           => document name
-    // - rating           => rating
-    // - title            => title
-    // - total_episodes   => episodes
-    // - url              => link
-
-    //update "update_time" field with timestamp when new data is added
-    //date_updated: firebase.firestore.FieldValue.serverTimestamp()
+    this.updateSummaryList();
   }
 
   updateSummaryList() {
@@ -63,7 +45,7 @@ class ListSummary extends React.Component {
     });
     
     console.log("users => " + usersCount);
-    await MALplantowatch.where('occurrences', "==", usersCount).get()
+    var tier = await MALplantowatch.where('occurrences', "==", usersCount).get()
       .then((querySnapshot) => {
         var thisItemTier = [];
         thisItemTier.push(
@@ -78,7 +60,7 @@ class ListSummary extends React.Component {
               <div class="poster-image">
                 <img src={plantowatchDoc.data().image}/>
                 <div class="overlay-dim">
-                    <h2><span>{plantowatchDoc.data().title}</span></h2>
+                    <h3><span>{plantowatchDoc.data().title}</span></h3>
                     <p><span class="field-name">Episodes:</span> 
                     <br/>{plantowatchDoc.data().episodes}</p>
                     <p><span class="field-name">Released:</span> 
@@ -102,15 +84,14 @@ class ListSummary extends React.Component {
             console.log("temp tier -> " + this.state.tempTier);
         });
 
-    }).then(() => {
-      this.setState({
-        listSummaryItems: this.state.listSummaryItems.concat(this.state.tempTier)
-      });
-      //console.log("listSummaryItems -> " + this.state.listSummaryItems);
-      console.log("thisTier finished running with no errors");
-  
     }).catch((error) => {});
     
+    this.setState({
+      listSummaryItems: this.state.listSummaryItems.concat(this.state.tempTier)
+    });
+    console.log("listSummaryItems -> " + this.state.listSummaryItems);
+    console.log("temp tier -> " + this.state.tempTier);
+    console.log("thisTier finished running with no errors");
   }
 
   showLoadingGIF() {
@@ -129,7 +110,7 @@ class ListSummary extends React.Component {
 
   render() {
     console.log(this.state.listSummaryItems);
-    if (this.state.listSummaryItems == null) {
+    if (this.state.listSummaryItems.length == 0) {
       return (
         <div>
           <button onClick={this.updateSummaryList}>Find titles everyone has in common!</button>
