@@ -1,6 +1,5 @@
 import React from 'react';
 import firebase from '../firebase';
-import UserList from "./UserList";
 
 class SignIn extends React.Component {
   constructor(props) {
@@ -15,8 +14,6 @@ class SignIn extends React.Component {
     //micro-components
     this.hasUserTrue = this.hasUserTrue.bind(this);
     this.hasUserFalse = this.hasUserFalse.bind(this);
-    // this.hasSessionTrue = this.hasSessionTrue.bind(this);
-    // this.hasSessionFalse = this.hasSessionFalse.bind(this);
     this.hasUsernameMAL = this.hasUsernameMAL.bind(this);
   }
   
@@ -38,7 +35,7 @@ class SignIn extends React.Component {
 
 
   handleNameSubmit(event) {
-    if (this.state.tempUser == "") {
+    if (this.state.tempUser === "") {
       window.alert("Your display name cannot be empty!");
     } else {
       this.props.setUser(this.state.tempUser);
@@ -50,28 +47,6 @@ class SignIn extends React.Component {
 
   }
 
-
-  // hasSessionTrue() {
-  //   return (
-  //     <div>
-  //       <button onClick={this.props.resetSession}>Leave Session</button>
-  //       <span> </span> Session: {this.props.sessionID} <span> </span>
-  //       <button onClick={() => {
-  //         navigator.clipboard.writeText("http://localhost:3000/" + "?session=" + this.props.sessionID)}}>
-  //         Copy Session Link!
-  //       </button> 
-  //     </div>
-  //   );
-  // }
-
-
-  // hasSessionFalse() {
-  //   return (
-  //     <div>
-  //       <button onClick={this.props.createSession}>♥ Start a new session ♥</button>
-  //     </div>
-  //   );
-  // }
 
 
   hasUserTrue() {
@@ -90,7 +65,7 @@ class SignIn extends React.Component {
     usersRef.onSnapshot((userDocs) => {
       var localUsers = [];
       localUsers.push(
-        <option selected value="">select user</option>
+        <option value="DEFAULT">select user</option>
       );
       userDocs.forEach((theUser) => {
         localUsers.push(
@@ -107,7 +82,7 @@ class SignIn extends React.Component {
         <h2>Sign in:</h2>
         <form>
           <label>Log in as: </label>
-          <select value={this.props.user} onChange={this.handleNameChange}>
+          <select defaultValue={"DEFAULT"} onChange={this.handleNameChange}>
             {this.state.existingUsers}
           </select>
         </form>
@@ -123,7 +98,7 @@ class SignIn extends React.Component {
           <br/>
           <p><button 
             onClick={this.handleNameSubmit} 
-            disabled={this.state.tempUser == ""}
+            disabled={this.state.tempUser === ""}
             >Continue</button></p>
         </form>
       </div>
@@ -147,16 +122,9 @@ class SignIn extends React.Component {
   render() {
     return (
       <React.Fragment>
-
-        {/* <div class="session">
-          {this.props.sessionID != null ? 
-            <this.hasSessionTrue/> :
-            <this.hasSessionFalse/> }
-        </div> */}
-
-        {this.props.sessionID != null ? 
+        {this.props.sessionID !== null ? 
           <div class="sign-in">
-            {this.props.user != null ? 
+            {this.props.user !== null ? 
               <this.hasUserTrue/> : 
               <this.hasUserFalse/>}</div> :
           <React.Fragment/> }

@@ -50,7 +50,7 @@ class ListSummary extends React.Component {
         querySnapshot.docs.map( (plantowatchDoc)=> {
             thisItemTier.push(
               <div class="poster-image">
-                <img src={plantowatchDoc.data().image}/>
+                <img src={plantowatchDoc.data().image} alt={plantowatchDoc.data().title}/>
                 <div class="overlay-dim">
                     <h3><span>{plantowatchDoc.data().title}</span></h3>
                     <p><span class="field-name">Episodes:</span> 
@@ -66,6 +66,7 @@ class ListSummary extends React.Component {
               tempTier: thisItemTier
             });
             console.log("temp tier -> " + this.state.tempTier);
+            return null;
         });
     }).catch((error) => {});
     
@@ -81,7 +82,7 @@ class ListSummary extends React.Component {
 
   render() {
     console.log(this.state.listSummaryItems);
-    if (this.state.listSummaryItems.length == 0) {
+    if (this.state.listSummaryItems.length === 0) {
       return (
         <div>
           <button onClick={this.updateSummaryList}>Find titles everyone has in common!</button>

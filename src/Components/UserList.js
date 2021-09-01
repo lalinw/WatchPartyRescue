@@ -21,13 +21,12 @@ class UserList extends React.Component {
       var localUsers = [];
       console.log("userDocs = " + userDocs.size);
       userDocs.forEach((theUser) => {
-        localUsers = localUsers.concat(theUser.id);
-        console.log("userdocs = " + theUser);
+        localUsers.push(theUser.id);
+        console.log("user docs = " + theUser.id);
       });
       this.setState({
         userList: localUsers
       });
-      console.log("userlist state = " + this.state.userList);
     });
   }
 
@@ -80,11 +79,11 @@ class UserList extends React.Component {
 
  
   render() {
-    if (this.props.showUserList && this.state.sessionID != null) {
+    if (this.props.sessionID != null) {
       var displayUsers = [];
       for (var i = 0; i < this.state.userList.length; i++) {
         var username = this.state.userList[i];
-        if (username == this.props.user) {
+        if (username === this.props.user) {
           displayUsers.push(
             <li>
               {username}
@@ -100,7 +99,7 @@ class UserList extends React.Component {
       }
       return (
         <div class="user-list">
-          {this.state.userList.length == 0 ? 
+          {this.state.userList.length === 0 ? 
           <p><i>There are no users in this session yet</i></p> :
           <React.Fragment>
             <p>Users in this session:</p>
@@ -109,10 +108,13 @@ class UserList extends React.Component {
             </ul>
           </React.Fragment>}
         </div>
-      )
+      );
+    } else {
+      return null;
     }
-    return null; 
-  }
+    
+  } 
+
 }
 
 export default UserList;

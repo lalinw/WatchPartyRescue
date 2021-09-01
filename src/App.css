@@ -118,14 +118,38 @@ input[type=text].session {
   margin: 10px 0;
 }
 
-div.session {
+div.session-banner {
   text-align: center;
+  width: 100%;
+  height: auto;
+  top: 0;
+  background-color: #afb7ff;
+  display: inline-block;
+}
+
+div#session-banner-content {
+  position: relative;
+  padding: 1em;
+  top: 25%;
+  bottom: 25%;
+}
+
+button#session-leave {
+  float: left;
+}
+button#session-share {
+  float: right;
 }
 
 /* ============================================ Sign In == */
 
 div.sign-in {
   text-align: center;
+}
+/* ============================================ User List == */
+
+div.user-list {
+  border: solid 2px;
 }
 
 /* ============================================ List Summary == */
@@ -167,6 +191,7 @@ div.item-tier{
 span.field-name {
   color: grey;
   font-weight: bold;
+  font: small-caps;
 }
 
 

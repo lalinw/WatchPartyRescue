@@ -10,9 +10,6 @@ import Session from "./Components/Session";
 //keys
 import firebase from './firebase';
 
-//assets
-import loading from './loading_doggo.gif';
-
 //import logo from './logo.svg';
 
 class App extends Component {
@@ -192,8 +189,7 @@ class App extends Component {
     })
   }
 
-  showUserList() {}
-  
+
   setSessionName() {}
 
 
@@ -224,7 +220,7 @@ class App extends Component {
           <this.topBanner/>
         </div>
 
-        <div class="app-content">
+        
 
           <Session
             sessionID = {this.state.sessionID}
@@ -251,7 +247,8 @@ class App extends Component {
             loadingGIF = {this.loadingGIF}
           />
 
-
+        <div class="app-content">
+          
           {this.state.hasSession ? 
           <UserList
             user = {this.state.user}
@@ -260,23 +257,24 @@ class App extends Component {
           
 
           {this.state.hasSession && this.state.hasUser ? 
-            <FetchList
-            user = {this.state.user}
-            hasUser = {this.state.hasUser}
-            usernameMAL = {this.state.usernameMAL}
-            sessionID = {this.state.sessionID}
-            hasSession = {this.state.hasSession}
-            //methods
-            setUsernameMAL = {this.setUsernameMAL}
-          /> : <React.Fragment/>}
-            
-          
-          {this.state.hasSession && this.state.hasUser ? 
-            <ListSummary
-            sessionID = {this.state.sessionID}
-            hasSession = {this.state.hasSession}
-            usersInSessionCount = {this.state.usersInSessionCount}
-          /> : <React.Fragment/>}
+            <React.Fragment>
+              <FetchList
+                user = {this.state.user}
+                hasUser = {this.state.hasUser}
+                usernameMAL = {this.state.usernameMAL}
+                sessionID = {this.state.sessionID}
+                hasSession = {this.state.hasSession}
+                //methods
+                setUsernameMAL = {this.setUsernameMAL}
+              /> 
+              <ListSummary
+                sessionID = {this.state.sessionID}
+                hasSession = {this.state.hasSession}
+                usersInSessionCount = {this.state.usersInSessionCount}
+              />
+            </React.Fragment>
+            : <React.Fragment/>}
+
 
         </div>
       

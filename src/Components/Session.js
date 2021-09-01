@@ -12,11 +12,8 @@ class Session extends React.Component {
     this.handleSessionNameSubmit = this.handleSessionNameSubmit.bind(this);
 
     //micro-components
-    // this.hasUserTrue = this.hasUserTrue.bind(this);
-    // this.hasUserFalse = this.hasUserFalse.bind(this);
     this.hasSessionTrue = this.hasSessionTrue.bind(this);
     this.hasSessionFalse = this.hasSessionFalse.bind(this);
-    // this.hasUsernameMAL = this.hasUsernameMAL.bind(this);
   }
   
 
@@ -35,7 +32,7 @@ class Session extends React.Component {
 
 
   handleSessionNameSubmit(event) {
-    if (this.state.tempUser == "") {
+    if (this.state.tempUser === "") {
       window.alert("Your display name cannot be empty!");
     } else {
       // this.props.setUser(this.state.tempUser);
@@ -49,13 +46,15 @@ class Session extends React.Component {
 
   hasSessionTrue() {
     return (
-      <div>
-        <button onClick={this.props.resetSession}>Leave Session</button>
-        <span> </span> Session: {this.props.sessionID} <span> </span>
-        <button onClick={() => {
-          navigator.clipboard.writeText("http://localhost:3000/" + "?session=" + this.props.sessionID)}}>
-          Copy Session Link!
-        </button> 
+      <div class="session-banner">
+        <div id="session-banner-content">
+          <button id="session-leave" onClick={this.props.resetSession}>Leave Session</button>
+          <span> </span> Session: {this.props.sessionID} <span> </span>
+          <button id="session-share" onClick={() => {
+            navigator.clipboard.writeText("http://localhost:3000/" + "?session=" + this.props.sessionID)}}>
+            Copy Session Link!
+          </button> 
+        </div>
       </div>
     );
   }

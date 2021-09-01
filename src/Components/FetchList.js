@@ -1,4 +1,3 @@
-import { getByTitle } from '@testing-library/react';
 import React from 'react';
 import firebase from '../firebase';
 import ListSummary from './ListSummary';
@@ -90,13 +89,13 @@ class FetchList extends React.Component {
   async preFetch() {
     console.log("preFetch() is called");
     var sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
-    var usersRef = sessionRef.collection("users");
+    //var usersRef = sessionRef.collection("users");
     var summaryMAL = sessionRef.collection("summary").doc("myanimelist");
 
     await summaryMAL.collection("plan_to_watch").where("common_users", "array-contains", this.props.user).get()
       .then((querySnapshot) => {
         querySnapshot.docs.map( (thisDoc) => {
-          summaryMAL.collection("plan_to_watch").doc(thisDoc.id).update({
+          return summaryMAL.collection("plan_to_watch").doc(thisDoc.id).update({
             common_users: firebase.firestore.FieldValue.arrayRemove(this.props.user),
             occurrences: firebase.firestore.FieldValue.increment(-1)
           });
@@ -105,14 +104,6 @@ class FetchList extends React.Component {
         console.log("summary list has been decremented with user");
       }).catch((error) => {});
     
-    // summaryMAL.collection("plan_to_watch").where("occurrences", "<", 1)
-    //   .onSnapshot((querySnapshot) => {
-    //     querySnapshot.forEach( (thisDoc) => {
-    //       summaryMAL.collection("plan_to_watch").doc(thisDoc.id).delete();
-    //     });
-    //   });
-    
-
   }
 
   fetchHelper(endpointMAL, page, paginationThreshold, thisUserDoc, summaryMAL) {
@@ -126,7 +117,7 @@ class FetchList extends React.Component {
       .then((data) => {
         console.log("inside fetch statement");
 
-        if (data.anime != undefined) {
+        if (data.anime !== undefined) {
           for (var i = 0; i < data.anime.length; i++) {
             // console.log(data.anime[i]);
             var thisAnime = data.anime[i];
@@ -151,7 +142,7 @@ class FetchList extends React.Component {
           }
           
           //check for more items after 1st page
-          if (data.anime.length == paginationThreshold) {
+          if (data.anime.length === paginationThreshold) {
             this.fetchHelper(endpointMAL, page++, paginationThreshold, thisUserDoc, summaryMAL);
           }
         }
