@@ -1,10 +1,17 @@
 import './App.css';
 import React, { Component } from "react";
+//Components
 import FetchList from "./Components/FetchList";
 import ListSummary from "./Components/ListSummary";
 import SignIn from "./Components/SignIn";
 import UserList from "./Components/UserList";
+import Session from "./Components/Session";
+
+//keys
 import firebase from './firebase';
+
+//assets
+import loading from './loading_doggo.gif';
 
 //import logo from './logo.svg';
 
@@ -18,10 +25,12 @@ class App extends Component {
       sessionID: null,
       hasSession: false,
       usersInSessionCount: 0,
-      sessionName: null
+      sessionName: null,
+      isLoading: true
     };
     //mini components
     this.topBanner = this.topBanner.bind(this);
+    
 
     //session methods
     this.resetSession = this.resetSession.bind(this);
@@ -33,6 +42,9 @@ class App extends Component {
     //MAL user methods
     this.setUsernameMAL = this.setUsernameMAL.bind(this);
     this.resetUsernameMAL = this.resetUsernameMAL.bind(this);
+
+    this.loadingGIF = this.loadingGIF.bind(this);
+    
   }
 
   componentDidMount() {
@@ -61,10 +73,16 @@ class App extends Component {
       });
       console.log("users count = " + this.state.usersInSessionCount);
     }
+
+    this.loadingGIF(false);
   }
 
+  componentDidUpdate() {
+    this.loadingGIF(false);
+  }
 
   resetUser() {
+    this.loadingGIF(true);
     this.setState({
       user: null,
       hasUser: false,
@@ -74,6 +92,7 @@ class App extends Component {
 
 
   setUser(name) {
+    this.loadingGIF(true);
     var sessionRef = firebase.firestore().collection("session").doc(this.state.sessionID);
     var usersRef = sessionRef.collection("users");
 
@@ -104,6 +123,7 @@ class App extends Component {
 
 
   resetSession() {
+    this.loadingGIF(true);
     //log out of session && sign out of current user
     this.setState({
       sessionID: null,
@@ -118,6 +138,7 @@ class App extends Component {
 
 
   createSession() {
+    this.loadingGIF(true);
     firebase.firestore().collection("session").add({
       session_name: "Session/Event Name",
       date_created: firebase.firestore.FieldValue.serverTimestamp(),
@@ -130,6 +151,7 @@ class App extends Component {
 
 
   setSession(sessionID) {
+    this.loadingGIF(true);
     this.setState({
       sessionID: sessionID,
       hasSession: true
@@ -144,7 +166,9 @@ class App extends Component {
 
   
   setUsernameMAL(event, name) {
+    this.loadingGIF(true);
     event.preventDefault();
+    this.loadingGIF(true);
     
     var sessionRef = firebase.firestore().collection("session").doc(this.state.sessionID);
     var usersRef = sessionRef.collection("users");
@@ -178,15 +202,34 @@ class App extends Component {
     );
   }
   
+  loadingGIF(isLoading) {
+    if (isLoading) {
+      document.getElementById("popup-loading").style.display = "block";
+      document.getElementById("popup-content").style.display = "block";
+    } else {
+      document.getElementById("popup-content").style.display = "none";
+      document.getElementById("popup-loading").style.display = "none";
+    }
+  }
 
   render() {
     return (
       <div>
+
         <div class="banner">
           <this.topBanner/>
         </div>
 
         <div class="app-content">
+
+          <Session
+            sessionID = {this.state.sessionID}
+            hasSession = {this.state.hasSession}
+            resetSession = {this.resetSession}
+            createSession = {this.createSession}
+          />
+
+
           <SignIn
             user = {this.state.user}
             hasUser = {this.state.hasUser}
@@ -200,12 +243,18 @@ class App extends Component {
             setUser = {this.setUser}
             setUsernameMAL = {this.setUsernameMAL}
             resetUsernameMAL = {this.resetUsernameMAL}
+
+            loadingGIF = {this.loadingGIF}
           />
-          {this.state.hasSession ? 
+
+
+          {/* {this.state.hasSession ? 
           <UserList
             user = {this.state.user}
             sessionID = {this.state.sessionID}
-          /> : <React.Fragment/>}
+          /> : <React.Fragment/>} */}
+          
+
           {this.state.hasSession && this.state.hasUser ? 
             <FetchList
             user = {this.state.user}
@@ -217,6 +266,7 @@ class App extends Component {
             setUsernameMAL = {this.setUsernameMAL}
           /> : <React.Fragment/>}
             
+          
           {this.state.hasSession && this.state.hasUser ? 
             <ListSummary
             sessionID = {this.state.sessionID}
@@ -225,6 +275,8 @@ class App extends Component {
           /> : <React.Fragment/>}
 
         </div>
+      
+        
       </div>
     );
   }

@@ -209,7 +209,6 @@ class FetchList extends React.Component {
         <h3>Fetch your list</h3>
         <this.hasUsernameMAL/>
         { this.state.showFormUsernameMAL ? <this.formUsernameMAL/> : <React.Fragment/> }
-        <p><i>(only <b>MyAnimeList: Plan to Watch</b> list is currently supported)</i></p>
 
       </div>
     );

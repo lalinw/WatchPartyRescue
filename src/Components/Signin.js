@@ -15,8 +15,8 @@ class SignIn extends React.Component {
     //micro-components
     this.hasUserTrue = this.hasUserTrue.bind(this);
     this.hasUserFalse = this.hasUserFalse.bind(this);
-    this.hasSessionTrue = this.hasSessionTrue.bind(this);
-    this.hasSessionFalse = this.hasSessionFalse.bind(this);
+    // this.hasSessionTrue = this.hasSessionTrue.bind(this);
+    // this.hasSessionFalse = this.hasSessionFalse.bind(this);
     this.hasUsernameMAL = this.hasUsernameMAL.bind(this);
   }
   
@@ -24,7 +24,9 @@ class SignIn extends React.Component {
   componentDidMount() {
     //var sessionRef = firebase.firestore().collection("session").doc(this.state.sessionID);
     //var summaryMAL = sessionRef.collection("summary").doc("myanimelist");
+
   }
+
   
 
   handleNameChange(event) {
@@ -45,30 +47,31 @@ class SignIn extends React.Component {
     this.setState({ 
       tempUser: "" 
     });
+
   }
 
 
-  hasSessionTrue() {
-    return (
-      <div>
-        <button onClick={this.props.resetSession}>Leave Session</button>
-        <span> </span> Session: {this.props.sessionID} <span> </span>
-        <button onClick={() => {
-          navigator.clipboard.writeText("http://localhost:3000/" + "?session=" + this.props.sessionID)}}>
-          Copy Session Link!
-        </button> 
-      </div>
-    );
-  }
+  // hasSessionTrue() {
+  //   return (
+  //     <div>
+  //       <button onClick={this.props.resetSession}>Leave Session</button>
+  //       <span> </span> Session: {this.props.sessionID} <span> </span>
+  //       <button onClick={() => {
+  //         navigator.clipboard.writeText("http://localhost:3000/" + "?session=" + this.props.sessionID)}}>
+  //         Copy Session Link!
+  //       </button> 
+  //     </div>
+  //   );
+  // }
 
 
-  hasSessionFalse() {
-    return (
-      <div>
-        <button onClick={this.props.createSession}>♥ Start a new session ♥</button>
-      </div>
-    );
-  }
+  // hasSessionFalse() {
+  //   return (
+  //     <div>
+  //       <button onClick={this.props.createSession}>♥ Start a new session ♥</button>
+  //     </div>
+  //   );
+  // }
 
 
   hasUserTrue() {
@@ -145,11 +148,11 @@ class SignIn extends React.Component {
     return (
       <React.Fragment>
 
-        <div class="session">
+        {/* <div class="session">
           {this.props.sessionID != null ? 
             <this.hasSessionTrue/> :
             <this.hasSessionFalse/> }
-        </div>
+        </div> */}
 
         {this.props.sessionID != null ? 
           <div class="sign-in">
