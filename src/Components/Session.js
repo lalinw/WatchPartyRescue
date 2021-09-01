@@ -6,7 +6,7 @@ class Session extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      tempSessionName: ""
+      sessionName: ""
     };
     this.handleSessionNameChange = this.handleSessionNameChange.bind(this);
     this.handleSessionNameSubmit = this.handleSessionNameSubmit.bind(this);
@@ -32,26 +32,28 @@ class Session extends React.Component {
 
 
   handleSessionNameSubmit(event) {
-    if (this.state.tempUser === "") {
+    if (this.state.sessionName === "") {
       window.alert("Your display name cannot be empty!");
     } else {
       // this.props.setUser(this.state.tempUser);
     }
     event.preventDefault();
     this.setState({ 
-      tempSessionName: "" 
+      sessionName: "" 
     });
   }
 
 
+
   hasSessionTrue() {
+    //retrieve session name from firestore
     return (
       <div class="session-banner">
         <div id="session-banner-content">
           <button id="session-leave" onClick={this.props.resetSession}>Leave Session</button>
           <span> </span> Session: {this.props.sessionID} <span> </span>
           <button id="session-share" onClick={() => {
-            navigator.clipboard.writeText("http://localhost:3000/" + "?session=" + this.props.sessionID)}}>
+            navigator.clipboard.writeText(window.location.href.split("?")[0] + "?session=" + this.props.sessionID)}}>
             Copy Session Link!
           </button> 
         </div>

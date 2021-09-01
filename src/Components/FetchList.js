@@ -1,18 +1,13 @@
 import React from 'react';
 import firebase from '../firebase';
-import ListSummary from './ListSummary';
+// import ListSummary from './ListSummary';
 
 class FetchList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      // user: "",
-      // hasUser: false,
       tempUsernameMAL: null,
       showFormUsernameMAL: false
-
-      // sessionID: "",
-      // hasSession: false,
     };
     this.getListEndPointMAL = this.getListEndPointMAL.bind(this);
     this.onFetchSubmit = this.onFetchSubmit.bind(this);
@@ -22,34 +17,11 @@ class FetchList extends React.Component {
     this.formUsernameMAL = this.formUsernameMAL.bind(this);
     this.showFormUsernameMAL = this.showFormUsernameMAL.bind(this);
     this.preFetch = this.preFetch.bind(this);
-    
-    
   }
   
   componentDidMount() {
-
-    console.log("componentDidMount ran");
-    // this.setState({
-    //   user: this.props.user,
-    //   hasUser: this.props.hasUser,
-    //   sessionID: this.props.sessionID,
-    //   hasSession: this.props.hasSession
-    // })
-    //save data to firestore  @usersRef.doc("user1").collection("myanimelist")
-    // data.anime array
-    // field names from data.anime
-    // - mal_id   => document name
-
-    //save data to firestore  @summaryMAL.collection("plan_to_watch")
-    // data.anime array
-    //fields from JSON
-    // - mal_id   => document name
-    // && add to "common_users" and "occurrences"
-
-    
-    //save data to firestore
   }
-  
+
   handleTextChange(event) {
     event.preventDefault();
     this.setState({ 
@@ -63,34 +35,31 @@ class FetchList extends React.Component {
       event.preventDefault();
     } else {
       event.preventDefault();
+      this.props.loadingGIF(true);
 
       console.log("MAL usernam = " + this.props.usernameMAL);
-      var sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
-      var usersRef = sessionRef.collection("users");
-      var summaryMAL = sessionRef.collection("summary").doc("myanimelist");
+      const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
+      const usersRef = sessionRef.collection("users");
+      const summaryMAL = sessionRef.collection("summary").doc("myanimelist");
 
       //take username as input
-      //MAKE API call to Jikan
-
       console.log("fetching from MAL...");
       // Jikan API endpoint: https://api.jikan.moe/v3/
       //fetch user's watch list 
       var endpointMAL = this.getListEndPointMAL(this.props.usernameMAL, "plantowatch");
       console.log(endpointMAL);
 
-      var prefetch = await this.preFetch();
-      var paginationThreshold = 300;
+      await this.preFetch();
+      const paginationThreshold = 300;
       this.fetchHelper(endpointMAL, 1, paginationThreshold, usersRef.doc(this.props.user), summaryMAL);
-            
     }
 
   }
 
   async preFetch() {
     console.log("preFetch() is called");
-    var sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
-    //var usersRef = sessionRef.collection("users");
-    var summaryMAL = sessionRef.collection("summary").doc("myanimelist");
+    const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
+    const summaryMAL = sessionRef.collection("summary").doc("myanimelist");
 
     await summaryMAL.collection("plan_to_watch").where("common_users", "array-contains", this.props.user).get()
       .then((querySnapshot) => {
@@ -101,22 +70,15 @@ class FetchList extends React.Component {
           });
         })
       }).then(() => {
-        console.log("summary list has been decremented with user");
+        console.log("summary list of user is reset");
       }).catch((error) => {});
-    
   }
 
   fetchHelper(endpointMAL, page, paginationThreshold, thisUserDoc, summaryMAL) {
-
-    //clear this user's occurrences in summaryMAL
-    // summaryMAL.collection("plan_to_watch")
-    
-
+    console.log("making API call...");
     fetch(endpointMAL + page)
       .then(res => res.json())
       .then((data) => {
-        console.log("inside fetch statement");
-
         if (data.anime !== undefined) {
           for (var i = 0; i < data.anime.length; i++) {
             // console.log(data.anime[i]);
@@ -146,7 +108,15 @@ class FetchList extends React.Component {
             this.fetchHelper(endpointMAL, page++, paginationThreshold, thisUserDoc, summaryMAL);
           }
         }
+      })
+      .then(() => {
+        console.log("API call successful.");
+        this.props.loadingGIF(false);
+      })
+      .catch((error) => {
+        console.log("API Unavailable: " + error);
       });
+    
   }
 
   getListEndPointMAL(usernameMAL, listTypeMAL) {

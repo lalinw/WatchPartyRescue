@@ -18,7 +18,12 @@ class ListSummary extends React.Component {
     //this.updateSummaryList();
   }
 
+  componentDidUpdate() {
+    this.props.loadingGIF(false);
+  }
+
   updateSummaryList() {
+    this.props.loadingGIF(true);
     console.log("ListSummary below:");
     //list all items with 2+ common users
     for (var i = this.props.usersInSessionCount; i > 1; i--) {
@@ -28,9 +33,9 @@ class ListSummary extends React.Component {
 
   async constructItemTier(usersCount) {
     console.log("item tier called");
-    var sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
-    var summaryMAL = sessionRef.collection("summary").doc("myanimelist");
-    var MALplantowatch = summaryMAL.collection("plan_to_watch");
+    const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
+    const summaryMAL = sessionRef.collection("summary").doc("myanimelist");
+    const MALplantowatch = summaryMAL.collection("plan_to_watch");
     
     //clear tempTier state
     this.setState({
@@ -38,7 +43,7 @@ class ListSummary extends React.Component {
     });
     
     console.log("users => " + usersCount);
-    var tier = await MALplantowatch.where('occurrences', "==", usersCount).get()
+    await MALplantowatch.where('occurrences', "==", usersCount).get()
       .then((querySnapshot) => {
         var thisItemTier = [];
         thisItemTier.push(
@@ -73,8 +78,6 @@ class ListSummary extends React.Component {
     this.setState({
       listSummaryItems: this.state.listSummaryItems.concat(this.state.tempTier)
     });
-    //console.log("listSummaryItems -> " + this.state.listSummaryItems);
-    //console.log("temp tier -> " + this.state.tempTier);
     console.log("thisTier finished running with no errors");
   }
 
@@ -91,7 +94,8 @@ class ListSummary extends React.Component {
     } else {
       return (
         <div>
-          <h3>Titles you have in common!</h3>
+          <h3>Titles you have in common! <button onClick={this.updateSummaryList}>Reload</button></h3> 
+          
           <div>
             {this.state.listSummaryItems}
           </div>

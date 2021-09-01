@@ -19,12 +19,8 @@ class SignIn extends React.Component {
   
 
   componentDidMount() {
-    //var sessionRef = firebase.firestore().collection("session").doc(this.state.sessionID);
-    //var summaryMAL = sessionRef.collection("summary").doc("myanimelist");
-
   }
 
-  
 
   handleNameChange(event) {
     event.preventDefault();
@@ -44,9 +40,7 @@ class SignIn extends React.Component {
     this.setState({ 
       tempUser: "" 
     });
-
   }
-
 
 
   hasUserTrue() {
@@ -59,8 +53,8 @@ class SignIn extends React.Component {
 
 
   hasUserFalse() {
-    var sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
-    var usersRef = sessionRef.collection("users");
+    const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
+    const usersRef = sessionRef.collection("users");
 
     usersRef.onSnapshot((userDocs) => {
       var localUsers = [];

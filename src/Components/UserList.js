@@ -13,8 +13,8 @@ class UserList extends React.Component {
   }
   
   componentDidMount() {
-    var sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
-    var usersRef = sessionRef.collection("users");
+    const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
+    const usersRef = sessionRef.collection("users");
 
     //populate userList state for user management 
     usersRef.onSnapshot((userDocs) => {
@@ -32,11 +32,11 @@ class UserList extends React.Component {
 
 
   deleteUser(event) {
-    var user = event.target.id;
+    const user = event.target.id;
     if (window.confirm("You are about to delete user " + user + " AND all their votes.\nProceed?")) {
-      var sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
-      var summaryMAL = sessionRef.collection("summary").doc("myanimelist");
-      var usersRef = sessionRef.collection("users");
+      const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
+      const summaryMAL = sessionRef.collection("summary").doc("myanimelist");
+      const usersRef = sessionRef.collection("users");
 
       console.log("Deleting user", user);
 

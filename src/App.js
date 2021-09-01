@@ -17,12 +17,10 @@ class App extends Component {
     super();
     this.state = {
       user: null,
-      hasUser: false,
       usernameMAL: null,
       sessionID: null,
       hasSession: false,
       usersInSessionCount: 0,
-      sessionName: null,
       isLoading: true
     };
     //mini components
@@ -53,7 +51,7 @@ class App extends Component {
     const urlParam = new URLSearchParams(window.location.search);
     const sessionID = urlParam.get('session');
 
-    console.log("URL parameter = " + urlParam);
+    console.log("Session ID = " + sessionID);
     // console.log(sessionID);
 
     if (sessionID != null) {
@@ -82,7 +80,6 @@ class App extends Component {
     this.loadingGIF(true);
     this.setState({
       user: null,
-      hasUser: false,
       usernameMAL: null,
     })
   }
@@ -90,8 +87,8 @@ class App extends Component {
 
   setUser(name) {
     this.loadingGIF(true);
-    var sessionRef = firebase.firestore().collection("session").doc(this.state.sessionID);
-    var usersRef = sessionRef.collection("users");
+    const sessionRef = firebase.firestore().collection("session").doc(this.state.sessionID);
+    const usersRef = sessionRef.collection("users");
 
     usersRef.doc(name).get().then((thisDoc) => {
       if (!thisDoc.exists) {
@@ -104,14 +101,12 @@ class App extends Component {
         });
       }
       this.setState({
-        user: name,
-        hasUser: true
+        user: name
       })
     }).then(() => {
       usersRef.doc(this.state.user).get().then((thisDoc) => {
         this.setState({
           user: name,
-          hasUser: true,
           usernameMAL: thisDoc.data().myanimelist_username
         })
       })
@@ -126,7 +121,6 @@ class App extends Component {
       sessionID: null,
       hasSession: false,
       user: null,
-      hasUser: false,
       usernameMAL: null
     })
     //remove sessionID from address bar
@@ -153,7 +147,7 @@ class App extends Component {
       sessionID: sessionID,
       hasSession: true
     })
-    var sessionRef = firebase.firestore().collection("session").doc(this.state.sessionID);
+    const sessionRef = firebase.firestore().collection("session").doc(this.state.sessionID);
     sessionRef.get().then((thisSession) => {
       this.setState({
         usersInSessionCount: thisSession.data().users_count
@@ -167,8 +161,8 @@ class App extends Component {
     event.preventDefault();
     this.loadingGIF(true);
     
-    var sessionRef = firebase.firestore().collection("session").doc(this.state.sessionID);
-    var usersRef = sessionRef.collection("users");
+    const sessionRef = firebase.firestore().collection("session").doc(this.state.sessionID);
+    const usersRef = sessionRef.collection("users");
 
     usersRef.doc(this.state.user).get().then((doc) => {
       // doc of user already exists if the user is trying to set their MAL username
@@ -188,9 +182,6 @@ class App extends Component {
       usernameMAL: null,
     })
   }
-
-
-  setSessionName() {}
 
 
   topBanner() {
@@ -232,7 +223,6 @@ class App extends Component {
 
           <SignIn
             user = {this.state.user}
-            hasUser = {this.state.hasUser}
             sessionID = {this.state.sessionID}
             hasSession = {this.state.hasSession}
             usersInSessionCount = {this.state.usersInSessionCount}
@@ -248,7 +238,7 @@ class App extends Component {
           />
 
         <div class="app-content">
-          
+
           {this.state.hasSession ? 
           <UserList
             user = {this.state.user}
@@ -256,21 +246,22 @@ class App extends Component {
           /> : <React.Fragment/>}
           
 
-          {this.state.hasSession && this.state.hasUser ? 
+          {this.state.hasSession && this.state.user !== null ? 
             <React.Fragment>
               <FetchList
                 user = {this.state.user}
-                hasUser = {this.state.hasUser}
                 usernameMAL = {this.state.usernameMAL}
                 sessionID = {this.state.sessionID}
                 hasSession = {this.state.hasSession}
                 //methods
                 setUsernameMAL = {this.setUsernameMAL}
+                loadingGIF = {this.loadingGIF}
               /> 
               <ListSummary
                 sessionID = {this.state.sessionID}
                 hasSession = {this.state.hasSession}
                 usersInSessionCount = {this.state.usersInSessionCount}
+                loadingGIF = {this.loadingGIF}
               />
             </React.Fragment>
             : <React.Fragment/>}
