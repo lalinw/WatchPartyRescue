@@ -169,7 +169,7 @@ class App extends Component {
       // doc of user already exists if the user is trying to set their MAL username
       console.log("setting user's MAL username..." + name);
       usersRef.doc(this.state.user).update({
-        myanimelist_username: name,
+        myanimelist_username: name
       });
     });
     this.setState({
@@ -219,6 +219,7 @@ class App extends Component {
             hasSession = {this.state.hasSession}
             resetSession = {this.resetSession}
             createSession = {this.createSession}
+            loadingGIF = {this.loadingGIF}
           />
 
         <div class="app-content"> 
@@ -240,7 +241,7 @@ class App extends Component {
 
         
 
-          {this.state.hasSession ? 
+          {/* {this.state.hasSession ? 
           <UserList
             user = {this.state.user}
             sessionID = {this.state.sessionID}
@@ -265,7 +266,7 @@ class App extends Component {
                 loadingGIF = {this.loadingGIF}
               />
             </React.Fragment>
-            : <React.Fragment/>}
+            : <React.Fragment/>} */}
 
 
         </div>

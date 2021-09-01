@@ -56,32 +56,27 @@ class Session extends React.Component {
 
   handleSessionNameUpdate(event) {
     event.preventDefault();
-    const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
     this.setState({ 
       editMode: false,
       sessionName: this.state.tempSessionName
     });
-    console.log("handle session name update");
-    sessionRef.update({
-      session_name: this.state.sessionName
+
+    this.props.loadingGIF(true);
+    firebase.firestore().collection("session").doc(this.props.sessionID).update({
+      session_name: this.state.tempSessionName
     }).then(() => {
+      this.props.loadingGIF(false);
       console.log("Session Name successfully updated!");
+
     }).catch((error) => {
       // The document probably doesn't exist.
       console.error("Error updating document: ", error);
     });
-    console.log("handle session name update END");
+    
   }
 
 
   hasSessionTrue() {
-    //retrieve session name from firestore
-    const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
-    sessionRef.get().then((doc) => {
-      this.setState({ 
-        sessionName: doc.data().session_name 
-      });
-    });
     return (
       <div class="session-banner">
         <div id="session-banner-content">
@@ -123,14 +118,12 @@ class Session extends React.Component {
         sessionName: doc.data().session_name
       });
     })
-
     return (
       <React.Fragment>
-        <p>{this.state.sessionName}<button onClick={this.toggleEditMode}>edit</button></p>
+        {this.state.sessionName}<button onClick={this.toggleEditMode}>edit</button>
       </React.Fragment>
     );
   }
-
 
 
   hasSessionFalse() {
