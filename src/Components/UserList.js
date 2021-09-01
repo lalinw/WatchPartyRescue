@@ -73,7 +73,10 @@ class UserList extends React.Component {
       });
       sessionRef.update({
         users_count: firebase.firestore.FieldValue.increment(-1)
+      }).then(() => {
+        this.props.recountUsers();
       });
+
     } 
   }
 

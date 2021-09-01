@@ -34,6 +34,7 @@ class App extends Component {
     //user methods
     this.resetUser = this.resetUser.bind(this);
     this.setUser = this.setUser.bind(this);
+    this.recountUsers = this.recountUsers.bind(this);
     //MAL user methods
     this.setUsernameMAL = this.setUsernameMAL.bind(this);
     this.resetUsernameMAL = this.resetUsernameMAL.bind(this);
@@ -82,6 +83,16 @@ class App extends Component {
       user: null,
       usernameMAL: null,
     })
+  }
+
+  
+  recountUsers() {
+    firebase.firestore().collection("session").doc(this.props.sessionID)
+    .get().then((thisSession) => {
+      this.setState({
+        usersInSessionCount: thisSession.data().users_count
+      })
+    });
   }
 
 
@@ -180,9 +191,10 @@ class App extends Component {
 
   resetUsernameMAL() {
     this.setState({
-      usernameMAL: null,
+      usernameMAL: null
     })
   }
+
 
 
   topBanner() {
@@ -212,8 +224,6 @@ class App extends Component {
           <this.topBanner/>
         </div>
 
-        
-
           <Session
             sessionID = {this.state.sessionID}
             hasSession = {this.state.hasSession}
@@ -241,7 +251,7 @@ class App extends Component {
 
         
 
-          {/* {this.state.hasSession ? 
+          {this.state.hasSession ? 
           <UserList
             user = {this.state.user}
             sessionID = {this.state.sessionID}
@@ -266,7 +276,7 @@ class App extends Component {
                 loadingGIF = {this.loadingGIF}
               />
             </React.Fragment>
-            : <React.Fragment/>} */}
+            : <React.Fragment/>}
 
 
         </div>
