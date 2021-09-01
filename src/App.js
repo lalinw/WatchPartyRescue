@@ -128,10 +128,11 @@ class App extends Component {
   }
 
 
-  createSession() {
+  createSession(sessionName) {
     this.loadingGIF(true);
+    
     firebase.firestore().collection("session").add({
-      session_name: "Session/Event Name",
+      session_name: sessionName,
       date_created: firebase.firestore.FieldValue.serverTimestamp(),
       users_count: 0
     }).then((doc) => {
@@ -220,7 +221,7 @@ class App extends Component {
             createSession = {this.createSession}
           />
 
-
+        <div class="app-content"> 
           <SignIn
             user = {this.state.user}
             sessionID = {this.state.sessionID}
@@ -237,7 +238,7 @@ class App extends Component {
             loadingGIF = {this.loadingGIF}
           />
 
-        <div class="app-content">
+        
 
           {this.state.hasSession ? 
           <UserList

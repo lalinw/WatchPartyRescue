@@ -84,7 +84,7 @@ class ListSummary extends React.Component {
 
 
   render() {
-    console.log(this.state.listSummaryItems);
+    console.log("list summary items = " + this.state.listSummaryItems);
     if (this.state.listSummaryItems.length === 0) {
       return (
         <div>

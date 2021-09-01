@@ -84,7 +84,7 @@ class SignIn extends React.Component {
         <form>
           <label>Enter your display name:</label>
           <br/>
-          <input 
+          <input class="signin"
             type="text" 
             placeholder="Display name"
             onChange={this.handleNameChange}

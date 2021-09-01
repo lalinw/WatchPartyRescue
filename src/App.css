@@ -146,6 +146,11 @@ button#session-share {
 div.sign-in {
   text-align: center;
 }
+
+input[type=text].signin {
+  text-align: center;
+}
+
 /* ============================================ User List == */
 
 div.user-list {

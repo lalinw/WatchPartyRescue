@@ -9,14 +9,17 @@ class FetchList extends React.Component {
       tempUsernameMAL: null,
       showFormUsernameMAL: false
     };
+    //fetch methods
     this.getListEndPointMAL = this.getListEndPointMAL.bind(this);
     this.onFetchSubmit = this.onFetchSubmit.bind(this);
     this.fetchHelper = this.fetchHelper.bind(this);
+    this.preFetch = this.preFetch.bind(this);
+    //MAL username methods
     this.handleTextChange = this.handleTextChange.bind(this);
     this.hasUsernameMAL = this.hasUsernameMAL.bind(this);
     this.formUsernameMAL = this.formUsernameMAL.bind(this);
     this.showFormUsernameMAL = this.showFormUsernameMAL.bind(this);
-    this.preFetch = this.preFetch.bind(this);
+    
   }
   
   componentDidMount() {
