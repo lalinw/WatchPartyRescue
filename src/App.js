@@ -192,6 +192,10 @@ class App extends Component {
     })
   }
 
+  showUserList() {}
+  
+  setSessionName() {}
+
 
   topBanner() {
     return(
@@ -248,11 +252,11 @@ class App extends Component {
           />
 
 
-          {/* {this.state.hasSession ? 
+          {this.state.hasSession ? 
           <UserList
             user = {this.state.user}
             sessionID = {this.state.sessionID}
-          /> : <React.Fragment/>} */}
+          /> : <React.Fragment/>}
           
 
           {this.state.hasSession && this.state.hasUser ? 

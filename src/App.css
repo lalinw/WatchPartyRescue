@@ -118,6 +118,10 @@ input[type=text].session {
   margin: 10px 0;
 }
 
+div.session {
+  text-align: center;
+}
+
 /* ============================================ Sign In == */
 
 div.sign-in {

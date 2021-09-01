@@ -1,7 +1,7 @@
 import '../App.css';
 import React from 'react';
 import firebase from '../firebase';
-import loading from './../loading_doggo.gif';
+
 
 class ListSummary extends React.Component {
   constructor(props) {
@@ -11,7 +11,6 @@ class ListSummary extends React.Component {
       tempTier: [],
     };
     this.constructItemTier = this.constructItemTier.bind(this);
-    this.showLoadingGIF = this.showLoadingGIF.bind(this);
     this.updateSummaryList = this.updateSummaryList.bind(this);
   }
   
@@ -78,11 +77,7 @@ class ListSummary extends React.Component {
     console.log("thisTier finished running with no errors");
   }
 
-  showLoadingGIF() {
-    return (
-      <img src={loading}/>
-    );
-  }
+
 
   render() {
     console.log(this.state.listSummaryItems);

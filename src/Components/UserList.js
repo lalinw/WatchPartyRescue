@@ -80,35 +80,38 @@ class UserList extends React.Component {
 
  
   render() {
-    var displayUsers = [];
-    for (var i = 0; i < this.state.userList.length; i++) {
-      var username = this.state.userList[i];
-      if (username == this.props.user) {
-        displayUsers.push(
-          <li>
-            {username}
-          </li>
-        )
-      } else {
-        displayUsers.push(
-          <li>
-            {username} <button id={username} onClick={this.deleteUser}>Remove</button>
-          </li>
-        );
+    if (this.props.showUserList && this.state.sessionID != null) {
+      var displayUsers = [];
+      for (var i = 0; i < this.state.userList.length; i++) {
+        var username = this.state.userList[i];
+        if (username == this.props.user) {
+          displayUsers.push(
+            <li>
+              {username}
+            </li>
+          )
+        } else {
+          displayUsers.push(
+            <li>
+              {username} <button id={username} onClick={this.deleteUser}>Remove</button>
+            </li>
+          );
+        }
       }
+      return (
+        <div class="user-list">
+          {this.state.userList.length == 0 ? 
+          <p><i>There are no users in this session yet</i></p> :
+          <React.Fragment>
+            <p>Users in this session:</p>
+            <ul>
+              {displayUsers}
+            </ul>
+          </React.Fragment>}
+        </div>
+      )
     }
-    return (
-      <div class="user-list">
-        {this.state.userList.length == 0 ? 
-        <p><i>There are no users in this session yet</i></p> :
-        <React.Fragment>
-          <p>Users in this session:</p>
-          <ul>
-            {displayUsers}
-          </ul>
-        </React.Fragment>}
-      </div>
-    )
+    return null; 
   }
 }
 
