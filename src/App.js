@@ -23,9 +23,8 @@ class App extends Component {
       usersInSessionCount: 0,
       isLoading: true
     };
-    //mini components
-    this.topBanner = this.topBanner.bind(this);
-    
+    //views
+    this.TopBanner = this.TopBanner.bind(this);
 
     //session methods
     this.resetSession = this.resetSession.bind(this);
@@ -179,7 +178,6 @@ class App extends Component {
   setUsernameMAL(event, name) {
     this.loadingGIF(true);
     event.preventDefault();
-    this.loadingGIF(true);
     
     const sessionRef = firebase.firestore().collection("session").doc(this.state.sessionID);
     const usersRef = sessionRef.collection("users");
@@ -205,7 +203,7 @@ class App extends Component {
 
 
 
-  topBanner() {
+  TopBanner() {
     return(
       <div class="banner-inner">
         <h2>Watch Party Rescue <span class="material-icons"></span></h2>
@@ -229,7 +227,7 @@ class App extends Component {
       <div>
 
         <div class="banner">
-          <this.topBanner/>
+          <this.TopBanner/>
         </div>
 
           <Session
@@ -259,34 +257,29 @@ class App extends Component {
 
         
 
-          {this.state.hasSession ? 
-          <UserList
-            user = {this.state.user}
-            sessionID = {this.state.sessionID}
-          /> : <React.Fragment/>}
+          {this.state.hasSession && <UserList
+                                      user = {this.state.user}
+                                      sessionID = {this.state.sessionID}
+                                    />}
           
 
-          {this.state.hasSession && this.state.user !== null ? 
-            <React.Fragment>
-              <FetchList
-                user = {this.state.user}
-                usernameMAL = {this.state.usernameMAL}
-                sessionID = {this.state.sessionID}
-                hasSession = {this.state.hasSession}
-                //methods
-                setUsernameMAL = {this.setUsernameMAL}
-                loadingGIF = {this.loadingGIF}
-              /> 
-              <ListSummary
-                sessionID = {this.state.sessionID}
-                hasSession = {this.state.hasSession}
-                usersInSessionCount = {this.state.usersInSessionCount}
-                loadingGIF = {this.loadingGIF}
-              />
-            </React.Fragment>
-            : <React.Fragment/>}
-
-
+          {this.state.hasSession && this.state.user !== null && <React.Fragment>
+                                                                  <FetchList
+                                                                    user = {this.state.user}
+                                                                    usernameMAL = {this.state.usernameMAL}
+                                                                    sessionID = {this.state.sessionID}
+                                                                    hasSession = {this.state.hasSession}
+                                                                    //methods
+                                                                    setUsernameMAL = {this.setUsernameMAL}
+                                                                    loadingGIF = {this.loadingGIF}
+                                                                  /> 
+                                                                  <ListSummary
+                                                                    sessionID = {this.state.sessionID}
+                                                                    hasSession = {this.state.hasSession}
+                                                                    usersInSessionCount = {this.state.usersInSessionCount}
+                                                                    loadingGIF = {this.loadingGIF}
+                                                                  />
+                                                                </React.Fragment>}
         </div>
       
         
