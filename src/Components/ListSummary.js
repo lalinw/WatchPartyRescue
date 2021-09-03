@@ -44,35 +44,35 @@ class ListSummary extends React.Component {
     
     console.log("users => " + usersCount);
     await MALplantowatch.where('occurrences', "==", usersCount).get()
-      .then((querySnapshot) => {
-        var thisItemTier = [];
-        thisItemTier.push(
-          <div class="item-tier">
-            <p>Items with {usersCount} votes</p>
-          </div>
-        );
-        console.log(thisItemTier);
-        querySnapshot.docs.map( (plantowatchDoc)=> {
-            thisItemTier.push(
-              <div class="poster-image">
-                <img src={plantowatchDoc.data().image} alt={plantowatchDoc.data().title}/>
-                <div class="overlay-dim">
-                    <h3><span>{plantowatchDoc.data().title}</span></h3>
-                    <p><span class="field-name">Episodes:</span> 
-                    <br/>{plantowatchDoc.data().episodes}</p>
-                    <p><span class="field-name">Released:</span> 
-                    <br/>{plantowatchDoc.data().season}</p>
-                    <p>({plantowatchDoc.data().common_users.join(", ")})</p>
-                    <a href={plantowatchDoc.data().link}><button>see details on MyAnimeList</button></a>
-                </div>
+    .then((querySnapshot) => {
+      var thisItemTier = [];
+      thisItemTier.push(
+        <div class="item-tier">
+          <p>Items with {usersCount} votes</p>
+        </div>
+      );
+      console.log(thisItemTier);
+      querySnapshot.docs.map( (plantowatchDoc)=> {
+          thisItemTier.push(
+            <div class="poster-image">
+              <img src={plantowatchDoc.data().image} alt={plantowatchDoc.data().title}/>
+              <div class="overlay-dim">
+                  <h3><span>{plantowatchDoc.data().title}</span></h3>
+                  <p><span class="field-name">Episodes:</span> 
+                  <br/>{plantowatchDoc.data().episodes}</p>
+                  <p><span class="field-name">Released:</span> 
+                  <br/>{plantowatchDoc.data().season}</p>
+                  <p>({plantowatchDoc.data().common_users.join(", ")})</p>
+                  <a href={plantowatchDoc.data().link}><button>see details on MyAnimeList</button></a>
               </div>
-            );
-            this.setState({
-              tempTier: thisItemTier
-            });
-            console.log("temp tier -> " + this.state.tempTier);
-            return null;
-        });
+            </div>
+          );
+          this.setState({
+            tempTier: thisItemTier
+          });
+          console.log("temp tier -> " + this.state.tempTier);
+          return null;
+      });
     }).catch((error) => {});
     
     this.setState({

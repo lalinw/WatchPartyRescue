@@ -16,10 +16,11 @@ class FetchList extends React.Component {
     this.preFetch = this.preFetch.bind(this);
     //MAL username methods
     this.handleTextChange = this.handleTextChange.bind(this);
-    this.hasUsernameMAL = this.hasUsernameMAL.bind(this);
-    this.formUsernameMAL = this.formUsernameMAL.bind(this);
     this.showFormUsernameMAL = this.showFormUsernameMAL.bind(this);
-    
+
+    //component views
+    this.UsernameMALView = this.UsernameMALView.bind(this);
+    this.FormUsernameMALView = this.FormUsernameMALView.bind(this);
   }
   
   componentDidMount() {
@@ -65,60 +66,61 @@ class FetchList extends React.Component {
     const summaryMAL = sessionRef.collection("summary").doc("myanimelist");
 
     await summaryMAL.collection("plan_to_watch").where("common_users", "array-contains", this.props.user).get()
-      .then((querySnapshot) => {
-        querySnapshot.docs.map( (thisDoc) => {
-          return summaryMAL.collection("plan_to_watch").doc(thisDoc.id).update({
-            common_users: firebase.firestore.FieldValue.arrayRemove(this.props.user),
-            occurrences: firebase.firestore.FieldValue.increment(-1)
-          });
-        })
-      }).then(() => {
-        console.log("summary list of user is reset");
-      }).catch((error) => {});
+    .then((querySnapshot) => {
+      querySnapshot.docs.map( (thisDoc) => {
+        return summaryMAL.collection("plan_to_watch").doc(thisDoc.id).update({
+          common_users: firebase.firestore.FieldValue.arrayRemove(this.props.user),
+          occurrences: firebase.firestore.FieldValue.increment(-1)
+        });
+      })
+    }).then(() => {
+      console.log("summary list of user is reset");
+    }).catch((error) => {});
   }
 
   fetchHelper(endpointMAL, page, paginationThreshold, thisUserDoc, summaryMAL) {
     console.log("making API call...");
     fetch(endpointMAL + page)
-      .then(res => res.json())
-      .then((data) => {
-        if (data.anime !== undefined) {
-          for (var i = 0; i < data.anime.length; i++) {
-            // console.log(data.anime[i]);
-            var thisAnime = data.anime[i];
-            var released = thisAnime.season_year;
-            if (released == null) {
-              released = "unknown";
-            } else {
-              released = thisAnime.season_name + " " + thisAnime.season_year;
-            }
-            summaryMAL.collection("plan_to_watch").doc(thisAnime.mal_id.toString())
-              .set({
-              common_users: firebase.firestore.FieldValue.arrayUnion(this.props.user),
-              occurrences: firebase.firestore.FieldValue.increment(1),
-              title: thisAnime.title,
-              episodes: thisAnime.total_episodes,
-              image: thisAnime.image_url,
-              link: thisAnime.url,
-              season: released
-            }, { 
-              merge: true 
-            });
+    .then(res => res.json())
+    .then((data) => {
+      if (data.anime !== undefined) {
+        for (var i = 0; i < data.anime.length; i++) {
+          // console.log(data.anime[i]);
+          var thisAnime = data.anime[i];
+          var released = thisAnime.season_year;
+          if (released == null) {
+            released = "unknown";
+          } else {
+            released = thisAnime.season_name + " " + thisAnime.season_year;
           }
           
-          //check for more items after 1st page
-          if (data.anime.length === paginationThreshold) {
-            this.fetchHelper(endpointMAL, page++, paginationThreshold, thisUserDoc, summaryMAL);
-          }
+          summaryMAL.collection("plan_to_watch").doc(thisAnime.mal_id.toString())
+          .set({
+            common_users: firebase.firestore.FieldValue.arrayUnion(this.props.user),
+            occurrences: firebase.firestore.FieldValue.increment(1),
+            title: thisAnime.title,
+            episodes: thisAnime.total_episodes,
+            image: thisAnime.image_url,
+            link: thisAnime.url,
+            season: released
+          }, { 
+            merge: true 
+          });
         }
-      })
-      .then(() => {
-        console.log("API call successful.");
-        this.props.loadingGIF(false);
-      })
-      .catch((error) => {
-        console.log("API Unavailable: " + error);
-      });
+        
+        //check for more items after 1st page
+        if (data.anime.length === paginationThreshold) {
+          this.fetchHelper(endpointMAL, page++, paginationThreshold, thisUserDoc, summaryMAL);
+        }
+      }
+    })
+    .then(() => {
+      console.log("API call successful.");
+      this.props.loadingGIF(false);
+    })
+    .catch((error) => {
+      console.log("API Unavailable: " + error);
+    });
     
   }
 
@@ -126,7 +128,8 @@ class FetchList extends React.Component {
     return "https://api.jikan.moe/v3/user/" + usernameMAL + "/animelist/" + listTypeMAL + "/";
   }
 
-  hasUsernameMAL() {
+
+  UsernameMALView() {
     if (this.props.usernameMAL == null) {
       return (
         <p>MyAnimeList account: <button onClick={this.showFormUsernameMAL}>+ Add your username</button>
@@ -139,7 +142,7 @@ class FetchList extends React.Component {
     }
   }
 
-  formUsernameMAL() {
+  FormUsernameMALView() {
     return(
       <form>
         <input 
@@ -171,8 +174,8 @@ class FetchList extends React.Component {
       <div>
 
         <h3>Fetch your list</h3>
-        <this.hasUsernameMAL/>
-        { this.state.showFormUsernameMAL ? <this.formUsernameMAL/> : <React.Fragment/> }
+        <this.UsernameMALView/>
+        {this.state.showFormUsernameMAL && <this.FormUsernameMALView/>}
 
       </div>
     );

@@ -12,15 +12,14 @@ class Session extends React.Component {
     };
     this.handleSessionNameChange = this.handleSessionNameChange.bind(this);
     this.handleSessionNameSubmit = this.handleSessionNameSubmit.bind(this);
-
     this.handleSessionNameUpdate = this.handleSessionNameUpdate.bind(this);
     this.toggleEditMode = this.toggleEditMode.bind(this);
-    this.editableSessionNameView = this.editableSessionNameView.bind(this);
-    this.textSessionNameView = this.textSessionNameView.bind(this);
 
-    //micro-components
-    this.hasSessionTrue = this.hasSessionTrue.bind(this);
-    this.hasSessionFalse = this.hasSessionFalse.bind(this);
+    //component views
+    this.EditableSessionNameView = this.EditableSessionNameView.bind(this);
+    this.TextSessionNameView = this.TextSessionNameView.bind(this);
+    this.ActiveSessionView = this.ActiveSessionView.bind(this);
+    this.CreateSessionView = this.CreateSessionView.bind(this);
   }
   
 
@@ -76,20 +75,6 @@ class Session extends React.Component {
   }
 
 
-  hasSessionTrue() {
-    return (
-      <div class="session-banner">
-        <div id="session-banner-content">
-          <button id="session-leave" onClick={this.props.resetSession}>Leave Session</button>
-          {this.state.editMode ? <this.editableSessionNameView/> : <this.textSessionNameView/>}
-          <button id="session-share" onClick={() => {
-            navigator.clipboard.writeText(window.location.href.split("?")[0] + "?session=" + this.props.sessionID)}}>
-            Copy Session Link!
-          </button> 
-        </div>
-      </div>
-    );
-  }
 
   toggleEditMode() {
     this.setState({ 
@@ -97,7 +82,7 @@ class Session extends React.Component {
     });
   }
   
-  editableSessionNameView() {
+  EditableSessionNameView() {
     return (
       <React.Fragment>
         <input
@@ -111,7 +96,7 @@ class Session extends React.Component {
     );
   }
 
-  textSessionNameView() {
+  TextSessionNameView() {
     const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
     sessionRef.get().then((doc) => {
       this.setState({ 
@@ -126,7 +111,7 @@ class Session extends React.Component {
   }
 
 
-  hasSessionFalse() {
+  CreateSessionView() {
     return (
       <div class="landing">
         <input class="session"
@@ -140,15 +125,34 @@ class Session extends React.Component {
     );
   }
 
+  ActiveSessionView() {
+    return (
+      <div class="session-banner">
+        <div id="session-banner-content">
+          <button id="session-leave" onClick={this.props.resetSession}>Leave Session</button>
+
+          {this.state.editMode
+            ? <this.EditableSessionNameView/> 
+            : <this.TextSessionNameView/>}
+
+          <button id="session-share" onClick={() => {
+            navigator.clipboard.writeText(window.location.href.split("?")[0] + "?session=" + this.props.sessionID)}}>
+            Copy Session Link!
+          </button> 
+        </div>
+      </div>
+    );
+  }
+
 
   render() {
     return (
       <React.Fragment>
 
         <div class="session">
-          {this.props.sessionID != null ? 
-            <this.hasSessionTrue/> :
-            <this.hasSessionFalse/> }
+          {this.props.sessionID != null 
+            ? <this.ActiveSessionView/> 
+            : <this.CreateSessionView/>}
         </div>
 
       </React.Fragment>

@@ -14,7 +14,6 @@ class SignIn extends React.Component {
     //micro-components
     this.hasUserTrue = this.hasUserTrue.bind(this);
     this.hasUserFalse = this.hasUserFalse.bind(this);
-    this.hasUsernameMAL = this.hasUsernameMAL.bind(this);
   }
   
 
@@ -100,28 +99,15 @@ class SignIn extends React.Component {
   }
 
 
-  hasUsernameMAL() {
-    if (this.props.usernameMAL == null) {
-      return (
-        <p>MyAnimeList account: <button>+ Add your username</button></p>
-      );
-    } else {
-      return (
-        <p>MyAnimeList account: {this.props.usernameMAL}</p>
-      );
-    }
-  }
-
 
   render() {
     return (
       <React.Fragment>
-        {this.props.sessionID !== null ? 
-          <div class="sign-in">
-            {this.props.user !== null ? 
-              <this.hasUserTrue/> : 
-              <this.hasUserFalse/>}</div> :
-          <React.Fragment/> }
+        {this.props.sessionID !== null && <div class="sign-in">
+                                            {this.props.user !== null 
+                                              ? <this.hasUserTrue/> 
+                                              : <this.hasUserFalse/>}
+                                          </div>}
 
       </React.Fragment>
     );
