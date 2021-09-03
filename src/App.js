@@ -54,11 +54,14 @@ class App extends Component {
 
     console.log("Session ID = " + sessionID);
     // console.log(sessionID);
+    const sessionRef = firebase.firestore().collection("session").doc(this.state.sessionID);
 
     if (sessionID != null) {
-
       //check if session does actually exist/valid sessionID
-      firebase.firestore().collection("session").doc(sessionID)
+      sessionRef.get().then((thisSession) => {
+        if (thisSession.exists) {
+          //if session already exist, access the session
+          firebase.firestore().collection("session").doc(sessionID)
                           .collection("users")
                           .get().then((usersCollection) => {
                             this.setState({
@@ -66,16 +69,21 @@ class App extends Component {
                               hasSession: true,
                               usersInSessionCount: usersCollection.size
                             });
+                          });
+        }
+        //reset the URL in the address bar
+        navigator.clipboard.writeText(window.location.href.split("?")[0]);         
       });
       console.log("users count = " + this.state.usersInSessionCount);
     }
-
     this.loadingGIF(false);
   }
+
 
   componentDidUpdate() {
     this.loadingGIF(false);
   }
+
 
   resetUser() {
     this.loadingGIF(true);
