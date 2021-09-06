@@ -53,10 +53,11 @@ class App extends Component {
 
     console.log("Session ID = " + sessionID);
     // console.log(sessionID);
-    const sessionRef = firebase.firestore().collection("session").doc(sessionID);
+    
 
     if (sessionID != null) {
       //check if session does actually exist/valid sessionID
+      const sessionRef = firebase.firestore().collection("session").doc(sessionID);
       sessionRef.get().then((thisSession) => {
         if (thisSession.exists) {
           //if session already exist, access the session

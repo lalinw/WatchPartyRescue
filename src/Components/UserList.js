@@ -23,6 +23,7 @@ class UserList extends React.Component {
 
   retrieveUserList() {
     //populate userList state for user management 
+    const usersRef = firebase.firestore().collection("session").doc(this.props.sessionID).collection("users");
     usersRef.onSnapshot((userDocs) => {
       var localUsers = [];
       console.log("userDocs = " + userDocs.size);
