@@ -202,8 +202,8 @@ class App extends Component {
 
   TopBannerView() {
     return(
-      <div class="banner-inner">
-        <h2>Watch Party Rescue <span class="material-icons"></span></h2>
+      <div className="banner-inner">
+        <h2>Watch Party Rescue <span className="material-icons"></span></h2>
         <p><i>(currently supporting <b>MyAnimeList's Plan to Watch</b> list only)</i></p>
       </div>
     );
@@ -223,7 +223,7 @@ class App extends Component {
     return (
       <div>
 
-        <div class="banner">
+        <div className="banner">
           <this.TopBannerView/>
         </div>
 
@@ -235,7 +235,7 @@ class App extends Component {
             loadingGIF = {this.loadingGIF}
           />
 
-        <div class="app-content"> 
+        <div className="app-content"> 
           <SignIn
             user = {this.state.user}
             sessionID = {this.state.sessionID}

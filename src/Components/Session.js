@@ -116,8 +116,8 @@ class Session extends React.Component {
 
   CreateSessionView() {
     return (
-      <div class="landing">
-        <input class="session"
+      <div className="landing">
+        <input className="session"
             type="text" 
             placeholder="Event/Session Name"
             onChange={this.handleSessionNameChange}
@@ -130,7 +130,7 @@ class Session extends React.Component {
 
   ActiveSessionView() {
     return (
-      <div class="session-banner">
+      <div className="session-banner">
         <div id="session-banner-content">
           <button id="session-leave" onClick={this.props.resetSession}>Leave Session</button>
 
@@ -152,7 +152,7 @@ class Session extends React.Component {
     return (
       <React.Fragment>
 
-        <div class="session">
+        <div className="session">
           {this.props.sessionID != null 
             ? <this.ActiveSessionView/> 
             : <this.CreateSessionView/>}

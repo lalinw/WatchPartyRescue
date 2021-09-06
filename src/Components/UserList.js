@@ -40,13 +40,13 @@ class UserList extends React.Component {
   userItemFormat(eachUser) {
     if (eachUser === this.props.user) {
       return (
-        <li>
+        <li key={eachUser}>
           {eachUser}
         </li>
       );
     } else {
       return (
-        <li>
+        <li key={eachUser}>
           {eachUser} <button id={eachUser} onClick={this.deleteUser}>Remove</button>
         </li>
       );
@@ -107,7 +107,7 @@ class UserList extends React.Component {
   render() {
     if (this.props.sessionID != null) {
       return (
-        <div class="user-list">
+        <div className="user-list">
           {this.state.userList.length === 0 
             ? <p><i>There are no users in this session yet</i></p> 
             : <React.Fragment>

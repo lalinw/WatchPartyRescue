@@ -58,11 +58,11 @@ class SignIn extends React.Component {
     usersRef.onSnapshot((userDocs) => {
       var localUsers = [];
       localUsers.push(
-        <option value="DEFAULT">select user</option>
+        <option key={"default"} value="DEFAULT">select user</option>
       );
       userDocs.forEach((theUser) => {
         localUsers.push(
-          <option value={theUser.id}>{theUser.id}</option>
+          <option key={theUser.id} value={theUser.id}>{theUser.id}</option>
         );
       });
       this.setState({
@@ -83,7 +83,7 @@ class SignIn extends React.Component {
         <form>
           <label>Enter your display name:</label>
           <br/>
-          <input class="signin"
+          <input className="signin"
             type="text" 
             placeholder="Display name"
             onChange={this.handleNameChange}
@@ -103,7 +103,7 @@ class SignIn extends React.Component {
   render() {
     return (
       <React.Fragment>
-        {this.props.sessionID !== null && <div class="sign-in">
+        {this.props.sessionID !== null && <div className="sign-in">
                                             {this.props.user !== null 
                                               ? <this.hasUserTrue/> 
                                               : <this.hasUserFalse/>}
