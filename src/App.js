@@ -20,11 +20,11 @@ class App extends Component {
       usernameMAL: null,
       sessionID: null,
       hasSession: false,
-      usersInSessionCount: 0,
+      usersInSessionCount: null,
       isLoading: true
     };
     //views
-    this.TopBanner = this.TopBanner.bind(this);
+    this.TopBannerView = this.TopBannerView.bind(this);
 
     //session methods
     this.resetSession = this.resetSession.bind(this);
@@ -61,8 +61,7 @@ class App extends Component {
       sessionRef.get().then((thisSession) => {
         if (thisSession.exists) {
           //if session already exist, access the session
-          firebase.firestore().collection("session").doc(sessionID)
-          .collection("users")
+          sessionRef.collection("users")
           .get().then((usersCollection) => {
             this.setState({
               sessionID: sessionID,
@@ -123,6 +122,7 @@ class App extends Component {
         user: name
       })
     }).then(() => {
+      this.recountUsers();
       usersRef.doc(this.state.user).get().then((thisDoc) => {
         this.setState({
           user: name,
@@ -140,7 +140,8 @@ class App extends Component {
       sessionID: null,
       hasSession: false,
       user: null,
-      usernameMAL: null
+      usernameMAL: null,
+      usersInSessionCount: null
     })
     //remove sessionID from address bar
     window.location.href =  window.location.href.split("?")[0];
@@ -167,25 +168,20 @@ class App extends Component {
       sessionID: sessionID,
       hasSession: true
     })
-    const sessionRef = firebase.firestore().collection("session").doc(this.state.sessionID);
-    sessionRef.get().then((thisSession) => {
-      this.setState({
-        usersInSessionCount: thisSession.data().users_count
-      })
-    });
+    this.recountUsers();
   }
 
   
   setUsernameMAL(event, name) {
     this.loadingGIF(true);
     event.preventDefault();
-    
-    const sessionRef = firebase.firestore().collection("session").doc(this.state.sessionID);
-    const usersRef = sessionRef.collection("users");
 
-    usersRef.doc(this.state.user).get().then((doc) => {
+    const usersRef = firebase.firestore().collection("session").doc(this.state.sessionID).collection("users");
+
+    usersRef.doc(this.state.user)
+    .get().then((doc) => {
       // doc of user already exists if the user is trying to set their MAL username
-      console.log("setting user's MAL username..." + name);
+      console.log("setting user's MAL username as..." + name);
       usersRef.doc(this.state.user).update({
         myanimelist_username: name
       });
@@ -204,7 +200,7 @@ class App extends Component {
 
 
 
-  TopBanner() {
+  TopBannerView() {
     return(
       <div class="banner-inner">
         <h2>Watch Party Rescue <span class="material-icons"></span></h2>
@@ -228,7 +224,7 @@ class App extends Component {
       <div>
 
         <div class="banner">
-          <this.TopBanner/>
+          <this.TopBannerView/>
         </div>
 
           <Session
