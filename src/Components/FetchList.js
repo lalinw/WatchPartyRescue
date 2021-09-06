@@ -65,8 +65,9 @@ class FetchList extends React.Component {
     const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
     const summaryMAL = sessionRef.collection("summary").doc("myanimelist");
 
-    await summaryMAL.collection("plan_to_watch").where("common_users", "array-contains", this.props.user).get()
-    .then((querySnapshot) => {
+    await summaryMAL.collection("plan_to_watch")
+                    .where("common_users", "array-contains", this.props.user)
+    .get().then((querySnapshot) => {
       querySnapshot.docs.map( (thisDoc) => {
         return summaryMAL.collection("plan_to_watch").doc(thisDoc.id).update({
           common_users: firebase.firestore.FieldValue.arrayRemove(this.props.user),

@@ -43,14 +43,16 @@ class Session extends React.Component {
     event.preventDefault();
 
     if (this.state.tempSessionName === "") {
-      this.props.createSession("WatchPartyRescue Session created on " + firebase.firestore.FieldValue.serverTimestamp());
+      var date = new Date();
+      this.props.createSession("WatchPartyRescue Session created on " + date.toString());
     } else {
-      this.props.createSession(this.state.tempSessionName);
+      var currentTempSessionName = this.state.tempSessionName;
+      this.props.createSession(currentTempSessionName);
     }
 
-    this.setState({ 
+    this.setState((state) => ({ 
       sessionName: this.state.tempSessionName 
-    });
+    }));
   }
 
   handleSessionNameUpdate(event) {
@@ -61,6 +63,7 @@ class Session extends React.Component {
     });
 
     this.props.loadingGIF(true);
+
     firebase.firestore().collection("session").doc(this.props.sessionID).update({
       session_name: this.state.tempSessionName
     }).then(() => {
@@ -75,13 +78,13 @@ class Session extends React.Component {
   }
 
 
-
   toggleEditMode() {
     this.setState({ 
       editMode: !this.state.editMode 
     });
   }
   
+
   EditableSessionNameView() {
     return (
       <React.Fragment>

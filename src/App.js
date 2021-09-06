@@ -94,7 +94,7 @@ class App extends Component {
 
   
   recountUsers() {
-    firebase.firestore().collection("session").doc(this.props.sessionID)
+    firebase.firestore().collection("session").doc(this.state.sessionID)
     .get().then((thisSession) => {
       this.setState({
         usersInSessionCount: thisSession.data().users_count
@@ -122,13 +122,13 @@ class App extends Component {
         user: name
       })
     }).then(() => {
-      this.recountUsers();
       usersRef.doc(this.state.user).get().then((thisDoc) => {
         this.setState({
           user: name,
           usernameMAL: thisDoc.data().myanimelist_username
         })
       })
+      this.recountUsers();
     });
   }
 

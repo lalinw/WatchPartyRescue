@@ -106,28 +106,6 @@ class UserList extends React.Component {
  
   render() {
     if (this.props.sessionID != null) {
-      // var displayUsers = [];
-      // for (var i = 0; i < this.state.userList.length; i++) {
-      //   var username = this.state.userList[i];
-      //   if (username === this.props.user) {
-      //     displayUsers.push(
-      //       <li>
-      //         {username}
-      //       </li>
-      //     )
-      //   } else {
-      //     displayUsers.push(
-      //       <li>
-      //         {username} <button id={username} onClick={this.deleteUser}>Remove</button>
-      //       </li>
-      //     );
-      //   }
-      // }
-
-      //use useritemformat() and map() to pass in each user from list
-      // this.state.userList.map((eachUser) => {
-      //   this.userItemFormat(eachUser);
-      // })
       return (
         <div class="user-list">
           {this.state.userList.length === 0 
@@ -135,9 +113,8 @@ class UserList extends React.Component {
             : <React.Fragment>
               <p>Users in this session:</p>
               <ul>
-                {/* {displayUsers} */}
                 {this.state.userList.map((eachUser) => {
-                  this.userItemFormat(eachUser);
+                  return this.userItemFormat(eachUser);
                 })}
               </ul>
             </React.Fragment>}
