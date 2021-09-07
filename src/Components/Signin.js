@@ -14,6 +14,7 @@ class SignIn extends React.Component {
     //micro-components
     this.hasUserTrue = this.hasUserTrue.bind(this);
     this.hasUserFalse = this.hasUserFalse.bind(this);
+    this.existingUsersDropdownFormat = this.existingUsersDropdownFormat.bind(this);
   }
   
 
@@ -50,6 +51,9 @@ class SignIn extends React.Component {
     );
   }
 
+  existingUsersDropdownFormat(eachUser) {
+    return <option key={eachUser} value={eachUser}>{eachUser}</option>
+  }
 
   hasUserFalse() {
     const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
@@ -57,13 +61,14 @@ class SignIn extends React.Component {
 
     usersRef.onSnapshot((userDocs) => {
       var localUsers = [];
-      localUsers.push(
-        <option key={"default"} value="DEFAULT">select user</option>
-      );
+      // localUsers.push(
+      //   <option key={"default"} value="DEFAULT">select user</option>
+      // );
       userDocs.forEach((theUser) => {
-        localUsers.push(
-          <option key={theUser.id} value={theUser.id}>{theUser.id}</option>
-        );
+        // localUsers.push(
+        //   <option key={theUser.id} value={theUser.id}>{theUser.id}</option>
+        // );
+        localUsers.push(theUser.id);
       });
       this.setState({
         existingUsers: localUsers
@@ -76,7 +81,11 @@ class SignIn extends React.Component {
         <form>
           <label>Log in as: </label>
           <select defaultValue={"DEFAULT"} onChange={this.handleNameChange}>
-            {this.state.existingUsers}
+            {/* {this.state.existingUsers} */}
+            <option key={"default"} value="DEFAULT">select user</option>
+            {this.state.existingUsers.map((eachUser) => {
+              return this.existingUsersDropdownFormat(eachUser);
+            })}
           </select>
         </form>
         <p>OR</p>
@@ -91,13 +100,12 @@ class SignIn extends React.Component {
           <br/>
           <p><button 
             onClick={this.handleNameSubmit} 
-            disabled={this.state.tempUser === ""}
+            disabled={this.state.tempUser === "" || this.state.tempUser === "DEFAULT"}
             >Continue</button></p>
         </form>
       </div>
     );
   }
-
 
 
   render() {

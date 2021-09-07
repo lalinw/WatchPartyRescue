@@ -38,19 +38,28 @@ class UserList extends React.Component {
   }
 
   userItemFormat(eachUser) {
-    if (eachUser === this.props.user) {
-      return (
-        <li key={eachUser}>
-          {eachUser}
-        </li>
-      );
-    } else {
-      return (
-        <li key={eachUser}>
-          {eachUser} <button id={eachUser} onClick={this.deleteUser}>Remove</button>
-        </li>
-      );
-    }
+    // if (eachUser === this.props.user) {
+    //   return (
+    //     <li key={eachUser}>
+    //       {eachUser}
+    //     </li>
+    //   );
+    // } else {
+    //   return (
+    //     <li key={eachUser}>
+    //       {eachUser} <button id={eachUser} onClick={this.deleteUser}>Remove</button>
+    //     </li>
+    //   );
+    // }
+
+    return (
+      <li key={eachUser}>
+        {eachUser} 
+        {eachUser !== this.props.user 
+          && <button id={eachUser} onClick={this.deleteUser}>Remove</button>}
+      </li>
+    );
+
   }
 
   deleteUser(event) {

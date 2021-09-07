@@ -131,16 +131,25 @@ class FetchList extends React.Component {
 
 
   UsernameMALView() {
-    if (this.props.usernameMAL == null) {
-      return (
-        <p>MyAnimeList account: <button onClick={this.showFormUsernameMAL}>+ Add your username</button>
-        </p>
-      );
-    } else {
-      return (
-        <p>MyAnimeList account: {this.props.usernameMAL} <button onClick={this.onFetchSubmit}>Fetch latest</button></p>
-      );
-    }
+    // if (this.props.usernameMAL == null) {
+    //   return (
+    //     <p>MyAnimeList account: <button onClick={this.showFormUsernameMAL}>+ Add your username</button>
+    //     </p>
+    //   );
+    // } else {
+    //   return (
+    //     <p>MyAnimeList account: {this.props.usernameMAL} <button onClick={this.onFetchSubmit}>Fetch latest</button></p>
+    //   );
+    // }
+
+    return (
+      <p>
+        MyAnimeList account: 
+        {this.props.usernameMAL == null
+          ? <button onClick={this.showFormUsernameMAL}>+ Add your username</button>
+          : {this.props.usernameMAL} <button onClick={this.onFetchSubmit}>Fetch latest</button>}
+      </p>
+    );
   }
 
   FormUsernameMALView() {
@@ -152,8 +161,8 @@ class FetchList extends React.Component {
           onChange={this.handleTextChange}
           />
         <br/>
-        <button onClick={(e) => {
-          this.props.setUsernameMAL(e, this.state.tempUsernameMAL);
+        <button onClick={(event) => {
+          this.props.setUsernameMAL(event, this.state.tempUsernameMAL);
           this.setState({ 
             showFormUsernameMAL: false
           });

@@ -98,6 +98,10 @@ div.outer {
   padding: 0;
 }
 
+button {
+  padding: 0 0.5em;
+}
+
 /* ============================================ Session == */
 
 div.landing {
@@ -111,7 +115,7 @@ div.landing {
 }
 
 input[type=text].session {
-  font-size: 24pt;
+  font-size: 20pt;
   text-align: center;
   width: 100%;
   padding: 0.5em;
