@@ -133,11 +133,9 @@ class Session extends React.Component {
       <div className="session-banner">
         <div id="session-banner-content">
           <button id="session-leave" onClick={this.props.resetSession}>Leave Session</button>
-
           {this.state.editMode
             ? <this.EditableSessionNameView/> 
             : <this.TextSessionNameView/>}
-
           <button id="session-share" onClick={() => {
             navigator.clipboard.writeText(window.location.href.split("?")[0] + "?session=" + this.props.sessionID)}}>
             Copy Session Link!
@@ -151,13 +149,11 @@ class Session extends React.Component {
   render() {
     return (
       <React.Fragment>
-
         <div className="session">
           {this.props.sessionID != null 
             ? <this.ActiveSessionView/> 
             : <this.CreateSessionView/>}
         </div>
-
       </React.Fragment>
     );
   }

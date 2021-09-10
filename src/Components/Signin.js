@@ -1,5 +1,6 @@
 import React from 'react';
 import firebase from '../firebase';
+import ReactDOM from 'react-dom'
 
 class SignIn extends React.Component {
   constructor(props) {
@@ -45,11 +46,18 @@ class SignIn extends React.Component {
 
 
   ActiveUserView() {
-    return (
-      <div>
+
+    const parentElement = document.getElementById("banner");
+    return ReactDOM.createPortal(
+      <div id="profile-card">
         <p>Joined as: {this.props.user} <button onClick={this.props.resetUser}>Sign Out</button></p>
-      </div>
-    );
+      </div>, 
+      parentElement);
+    // return (
+    //   <div>
+    //     <p>Joined as: {this.props.user} <button onClick={this.props.resetUser}>Sign Out</button></p>
+    //   </div>
+    // );
   }
 
   existingUsersDropdownFormat(eachUser) {
@@ -70,6 +78,7 @@ class SignIn extends React.Component {
         //   <option key={theUser.id} value={theUser.id}>{theUser.id}</option>
         // );
         localUsers.push(theUser.id);
+
       });
       this.setState({
         existingUsers: localUsers
@@ -82,7 +91,6 @@ class SignIn extends React.Component {
     return (
       <div>
         <h2>Sign in:</h2>
-
         <form>
           <label>Log in as: </label>
           <select defaultValue={"DEFAULT"} onChange={this.handleNameChange}>
@@ -93,9 +101,7 @@ class SignIn extends React.Component {
             })}
           </select>
         </form>
-
         <p>OR</p>
-
         <form>
           <label>Enter your display name:</label>
           <br/>

@@ -118,20 +118,26 @@ class App extends Component {
         sessionRef.update({
           users_count: firebase.firestore.FieldValue.increment(1)
         });
+        this.setState((state) => ({
+          usersInSessionCount: state.usersInSessionCount + 1
+        }))
+        
       }
       this.setState({
         user: name,
         usernameMAL: thisDoc.data().myanimelist_username
       })
-    }).then(() => {
-      // usersRef.doc(this.state.user).get().then((thisDoc) => {
-      //   this.setState({
-      //     user: name,
-      //     usernameMAL: thisDoc.data().myanimelist_username
-      //   })
-      // })
-      this.recountUsers();
     });
+    
+    // .then(() => {
+    //   // usersRef.doc(this.state.user).get().then((thisDoc) => {
+    //   //   this.setState({
+    //   //     user: name,
+    //   //     usernameMAL: thisDoc.data().myanimelist_username
+    //   //   })
+    //   // })
+    //   this.recountUsers();
+    // });
   }
 
 
@@ -204,7 +210,6 @@ class App extends Component {
     return(
       <div className="banner-inner">
         <h2>Watch Party Rescue <span className="material-icons"></span></h2>
-        {/* <p><i>(currently supporting <b>MyAnimeList's Plan to Watch</b> list only)</i></p> */}
       </div>
     );
   }
@@ -222,18 +227,15 @@ class App extends Component {
   render() {
     return (
       <div>
-
-        <div className="banner">
+        <div className="banner" id="banner">
           <this.TopBannerView/>
         </div>
-
           <Session
             sessionID = {this.state.sessionID}
             resetSession = {this.resetSession}
             createSession = {this.createSession}
             loadingGIF = {this.loadingGIF}
           />
-
         <div className="app-content"> 
           <SignIn
             user = {this.state.user}
@@ -249,15 +251,10 @@ class App extends Component {
 
             loadingGIF = {this.loadingGIF}
           />
-
-        
-
           {this.state.sessionID != null && <UserList
                                       user = {this.state.user}
                                       sessionID = {this.state.sessionID}
                                     />}
-          
-
           {this.state.sessionID != null && this.state.user !== null && <React.Fragment>
                                                                   <FetchList
                                                                     user = {this.state.user}
@@ -274,8 +271,6 @@ class App extends Component {
                                                                   />
                                                                 </React.Fragment>}
         </div>
-      
-        
       </div>
     );
   }
