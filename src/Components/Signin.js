@@ -91,7 +91,7 @@ class SignIn extends React.Component {
             {/* {this.state.existingUsers} */}
             <option key={"default"} value="DEFAULT">select user</option>
             {this.state.existingUsers.map((eachUser) => {
-              <option key={eachUser} value={eachUser}>{eachUser}</option>
+              return <option key={eachUser} value={eachUser}>{eachUser}</option>
             })}
           </select>
         </form>

@@ -12,6 +12,7 @@ class ListSummary extends React.Component {
     };
     this.constructItemTier = this.constructItemTier.bind(this);
     this.updateSummaryList = this.updateSummaryList.bind(this);
+    this.retrieveAllItems = this.retrieveAllItems.bind(this);
   }
   
   componentDidMount() {
@@ -33,6 +34,48 @@ class ListSummary extends React.Component {
     for (var i = this.props.usersInSessionCount; i > 1; i--) {
       this.constructItemTier(i);
     }
+  }
+
+  retrieveAllItems() {
+    console.log("retrieveAllItems started...");
+    //retrieve all items and save to state
+    //array of objects 
+    const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
+    const summaryMAL = sessionRef.collection("summary").doc("myanimelist");
+    const MALplantowatch = summaryMAL.collection("plan_to_watch");
+
+    MALplantowatch.get()
+    .then((allItems) => {
+      var localAllItems = [];
+      allItems.docs.map((plantowatchDoc) => {
+        var item = 
+        {
+          img:          plantowatchDoc.data().image,
+          title:        plantowatchDoc.data().title,
+          eps:          plantowatchDoc.data().episodes,
+          season:       plantowatchDoc.data().season,
+          common_users: plantowatchDoc.data().common_users.join(", "),
+          users_count:  plantowatchDoc.data().common_users.length,
+          link:         plantowatchDoc.data().link
+        };
+
+        console.log(item);
+        console.log(item.title);
+        localAllItems.push(item);
+        //localAllItems is valid array of objects
+        console.log(localAllItems);
+        //this things gives errors
+        // this.setState(state => ({
+        //   listSummaryItems: [{localAllItems}]
+        // }));
+        
+        
+      });
+    })
+    .then(() => {
+      console.log("all items retrieved!");
+      console.log("list summary items (all) = " + this.state.listSummaryItems);
+    });
   }
 
   async constructItemTier(usersCount) {
@@ -88,11 +131,12 @@ class ListSummary extends React.Component {
 
 
   render() {
-    console.log("list summary items = " + this.state.listSummaryItems);
+    
     if (this.state.listSummaryItems.length === 0) {
       return (
         <div>
           <button onClick={this.updateSummaryList}>Find titles everyone has in common!</button>
+          <button onClick={this.retrieveAllItems}>get all items</button>
         </div>
       );
     } else {
