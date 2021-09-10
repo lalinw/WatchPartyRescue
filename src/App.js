@@ -229,7 +229,7 @@ class App extends Component {
 
   render() {
     return (
-      <div>
+      <React.Fragment>
         <div className="banner" id="banner">
           <this.TopBannerView/>
         </div>
@@ -274,7 +274,7 @@ class App extends Component {
                                                                   />
                                                                 </React.Fragment>}
         </div>
-      </div>
+        </React.Fragment>
     );
   }
 

@@ -56,10 +56,10 @@ class Session extends React.Component {
 
   handleSessionNameUpdate(event) {
     event.preventDefault();
-    this.setState({ 
+    this.setState(state => ({ 
       editMode: false,
-      sessionName: this.state.tempSessionName
-    });
+      sessionName: state.tempSessionName
+    }));
 
     // this.props.loadingGIF(true);
 

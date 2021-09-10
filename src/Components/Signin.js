@@ -83,25 +83,24 @@ class SignIn extends React.Component {
     });
     
     return (
-      <div>
+      <div className="sign-in">
         <h2>Sign in:</h2>
+        <p>Select your name if you have been here before <i>or</i> just enter your display name!</p>
         <form>
-          <label>Log in as: </label>
+          <label>Join session as: </label>
           <select defaultValue={"DEFAULT"} onChange={this.handleNameChange}>
-            {/* {this.state.existingUsers} */}
             <option key={"default"} value="DEFAULT">select user</option>
             {this.state.existingUsers.map((eachUser) => {
               return <option key={eachUser} value={eachUser}>{eachUser}</option>
             })}
           </select>
-        </form>
-        <p>OR</p>
-        <form>
-          <label>Enter your display name:</label>
-          <br/>
+        {/* </form>  */}
+        <span>    or    </span>
+        {/* <form> */}
+          {/* <label>Enter your display name:</label> */}
           <input className="signin"
             type="text" 
-            placeholder="Display name"
+            placeholder="enter your display name"
             onChange={this.handleNameChange}
             />
           <br/>
