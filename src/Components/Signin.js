@@ -12,13 +12,14 @@ class SignIn extends React.Component {
     this.handleNameSubmit = this.handleNameSubmit.bind(this);
 
     //micro-components
-    this.hasUserTrue = this.hasUserTrue.bind(this);
-    this.hasUserFalse = this.hasUserFalse.bind(this);
+    this.ActiveUserView = this.ActiveUserView.bind(this);
+    this.UserSignInView = this.UserSignInView.bind(this);
     this.existingUsersDropdownFormat = this.existingUsersDropdownFormat.bind(this);
   }
   
 
   componentDidMount() {
+    
   }
 
 
@@ -43,7 +44,7 @@ class SignIn extends React.Component {
   }
 
 
-  hasUserTrue() {
+  ActiveUserView() {
     return (
       <div>
         <p>Joined as: {this.props.user} <button onClick={this.props.resetUser}>Sign Out</button></p>
@@ -55,7 +56,7 @@ class SignIn extends React.Component {
     return <option key={eachUser} value={eachUser}>{eachUser}</option>
   }
 
-  hasUserFalse() {
+  UserSignInView() {
     const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
     const usersRef = sessionRef.collection("users");
 
@@ -73,11 +74,15 @@ class SignIn extends React.Component {
       this.setState({
         existingUsers: localUsers
       })
+      // this.setState((state) => {
+      //   existingUsers: state.existingUsers.push(theUser.id);
+      // })
     });
     
     return (
       <div>
         <h2>Sign in:</h2>
+
         <form>
           <label>Log in as: </label>
           <select defaultValue={"DEFAULT"} onChange={this.handleNameChange}>
@@ -88,7 +93,9 @@ class SignIn extends React.Component {
             })}
           </select>
         </form>
+
         <p>OR</p>
+
         <form>
           <label>Enter your display name:</label>
           <br/>
@@ -113,8 +120,8 @@ class SignIn extends React.Component {
       <React.Fragment>
         {this.props.sessionID !== null && <div className="sign-in">
                                             {this.props.user !== null 
-                                              ? <this.hasUserTrue/> 
-                                              : <this.hasUserFalse/>}
+                                              ? <this.ActiveUserView/> 
+                                              : <this.UserSignInView/>}
                                           </div>}
 
       </React.Fragment>

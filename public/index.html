@@ -34,10 +34,17 @@
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div class="announcement">
+      <span class="announcement-close" onclick="this.parentElement.style.display='none';">&times;</span>
+      <p><i>(currently supporting <b>MyAnimeList's Plan to Watch</b> list only)</i></p>
+    </div>
+
     <div id="root"></div>
+    
     <div id="popup-loading">
       <div id="popup-content"><img id="popup-content" src="%PUBLIC_URL%/loading_doggo.gif"/></div>
     </div>
+    
     <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.

@@ -51,7 +51,7 @@ class Session extends React.Component {
     }
 
     this.setState((state) => ({ 
-      sessionName: this.state.tempSessionName 
+      sessionName: state.tempSessionName 
     }));
   }
 
@@ -62,12 +62,12 @@ class Session extends React.Component {
       sessionName: this.state.tempSessionName
     });
 
-    this.props.loadingGIF(true);
+    // this.props.loadingGIF(true);
 
     firebase.firestore().collection("session").doc(this.props.sessionID).update({
       session_name: this.state.tempSessionName
     }).then(() => {
-      this.props.loadingGIF(false);
+      // this.props.loadingGIF(false);
       console.log("Session Name successfully updated!");
 
     }).catch((error) => {

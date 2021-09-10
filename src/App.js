@@ -3,7 +3,7 @@ import React, { Component } from "react";
 //Components
 import FetchList from "./Components/FetchList";
 import ListSummary from "./Components/ListSummary";
-import SignIn from "./Components/SignIn";
+import SignIn from "./Components/Signin";
 import UserList from "./Components/UserList";
 import Session from "./Components/Session";
 
@@ -19,9 +19,8 @@ class App extends Component {
       user: null,
       usernameMAL: null,
       sessionID: null,
-      hasSession: false,
       usersInSessionCount: null,
-      isLoading: true
+      isLoading: false
     };
     //views
     this.TopBannerView = this.TopBannerView.bind(this);
@@ -65,7 +64,6 @@ class App extends Component {
           .get().then((usersCollection) => {
             this.setState({
               sessionID: sessionID,
-              hasSession: true,
               usersInSessionCount: usersCollection.size
             });
           });
@@ -80,12 +78,12 @@ class App extends Component {
 
 
   componentDidUpdate() {
-    this.loadingGIF(false);
+    // this.loadingGIF(false);
   }
 
 
   resetUser() {
-    this.loadingGIF(true);
+    // this.loadingGIF(true);
     this.setState({
       user: null,
       usernameMAL: null,
@@ -104,41 +102,44 @@ class App extends Component {
 
 
   setUser(name) {
-    this.loadingGIF(true);
+    // this.loadingGIF(true);
+    this.setState({
+      user: name
+    })
     const sessionRef = firebase.firestore().collection("session").doc(this.state.sessionID);
     const usersRef = sessionRef.collection("users");
 
     usersRef.doc(name).get().then((thisDoc) => {
       if (!thisDoc.exists) {
         console.log("doc does not exist yet. Creating user...");
-        usersRef.doc(name).set({
-          myanimelist_username: null
-        });
+        // usersRef.doc(name).set({
+        //   myanimelist_username: null
+        // });
         sessionRef.update({
           users_count: firebase.firestore.FieldValue.increment(1)
         });
       }
       this.setState({
-        user: name
+        user: name,
+        usernameMAL: thisDoc.data().myanimelist_username
       })
     }).then(() => {
-      usersRef.doc(this.state.user).get().then((thisDoc) => {
-        this.setState({
-          user: name,
-          usernameMAL: thisDoc.data().myanimelist_username
-        })
-      })
+      // usersRef.doc(this.state.user).get().then((thisDoc) => {
+      //   this.setState({
+      //     user: name,
+      //     usernameMAL: thisDoc.data().myanimelist_username
+      //   })
+      // })
       this.recountUsers();
     });
   }
 
 
   resetSession() {
-    this.loadingGIF(true);
+    // this.loadingGIF(true);
     //log out of session && sign out of current user
     this.setState({
       sessionID: null,
-      hasSession: false,
       user: null,
       usernameMAL: null,
       usersInSessionCount: null
@@ -149,7 +150,7 @@ class App extends Component {
 
 
   createSession(sessionName) {
-    this.loadingGIF(true);
+    // this.loadingGIF(true);
     
     firebase.firestore().collection("session").add({
       session_name: sessionName,
@@ -163,17 +164,16 @@ class App extends Component {
 
 
   setSession(sessionID) {
-    this.loadingGIF(true);
+    // this.loadingGIF(true);
     this.setState({
-      sessionID: sessionID,
-      hasSession: true
+      sessionID: sessionID
     })
     this.recountUsers();
   }
 
   
   setUsernameMAL(event, name) {
-    this.loadingGIF(true);
+    // this.loadingGIF(true);
     event.preventDefault();
 
     const usersRef = firebase.firestore().collection("session").doc(this.state.sessionID).collection("users");
@@ -204,7 +204,7 @@ class App extends Component {
     return(
       <div className="banner-inner">
         <h2>Watch Party Rescue <span className="material-icons"></span></h2>
-        <p><i>(currently supporting <b>MyAnimeList's Plan to Watch</b> list only)</i></p>
+        {/* <p><i>(currently supporting <b>MyAnimeList's Plan to Watch</b> list only)</i></p> */}
       </div>
     );
   }
@@ -229,7 +229,6 @@ class App extends Component {
 
           <Session
             sessionID = {this.state.sessionID}
-            hasSession = {this.state.hasSession}
             resetSession = {this.resetSession}
             createSession = {this.createSession}
             loadingGIF = {this.loadingGIF}
@@ -239,7 +238,6 @@ class App extends Component {
           <SignIn
             user = {this.state.user}
             sessionID = {this.state.sessionID}
-            hasSession = {this.state.hasSession}
             usersInSessionCount = {this.state.usersInSessionCount}
             //methods
             resetSession = {this.resetSession}
@@ -254,25 +252,23 @@ class App extends Component {
 
         
 
-          {this.state.hasSession && <UserList
+          {this.state.sessionID != null && <UserList
                                       user = {this.state.user}
                                       sessionID = {this.state.sessionID}
                                     />}
           
 
-          {this.state.hasSession && this.state.user !== null && <React.Fragment>
+          {this.state.sessionID != null && this.state.user !== null && <React.Fragment>
                                                                   <FetchList
                                                                     user = {this.state.user}
                                                                     usernameMAL = {this.state.usernameMAL}
                                                                     sessionID = {this.state.sessionID}
-                                                                    hasSession = {this.state.hasSession}
                                                                     //methods
                                                                     setUsernameMAL = {this.setUsernameMAL}
                                                                     loadingGIF = {this.loadingGIF}
                                                                   /> 
                                                                   <ListSummary
                                                                     sessionID = {this.state.sessionID}
-                                                                    hasSession = {this.state.hasSession}
                                                                     usersInSessionCount = {this.state.usersInSessionCount}
                                                                     loadingGIF = {this.loadingGIF}
                                                                   />

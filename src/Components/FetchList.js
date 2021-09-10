@@ -39,7 +39,7 @@ class FetchList extends React.Component {
       event.preventDefault();
     } else {
       event.preventDefault();
-      this.props.loadingGIF(true);
+      // this.props.loadingGIF(true);
 
       console.log("MAL usernam = " + this.props.usernameMAL);
       const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
@@ -117,7 +117,7 @@ class FetchList extends React.Component {
     })
     .then(() => {
       console.log("API call successful.");
-      this.props.loadingGIF(false);
+      // this.props.loadingGIF(false);
     })
     .catch((error) => {
       console.log("API Unavailable: " + error);
@@ -131,25 +131,16 @@ class FetchList extends React.Component {
 
 
   UsernameMALView() {
-    // if (this.props.usernameMAL == null) {
-    //   return (
-    //     <p>MyAnimeList account: <button onClick={this.showFormUsernameMAL}>+ Add your username</button>
-    //     </p>
-    //   );
-    // } else {
-    //   return (
-    //     <p>MyAnimeList account: {this.props.usernameMAL} <button onClick={this.onFetchSubmit}>Fetch latest</button></p>
-    //   );
-    // }
-
-    return (
-      <p>
-        MyAnimeList account: 
-        {this.props.usernameMAL == null
-          ? <button onClick={this.showFormUsernameMAL}>+ Add your username</button>
-          : {this.props.usernameMAL} <button onClick={this.onFetchSubmit}>Fetch latest</button>}
-      </p>
-    );
+    if (this.props.usernameMAL == null) {
+      return (
+        <p>MyAnimeList account: <button onClick={this.showFormUsernameMAL}>+ Add your username</button>
+        </p>
+      );
+    } else {
+      return (
+        <p>MyAnimeList account: {this.props.usernameMAL} <button onClick={this.onFetchSubmit}>Fetch latest</button></p>
+      );
+    }
   }
 
   FormUsernameMALView() {

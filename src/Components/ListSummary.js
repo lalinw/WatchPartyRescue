@@ -19,11 +19,11 @@ class ListSummary extends React.Component {
   }
 
   componentDidUpdate() {
-    this.props.loadingGIF(false);
+    // this.props.loadingGIF(false);
   }
 
   updateSummaryList() {
-    this.props.loadingGIF(true);
+    // this.props.loadingGIF(true);
     console.log("ListSummary below:");
     //list all items with 2+ common users
     for (var i = this.props.usersInSessionCount; i > 1; i--) {
