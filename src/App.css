@@ -177,10 +177,16 @@ div#session-banner-content {
 }
 
 button#session-leave {
-  float: left;
+  position: absolute;
+  left: 0;
+  top: 0;
+  margin: 1em;
 }
 button#session-share {
-  float: right;
+  position: absolute;
+  right: 0;
+  top: 0;
+  margin: 1em;
 }
 
 /* ============================================ Sign In == */

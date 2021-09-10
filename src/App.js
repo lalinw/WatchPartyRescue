@@ -112,21 +112,24 @@ class App extends Component {
     usersRef.doc(name).get().then((thisDoc) => {
       if (!thisDoc.exists) {
         console.log("doc does not exist yet. Creating user...");
-        // usersRef.doc(name).set({
-        //   myanimelist_username: null
-        // });
-        sessionRef.update({
-          users_count: firebase.firestore.FieldValue.increment(1)
-        });
+        
         this.setState((state) => ({
           usersInSessionCount: state.usersInSessionCount + 1
         }))
-        
+
+        sessionRef.update({
+          users_count: firebase.firestore.FieldValue.increment(1)
+        });
+
+        usersRef.doc(name).set({
+          myanimelist_username: null
+        });
+      } else {
+        this.setState({
+          user: name,
+          usernameMAL: thisDoc.data().myanimelist_username
+        })
       }
-      this.setState({
-        user: name,
-        usernameMAL: thisDoc.data().myanimelist_username
-      })
     });
     
     // .then(() => {
@@ -251,10 +254,10 @@ class App extends Component {
 
             loadingGIF = {this.loadingGIF}
           />
-          {this.state.sessionID != null && <UserList
+          {/* {this.state.sessionID != null && <UserList
                                       user = {this.state.user}
                                       sessionID = {this.state.sessionID}
-                                    />}
+                                    />} */}
           {this.state.sessionID != null && this.state.user !== null && <React.Fragment>
                                                                   <FetchList
                                                                     user = {this.state.user}

@@ -1,6 +1,5 @@
 import React from 'react';
 import firebase from '../firebase';
-import UserList from "./UserList";
 
 class Session extends React.Component {
   constructor(props) {
@@ -93,6 +92,7 @@ class Session extends React.Component {
           defaultValue={this.state.sessionName}
           onChange={this.handleSessionNameChange}
           /> 
+        <br/>
         <button onClick={this.handleSessionNameUpdate}>Save</button>
         <button onClick={this.toggleEditMode}>Discard</button>
       </React.Fragment>
@@ -108,7 +108,9 @@ class Session extends React.Component {
     })
     return (
       <React.Fragment>
-        {this.state.sessionName}<button onClick={this.toggleEditMode}>edit</button>
+        {this.state.sessionName}
+        <br/>
+        <button onClick={this.toggleEditMode}>edit</button>
       </React.Fragment>
     );
   }

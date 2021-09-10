@@ -23,6 +23,10 @@ class ListSummary extends React.Component {
   }
 
   updateSummaryList() {
+    //reset 
+    this.setState({
+      listSummaryItems: []
+    });
     // this.props.loadingGIF(true);
     console.log("ListSummary below:");
     //list all items with 2+ common users
@@ -75,9 +79,9 @@ class ListSummary extends React.Component {
       });
     }).catch((error) => {});
     
-    this.setState({
-      listSummaryItems: this.state.listSummaryItems.concat(this.state.tempTier)
-    });
+    this.setState((state) => ({
+      listSummaryItems: state.listSummaryItems.concat(this.state.tempTier)
+    }));
     console.log("thisTier finished running with no errors");
   }
 

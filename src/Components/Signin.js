@@ -46,22 +46,16 @@ class SignIn extends React.Component {
 
 
   ActiveUserView() {
-
     const parentElement = document.getElementById("banner");
     return ReactDOM.createPortal(
       <div id="profile-card">
-        <p>Joined as: {this.props.user} <button onClick={this.props.resetUser}>Sign Out</button></p>
+        <p><b>{this.props.user}</b> <button onClick={this.props.resetUser}>Sign Out</button></p>
       </div>, 
       parentElement);
-    // return (
-    //   <div>
-    //     <p>Joined as: {this.props.user} <button onClick={this.props.resetUser}>Sign Out</button></p>
-    //   </div>
-    // );
   }
 
   existingUsersDropdownFormat(eachUser) {
-    return <option key={eachUser} value={eachUser}>{eachUser}</option>
+    return 0;
   }
 
   UserSignInView() {
@@ -97,7 +91,7 @@ class SignIn extends React.Component {
             {/* {this.state.existingUsers} */}
             <option key={"default"} value="DEFAULT">select user</option>
             {this.state.existingUsers.map((eachUser) => {
-              return this.existingUsersDropdownFormat(eachUser);
+              <option key={eachUser} value={eachUser}>{eachUser}</option>
             })}
           </select>
         </form>
@@ -113,8 +107,8 @@ class SignIn extends React.Component {
           <br/>
           <p><button 
             onClick={this.handleNameSubmit} 
-            disabled={this.state.tempUser === "" || this.state.tempUser === "DEFAULT"}
-            >Continue</button></p>
+            disabled={this.state.tempUser === "" || this.state.tempUser === "DEFAULT"}>Continue</button>
+          </p>
         </form>
       </div>
     );
