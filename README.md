@@ -1,70 +1,44 @@
-# Getting Started with Create React App
+# Watch Party Rescue 
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+An answer to the dreaded 'what-should-we-watch?!' when planning for an anime (or movie) night. WatchPartyRescue is here to Rescue your Watch Party! :)
 
-## Available Scripts
+Watch Party Rescue currently only supports `plan to watch` list from [MyAnimeList](https://myanimelist.net/).
+**Note: Users' list must be public in order to fetch their data.**
 
-In the project directory, you can run:
+## Features
 
-### `npm start`
+Compare yours and your friends' `plan to watch` list, and see the titles you have in common.
+<gif>
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+Display your name separate from your list account username.
+- Logging in as an existing user is now available
+- *Coming soon: Changing your display name*
+- *Coming soon: Changing associated MyAnimelist account name*
+<image>
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+Create & share sessions with your friends. 
+- Session naming and re-naming is now available
+- Share by link is now available
+<gif>
 
-### `npm test`
+Remove any session member AND their movie titles when they are no longer attending your event.
+<gif>
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+QoL features:
+- Re-naming session name in component
+- Disable interactive elements when conditions are not met 
+- *Coming soon: loading visuals to indicate when the firebase call is completed*
+- *Coming soon: Filtering based on common users, episodes, released date, etc.*
 
-### `npm run build`
+## The Technical Details
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+WatchPartyRescue is a web application written using [ReactJS](https://reactjs.org/).
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Database: [Google Firestore](https://firebase.google.com/products/firestore)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+API: [Jikan API](https://jikan.moe/)
 
-### `npm run eject`
+### Developer notes
+Watch Party Rescue is a passion project as well as a self-demanded utility project. Currently, MyAnimeList offers the capability to compare a user's watchlist to one other user's. However, the comparison shows all anime title from each user's list and their scoring, which excludes group comparison and categorization details. 
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+This application allows the comparison between **multiple** users' lists and compares titles under the `plan to watch` list (list type specification may be added as a future feature). 
