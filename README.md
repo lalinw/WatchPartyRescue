@@ -1,9 +1,15 @@
 # Watch Party Rescue 
 
-An answer to the dreaded 'what-should-we-watch?!' when planning for an anime (or movie) night. WatchPartyRescue is here to Rescue your Watch Party! :)
+An answer to the dreaded 'what-should-we-watch?!' when planning for an anime (or movie) night. WatchPartyRescue is here to *R*escue your *W*atch *P*arty! :)
 
 Watch Party Rescue currently only supports `plan to watch` list from [MyAnimeList](https://myanimelist.net/).
+
 **Note: Users' list must be public in order to fetch their data.**
+
+### Developer notes
+Watch Party Rescue is a passion project as well as a self-demanded utility project. Currently, MyAnimeList offers the capability to compare a user's watchlist to one other user's. However, the comparison shows all anime title from each user's list and their scoring, which excludes group comparison and categorization details. 
+
+This application allows the comparison between **multiple** users' lists and compares titles under the `plan to watch` list (list type specification may be added as a future feature). 
 
 ## Features
 
@@ -38,7 +44,3 @@ Database: [Google Firestore](https://firebase.google.com/products/firestore)
 
 API: [Jikan API](https://jikan.moe/)
 
-### Developer notes
-Watch Party Rescue is a passion project as well as a self-demanded utility project. Currently, MyAnimeList offers the capability to compare a user's watchlist to one other user's. However, the comparison shows all anime title from each user's list and their scoring, which excludes group comparison and categorization details. 
-
-This application allows the comparison between **multiple** users' lists and compares titles under the `plan to watch` list (list type specification may be added as a future feature). 
