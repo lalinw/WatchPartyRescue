@@ -69,22 +69,27 @@ div.banner-inner {
 }
 
 .announcement {
-  padding: 0 1em;
   width: 100%;
   background-color: #f4c134;
   color: black;
   float: left;
+  position:relative
+}
+
+span.announcement-text {
+  margin: 0.5em 1em;
+  position: absolute;
 }
 
 /* The close button */
-.announcement-close {
-  margin-right: 1em;
+span.announcement-close {
   color: black;
   font-weight: bold;
   float: right;
-  font-size: 25pt;
+  font-size: 20pt;
   transition: 0.2s;
   cursor: pointer;
+  margin-right: 1em;
 }
 
 .announcement-close:hover {

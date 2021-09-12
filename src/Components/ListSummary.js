@@ -68,16 +68,20 @@ class ListSummary extends React.Component {
 
  
   animeItemFormat(itemObject) {
-    console.log("item format called");
+    // console.log("item format called");
     return (
       <div className="poster-image" key={itemObject.id}>
         <img src={itemObject.img} alt={itemObject.title}/>
         <div className="overlay-dim">
             <h3><span>{itemObject.title}</span></h3>
-            <p><span className="field-name">Episodes:</span> 
-            <br/>{itemObject.eps}</p>
-            <p><span className="field-name">Released:</span> 
-            <br/>{itemObject.season}</p>
+            <p>
+              <span className="field-name">Episodes:</span> 
+              <br/>{itemObject.eps}
+            </p>
+            <p>
+              <span className="field-name">Released:</span> 
+              <br/>{itemObject.season}
+            </p>
             <p>({itemObject.common_users})</p>
             <a href={itemObject.link}><button>see details on MyAnimeList</button></a>
         </div>
@@ -86,13 +90,12 @@ class ListSummary extends React.Component {
   }
 
   render() {
-    console.log(this.state.countFilters);
-    console.log("list summary items (all) = " + this.state.allItems);
+    // console.log(this.state.countFilters);
+    // console.log("list summary items (all) = " + this.state.allItems);
     if (this.state.allItems.length > 0) {
       return (
         <div>
-          <h3>Titles you have in common! <button onClick={this.showSummaryList}>Reload</button></h3> 
-          <button onClick={this.retrieveAllItems}>Retrieve All</button>
+          <h3>Titles you have in common! <button onClick={this.retrieveAllItems}>Reload</button></h3> 
           <div id="tiers">
             {
               this.state.countFilters.map((thisFilter) => {
@@ -116,8 +119,7 @@ class ListSummary extends React.Component {
     } else {
       return (
         <div>
-          <button onClick={this.showSummaryList}>Find titles everyone has in common!</button>
-          <button onClick={this.retrieveAllItems}>get all items</button>
+          <button onClick={this.retrieveAllItems}>Find titles everyone has in common!</button>
           <div id="item-tiers"></div>
         </div>
       );
