@@ -13,24 +13,24 @@ This application allows the comparison between **multiple** users' lists with a 
 
 ## Features
 
-♦ Compare yours and your friends' `plan to watch` list, and see the titles you have in common. ♦
+##### Compare yours and your friends' `plan to watch` list, and see the titles you have in common.
 <gif>
 
-♦ Display your name separate from your list account username. ♦
+##### Display your name separate from your list account username.
 - Logging in as an existing user is now available
 - *Coming soon: Changing your display name*
 - *Coming soon: Changing associated MyAnimelist account name*
 <image>
 
-♦ Create & share sessions with your friends. ♦
+##### Create & share sessions with your friends.
 - Session naming and re-naming is now available
 - Share by link is now available
 <gif>
 
-♦ Remove any session member AND their movie titles when they are no longer attending your event. ♦
+##### Remove any session member AND their movie titles when they are no longer attending your event.
 <gif>
 
-♦ QoL features ♦
+##### QoL features 
 - Re-naming session name in component
 - Disable interactive elements when conditions are not met 
 - *Coming soon: loading visuals to indicate when the firebase call is completed*
