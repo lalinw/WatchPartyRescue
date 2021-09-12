@@ -9,62 +9,29 @@ class ListSummary extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      listSummaryItems: [],
-      listDisplay: [],
+      allItems: [],
+      countFilters: []
     };
-    this.constructItemTier = this.constructItemTier.bind(this);
-    this.showSummaryList = this.showSummaryList.bind(this);
     this.retrieveAllItems = this.retrieveAllItems.bind(this);
     this.animeItemFormat = this.animeItemFormat.bind(this);
-    this.tierFormat = this.tierFormat.bind(this);
     
   }
   
   componentDidMount() {
-    //this.updateSummaryList();
-  }
-
-  componentDidUpdate() {
-    // this.props.loadingGIF(false);
-  }
-
-  showSummaryList() {
-    
-    console.log("ListSummary below:");
-    //list all items with 2+ common users
-    this.retrieveAllItems();
+    var counts = [];
     for (var i = this.props.usersInSessionCount; i > 1; i--) {
-      var thisTier = this.state.listSummaryItems.filter(item => item.users_count == i)
-      if (thisTier.length > 0) {
-        this.tierFormat(thisTier, i);
-      }
-      
+      counts.push(i);
     }
-  }
-
-  tierFormat(tierArray, countFilter) {
-    console.log("tierFormat() is called w/ " + countFilter);
-    //but where to return this to??
-    this.setState(state => {
-      listDisplay: state.listDisplay.push(
-        <div className="item-tier">
-          <p>Titles sharing {countFilter} common users:</p>
-          {
-            tierArray
-            .map((eachItem) => {
-              return this.animeItemFormat(eachItem);
-            })
-          }
-        </div>
-      )
-      
+    this.setState({
+      countFilters: counts
     });
   }
 
+
   retrieveAllItems() {
-    //reset 
+    //reset state
     this.setState({
-      listSummaryItems: []
+      allItems: []
     });
 
     console.log("retrieveAllItems started...");
@@ -87,72 +54,23 @@ class ListSummary extends React.Component {
           users_count:  plantowatchDoc.data().occurrences,
           link:         plantowatchDoc.data().link
         };
-        console.log(item.title);
+        // console.log(item.title);
         this.setState(state => ({
-          listSummaryItems: [...state.listSummaryItems, item]
+          allItems: [...state.allItems, item]
         }));        
       });
       
     })
     .then(() => {
       console.log("all items retrieved!");
-      console.log("list summary items (all) = " + this.state.listSummaryItems);
     });
   }
 
-  async constructItemTier(usersCount) {
-    console.log("item tier called");
-    const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
-    const summaryMAL = sessionRef.collection("summary").doc("myanimelist");
-    const MALplantowatch = summaryMAL.collection("plan_to_watch");
-    
-    //clear tempTier state
-    this.setState({
-      tempTier: []
-    });
-    
-    // console.log("users => " + usersCount);
-    // await MALplantowatch.where('occurrences', "==", usersCount).get()
-    // .then((querySnapshot) => {
-    //   var thisItemTier = [];
-    //   thisItemTier.push(
-    //     <div className="item-tier">
-    //       <p>Items with {usersCount} votes</p>
-    //     </div>
-    //   );
-    //   console.log(thisItemTier);
-    //   querySnapshot.docs.map( (plantowatchDoc)=> {
-    //       thisItemTier.push(
-    //         <div className="poster-image">
-    //           <img src={plantowatchDoc.data().image} alt={plantowatchDoc.data().title}/>
-    //           <div className="overlay-dim">
-    //               <h3><span>{plantowatchDoc.data().title}</span></h3>
-    //               <p><span className="field-name">Episodes:</span> 
-    //               <br/>{plantowatchDoc.data().episodes}</p>
-    //               <p><span className="field-name">Released:</span> 
-    //               <br/>{plantowatchDoc.data().season}</p>
-    //               <p>({plantowatchDoc.data().common_users.join(", ")})</p>
-    //               <a href={plantowatchDoc.data().link}><button>see details on MyAnimeList</button></a>
-    //           </div>
-    //         </div>
-    //       );
-    //       this.setState({
-    //         tempTier: thisItemTier
-    //       });
-    //       console.log("temp tier -> " + this.state.tempTier);
-    //       return null;
-    //   });
-    // }).catch((error) => {});
-    
-    // this.setState((state) => ({
-    //   listSummaryItems: state.listSummaryItems.concat(this.state.tempTier)
-    // }));
-    // console.log("thisTier finished running with no errors");
-  }
-
+ 
   animeItemFormat(itemObject) {
+    console.log("item format called");
     return (
-      <div className="poster-image">
+      <div className="poster-image" key={itemObject.id}>
         <img src={itemObject.img} alt={itemObject.title}/>
         <div className="overlay-dim">
             <h3><span>{itemObject.title}</span></h3>
@@ -167,25 +85,40 @@ class ListSummary extends React.Component {
     );
   }
 
-
   render() {
-    
-    if (this.state.listSummaryItems.length === 0) {
+    console.log(this.state.countFilters);
+    console.log("list summary items (all) = " + this.state.allItems);
+    if (this.state.allItems.length > 0) {
+      return (
+        <div>
+          <h3>Titles you have in common! <button onClick={this.showSummaryList}>Reload</button></h3> 
+          <button onClick={this.retrieveAllItems}>Retrieve All</button>
+          <div id="tiers">
+            {
+              this.state.countFilters.map((thisFilter) => {
+                var thisTier = this.state.allItems.filter(item => item.users_count == thisFilter);
+                return (
+                  <div className="item-tier">
+                    <p>Titles sharing {thisFilter} common users ({thisTier.length}):</p>
+                    {
+                      thisTier.map((eachItem) => {
+                        return this.animeItemFormat(eachItem);
+                      })
+                    }
+                  </div>
+                );
+              })
+            }
+          </div>
+        </div>
+      );
+      
+    } else {
       return (
         <div>
           <button onClick={this.showSummaryList}>Find titles everyone has in common!</button>
           <button onClick={this.retrieveAllItems}>get all items</button>
           <div id="item-tiers"></div>
-        </div>
-      );
-    } else {
-      return (
-        <div>
-          <h3>Titles you have in common! <button onClick={this.showSummaryList}>Reload</button></h3> 
-          <button onClick={this.retrieveAllItems}>Retrieve All</button>
-          <div id="item-tiers">
-            {this.state.listDisplay}
-          </div>
         </div>
       );
     }
