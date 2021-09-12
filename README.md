@@ -1,6 +1,6 @@
 # Watch Party Rescue 
 
-An answer to the dreaded 'what-should-we-watch?!' when planning for an anime (or movie) night. WatchPartyRescue is here to *R*escue your *W*atch *P*arty! :)
+An answer to the dreaded 'what-should-we-watch?!' when planning for an anime (or movie) night. WatchPartyRescue is here to **R**escue your **W**atch **P**arty! :)
 
 Watch Party Rescue currently only supports `plan to watch` list from [MyAnimeList](https://myanimelist.net/).
 
