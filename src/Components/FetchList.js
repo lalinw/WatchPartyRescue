@@ -133,7 +133,9 @@ class FetchList extends React.Component {
   UsernameMALView() {
     if (this.props.usernameMAL == null) {
       return (
-        <p>MyAnimeList account: <button onClick={this.showFormUsernameMAL}>+ Add your username</button>
+        <p>
+          MyAnimeList account: 
+          <button onClick={this.showFormUsernameMAL}>+ Add your username</button>
         </p>
       );
     } else {

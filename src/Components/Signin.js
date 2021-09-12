@@ -20,7 +20,6 @@ class SignIn extends React.Component {
   
 
   componentDidMount() {
-    
   }
 
 
@@ -64,22 +63,12 @@ class SignIn extends React.Component {
 
     usersRef.onSnapshot((userDocs) => {
       var localUsers = [];
-      // localUsers.push(
-      //   <option key={"default"} value="DEFAULT">select user</option>
-      // );
       userDocs.forEach((theUser) => {
-        // localUsers.push(
-        //   <option key={theUser.id} value={theUser.id}>{theUser.id}</option>
-        // );
         localUsers.push(theUser.id);
-
       });
       this.setState({
         existingUsers: localUsers
       })
-      // this.setState((state) => {
-      //   existingUsers: state.existingUsers.push(theUser.id);
-      // })
     });
     
     return (
@@ -94,10 +83,7 @@ class SignIn extends React.Component {
               return <option key={eachUser} value={eachUser}>{eachUser}</option>
             })}
           </select>
-        {/* </form>  */}
         <span>    or    </span>
-        {/* <form> */}
-          {/* <label>Enter your display name:</label> */}
           <input className="signin"
             type="text" 
             placeholder="enter your display name"

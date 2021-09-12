@@ -76,12 +76,7 @@ class App extends Component {
     this.loadingGIF(false);
   }
 
-
-  componentDidUpdate() {
-    // this.loadingGIF(false);
-  }
-
-
+  
   resetUser() {
     // this.loadingGIF(true);
     this.setState({
@@ -131,16 +126,6 @@ class App extends Component {
         })
       }
     });
-    
-    // .then(() => {
-    //   // usersRef.doc(this.state.user).get().then((thisDoc) => {
-    //   //   this.setState({
-    //   //     user: name,
-    //   //     usernameMAL: thisDoc.data().myanimelist_username
-    //   //   })
-    //   // })
-    //   this.recountUsers();
-    // });
   }
 
 

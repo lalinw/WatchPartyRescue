@@ -38,28 +38,12 @@ class UserList extends React.Component {
   }
 
   userItemFormat(eachUser) {
-    // if (eachUser === this.props.user) {
-    //   return (
-    //     <li key={eachUser}>
-    //       {eachUser}
-    //     </li>
-    //   );
-    // } else {
-    //   return (
-    //     <li key={eachUser}>
-    //       {eachUser} <button id={eachUser} onClick={this.deleteUser}>Remove</button>
-    //     </li>
-    //   );
-    // }
-
     return (
       <li key={eachUser}>
         {eachUser} 
-        {eachUser !== this.props.user 
-          && <button id={eachUser} onClick={this.deleteUser}>Remove</button>}
+        {eachUser !== this.props.user && <button id={eachUser} onClick={this.deleteUser}>Remove</button>}
       </li>
     );
-
   }
 
   deleteUser(event) {
@@ -68,7 +52,6 @@ class UserList extends React.Component {
       const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
       const summaryMAL = sessionRef.collection("summary").doc("myanimelist");
       const usersRef = sessionRef.collection("users");
-
       console.log("Deleting user", user);
 
       //delete this user's doc in users collection
@@ -77,8 +60,6 @@ class UserList extends React.Component {
         console.log(user + " has been deleted.");
       })
       .catch((error) => {});
-
-      console.log("after update");
 
       summaryMAL.collection("plan_to_watch").where("common_users", "array-contains", user)
       .get().then((querySnapshot) => {
@@ -132,7 +113,6 @@ class UserList extends React.Component {
     } else {
       return null;
     }
-    
   } 
 
 }

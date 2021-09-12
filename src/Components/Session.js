@@ -23,8 +23,6 @@ class Session extends React.Component {
   
 
   componentDidMount() {
-    //var sessionRef = firebase.firestore().collection("session").doc(this.state.sessionID);
-    //var summaryMAL = sessionRef.collection("summary").doc("myanimelist");
   }
   
 
