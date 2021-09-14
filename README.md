@@ -36,9 +36,13 @@ This application allows the comparison between **multiple** users' lists with a 
 >  (gif)
 
 5. #### QoL features 
-> - [x] Re-naming session name in component
+> - [x] Alert user if input is invalid
+> - [x] Confirmation required to remove another user from session
+> - [x] Re-naming session name in-component
 > - [x] Disable interactive elements when appropriate 
-> - [ ] Loading visuals to indicate when the firebase call is pending/completed
+> - [ ] Visual indicater when the firebase call is pending/completed
+> - [ ] User-specific fetch details
+> - [ ] Caching of expensive calls locally
 > - [ ] Filtering based on common users, episodes, released date, etc.
 
 ***
