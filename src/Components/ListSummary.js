@@ -15,17 +15,20 @@ class ListSummary extends React.Component {
     this.retrieveAllItems = this.retrieveAllItems.bind(this);
     this.animeItemFormat = this.animeItemFormat.bind(this);
     this.toggleCollapsible = this.toggleCollapsible.bind(this)
-    this.setFiltersFromUsers = this.setFiltersFromUsers.bind(this)
+    this.setFiltersOnUsersCount = this.setFiltersOnUsersCount.bind(this)
   }
   
   componentDidMount() {
-    this.setFiltersFromUsers();
+    this.setFiltersOnUsersCount();
   }
 
   componentDidUpdate() {
+    if (this.props.usersInSessionCount !== this.state.countFilters[0].count) {
+      this.setFiltersOnUsersCount();
+    }
   }
 
-  setFiltersFromUsers() {
+  setFiltersOnUsersCount() {
     var filter = [];
     for (var i = this.props.usersInSessionCount; i > 1; i--) {
       var tier = {
@@ -126,12 +129,14 @@ class ListSummary extends React.Component {
               this.state.countFilters.map((thisFilter) => {
                 var thisTier = this.state.allItems.filter(item => item.users_count == thisFilter.count);
                 return (
-                  
-                  <div className="item-tier">
-                    <button key={thisFilter.count} onClick={ () => this.toggleCollapsible(thisFilter.count) }>
+                  <div key={"tier-" + thisFilter.id} className="item-tier">
+                    <button 
+                      key={"tierbtn-" + thisFilter.count} 
+                      onClick={ () => this.toggleCollapsible(thisFilter.count) }
+                      disabled={ thisTier.length === 0 }>
                       <p>Titles sharing {thisFilter.count} common users ({thisTier.length}):</p>
                     </button>
-                    <div className={"tier-content" + (thisFilter.show ? ' open' : '')}>
+                    <div key={"tiercontent-" + thisFilter.count} className={"tier-content" + (thisFilter.show ? ' open' : '')}>
                       {
                         thisTier.map((eachItem) => {
                           return this.animeItemFormat(eachItem);
@@ -150,7 +155,6 @@ class ListSummary extends React.Component {
       return (
         <div>
           <button onClick={this.retrieveAllItems}>Find titles everyone has in common!</button>
-          <div id="item-tiers"></div>
         </div>
       );
     }
