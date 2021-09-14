@@ -79,6 +79,7 @@ class FetchList extends React.Component {
     }).catch((error) => {});
   }
 
+
   fetchHelper(endpointMAL, page, paginationThreshold, thisUserDoc, summaryMAL) {
     console.log("making API call...");
     fetch(endpointMAL + page)
@@ -88,9 +89,13 @@ class FetchList extends React.Component {
         for (var i = 0; i < data.anime.length; i++) {
           // console.log(data.anime[i]);
           var thisAnime = data.anime[i];
-          var released = thisAnime.season_year;
-          if (released == null) {
-            released = "TBA";
+          var released; 
+          if (thisAnime.season_year == null) {
+            if (thisAnime.airing_status <= 2) {
+              released = thisAnime.start_date.substring(0,4);
+            } else {
+              released = "TBA";
+            }
           } else {
             released = thisAnime.season_name + " " + thisAnime.season_year;
           }
@@ -117,13 +122,23 @@ class FetchList extends React.Component {
     })
     .then(() => {
       console.log("API call successful.");
-      const usersRef = firebase.firestore().collection("session").doc(this.props.sessionID).collection("users");
+      const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
+      const summaryMAL = sessionRef.collection("summary").doc("myanimelist");
+      const usersRef = sessionRef.collection("users");
+
       usersRef.doc(this.props.user)
-          .set({
-            last_fetched: firebase.firestore.FieldValue.serverTimestamp()
-          }, { 
-            merge: true 
-          });
+      .set({
+        last_fetched: firebase.firestore.FieldValue.serverTimestamp()
+      }, { 
+        merge: true 
+      });
+
+      summaryMAL
+      .set({
+        latest_fetch: firebase.firestore.FieldValue.serverTimestamp()
+      }, { 
+        merge: true 
+      });
       // this.props.loadingGIF(false);
     })
     .catch((error) => {

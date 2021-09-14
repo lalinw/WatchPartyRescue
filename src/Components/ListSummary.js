@@ -10,7 +10,10 @@ class ListSummary extends React.Component {
     super(props);
     this.state = {
       allItems: [],
-      countFilters: [0]
+      countFilters: [{
+        count: 0,
+        show: false
+      }]
     };
     this.retrieveAllItems = this.retrieveAllItems.bind(this);
     this.animeItemFormat = this.animeItemFormat.bind(this);
@@ -24,9 +27,7 @@ class ListSummary extends React.Component {
 
   componentDidUpdate() {
     if (this.props.usersInSessionCount > 2) {
-      if (this.state.countFilters.length <= 1) {
-        this.setFiltersOnUsersCount();
-      } else if (this.props.usersInSessionCount !== this.state.countFilters[0].count) {
+      if (this.props.usersInSessionCount !== this.state.countFilters[0].count) {
         this.setFiltersOnUsersCount();
       }
     }
@@ -82,6 +83,14 @@ class ListSummary extends React.Component {
     })
     .then(() => {
       console.log("all items retrieved!");
+      const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
+      const summaryMAL = sessionRef.collection("summary").doc("myanimelist");
+      summaryMAL
+      .set({
+        latest_retrieval: firebase.firestore.FieldValue.serverTimestamp()
+      }, { 
+        merge: true 
+      });
     });
   }
 
@@ -133,7 +142,7 @@ class ListSummary extends React.Component {
               this.state.countFilters.map((thisFilter) => {
                 var thisTier = this.state.allItems.filter(item => item.occurrences == thisFilter.count);
                 return (
-                  <div key={"tier-" + thisFilter.id} className="item-tier">
+                  <div key={"tier-" + thisFilter.count} className="item-tier">
                     <button 
                       key={"tierbtn-" + thisFilter.count} 
                       onClick={ () => this.toggleCollapsible(thisFilter.count) }

@@ -239,11 +239,11 @@ class App extends Component {
 
             loadingGIF = {this.loadingGIF}
           />
-          {this.state.sessionID != null && <UserList
+          {/* {this.state.sessionID != null && <UserList
                                       user = {this.state.user}
                                       sessionID = {this.state.sessionID}
                                       recountUsers = {this.recountUsers}
-                                    />}
+                                    />} */}
           {this.state.sessionID != null && this.state.user !== null && <React.Fragment>
                                                                   <FetchList
                                                                     user = {this.state.user}
