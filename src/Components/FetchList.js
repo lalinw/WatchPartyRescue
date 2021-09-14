@@ -90,7 +90,7 @@ class FetchList extends React.Component {
           var thisAnime = data.anime[i];
           var released = thisAnime.season_year;
           if (released == null) {
-            released = "unknown";
+            released = "TBA";
           } else {
             released = thisAnime.season_name + " " + thisAnime.season_year;
           }

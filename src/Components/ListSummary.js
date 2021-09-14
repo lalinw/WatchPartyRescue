@@ -10,7 +10,7 @@ class ListSummary extends React.Component {
     super(props);
     this.state = {
       allItems: [],
-      countFilters: []
+      countFilters: [0]
     };
     this.retrieveAllItems = this.retrieveAllItems.bind(this);
     this.animeItemFormat = this.animeItemFormat.bind(this);
@@ -23,8 +23,12 @@ class ListSummary extends React.Component {
   }
 
   componentDidUpdate() {
-    if (this.props.usersInSessionCount !== this.state.countFilters[0].count) {
-      this.setFiltersOnUsersCount();
+    if (this.props.usersInSessionCount > 2) {
+      if (this.state.countFilters.length <= 1) {
+        this.setFiltersOnUsersCount();
+      } else if (this.props.usersInSessionCount !== this.state.countFilters[0].count) {
+        this.setFiltersOnUsersCount();
+      }
     }
   }
 
