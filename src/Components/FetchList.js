@@ -117,6 +117,13 @@ class FetchList extends React.Component {
     })
     .then(() => {
       console.log("API call successful.");
+      const usersRef = firebase.firestore().collection("session").doc(this.props.sessionID).collection("users");
+      usersRef.doc(this.props.user)
+          .set({
+            last_fetched: firebase.firestore.FieldValue.serverTimestamp()
+          }, { 
+            merge: true 
+          });
       // this.props.loadingGIF(false);
     })
     .catch((error) => {

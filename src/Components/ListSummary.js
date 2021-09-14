@@ -14,16 +14,28 @@ class ListSummary extends React.Component {
     };
     this.retrieveAllItems = this.retrieveAllItems.bind(this);
     this.animeItemFormat = this.animeItemFormat.bind(this);
-    
+    this.toggleCollapsible = this.toggleCollapsible.bind(this)
+    this.setFiltersFromUsers = this.setFiltersFromUsers.bind(this)
   }
   
   componentDidMount() {
-    var counts = [];
+    this.setFiltersFromUsers();
+  }
+
+  componentDidUpdate() {
+  }
+
+  setFiltersFromUsers() {
+    var filter = [];
     for (var i = this.props.usersInSessionCount; i > 1; i--) {
-      counts.push(i);
+      var tier = {
+        count: i,
+        show: false
+      };
+      filter.push(tier);
     }
     this.setState({
-      countFilters: counts
+      countFilters: filter
     });
   }
 
@@ -88,6 +100,19 @@ class ListSummary extends React.Component {
       </div>
     );
   }
+  
+  toggleCollapsible(countAsKey) {
+    console.log("toggle collapsible called");
+    console.log("toggle collapsible ///" + countAsKey);
+    console.log(this.state.countFilters);
+    var newCountFilters = this.state.countFilters.map(filter => 
+      (filter.count === countAsKey ? {...filter, show: !filter.show}: filter) 
+    )
+    console.log(newCountFilters);
+    this.setState({
+      countFilters: newCountFilters
+    });
+  }
 
   render() {
     // console.log(this.state.countFilters);
@@ -99,15 +124,20 @@ class ListSummary extends React.Component {
           <div id="tiers">
             {
               this.state.countFilters.map((thisFilter) => {
-                var thisTier = this.state.allItems.filter(item => item.users_count == thisFilter);
+                var thisTier = this.state.allItems.filter(item => item.users_count == thisFilter.count);
                 return (
+                  
                   <div className="item-tier">
-                    <p>Titles sharing {thisFilter} common users ({thisTier.length}):</p>
-                    {
-                      thisTier.map((eachItem) => {
-                        return this.animeItemFormat(eachItem);
-                      })
-                    }
+                    <button key={thisFilter.count} onClick={ () => this.toggleCollapsible(thisFilter.count) }>
+                      <p>Titles sharing {thisFilter.count} common users ({thisTier.length}):</p>
+                    </button>
+                    <div className={"tier-content" + (thisFilter.show ? ' open' : '')}>
+                      {
+                        thisTier.map((eachItem) => {
+                          return this.animeItemFormat(eachItem);
+                        })
+                      }
+                    </div>
                   </div>
                 );
               })

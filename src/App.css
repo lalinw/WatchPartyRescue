@@ -255,6 +255,13 @@ span.field-name {
   font: small-caps;
 }
 
+.tier-content {
+  display: none
+}
+
+.tier-content.open {
+  display: block
+}
 
 
 /* ============================================== */
