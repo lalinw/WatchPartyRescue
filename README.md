@@ -5,7 +5,7 @@ An answer to the dreaded 'what-should-we-watch?!' when planning for an anime (or
 Watch Party Rescue currently only supports `plan to watch` list type from [MyAnimeList](https://myanimelist.net/).
 
 **Note:** Users' list settings must be set to `public` in order to fetch their data.  
-![Public list settings](/documentation/mal_list_public.png)
+> ![Public list settings](/documentation/mal_list_public.png)
 ***
 ### Project Status
 This project is currently under development. MVP is available under the `main` branch
