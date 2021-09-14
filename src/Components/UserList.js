@@ -23,6 +23,7 @@ class UserList extends React.Component {
 
   retrieveUserList() {
     //populate userList state for user management 
+    const usersRef = firebase.firestore().collection("session").doc(this.props.sessionID).collection("users");
     usersRef.onSnapshot((userDocs) => {
       var localUsers = [];
       console.log("userDocs = " + userDocs.size);
@@ -37,19 +38,12 @@ class UserList extends React.Component {
   }
 
   userItemFormat(eachUser) {
-    if (eachUser === this.props.user) {
-      return (
-        <li>
-          {eachUser}
-        </li>
-      );
-    } else {
-      return (
-        <li>
-          {eachUser} <button id={eachUser} onClick={this.deleteUser}>Remove</button>
-        </li>
-      );
-    }
+    return (
+      <li key={eachUser}>
+        {eachUser} 
+        {eachUser !== this.props.user && <button id={eachUser} onClick={this.deleteUser}>Remove</button>}
+      </li>
+    );
   }
 
   deleteUser(event) {
@@ -58,7 +52,6 @@ class UserList extends React.Component {
       const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
       const summaryMAL = sessionRef.collection("summary").doc("myanimelist");
       const usersRef = sessionRef.collection("users");
-
       console.log("Deleting user", user);
 
       //delete this user's doc in users collection
@@ -67,8 +60,6 @@ class UserList extends React.Component {
         console.log(user + " has been deleted.");
       })
       .catch((error) => {});
-
-      console.log("after update");
 
       summaryMAL.collection("plan_to_watch").where("common_users", "array-contains", user)
       .get().then((querySnapshot) => {
@@ -105,38 +96,15 @@ class UserList extends React.Component {
  
   render() {
     if (this.props.sessionID != null) {
-      // var displayUsers = [];
-      // for (var i = 0; i < this.state.userList.length; i++) {
-      //   var username = this.state.userList[i];
-      //   if (username === this.props.user) {
-      //     displayUsers.push(
-      //       <li>
-      //         {username}
-      //       </li>
-      //     )
-      //   } else {
-      //     displayUsers.push(
-      //       <li>
-      //         {username} <button id={username} onClick={this.deleteUser}>Remove</button>
-      //       </li>
-      //     );
-      //   }
-      // }
-
-      //use useritemformat() and map() to pass in each user from list
-      // this.state.userList.map((eachUser) => {
-      //   this.userItemFormat(eachUser);
-      // })
       return (
-        <div class="user-list">
+        <div className="user-list">
           {this.state.userList.length === 0 
             ? <p><i>There are no users in this session yet</i></p> 
             : <React.Fragment>
               <p>Users in this session:</p>
               <ul>
-                {/* {displayUsers} */}
                 {this.state.userList.map((eachUser) => {
-                  this.userItemFormat(eachUser);
+                  return this.userItemFormat(eachUser);
                 })}
               </ul>
             </React.Fragment>}
@@ -145,7 +113,6 @@ class UserList extends React.Component {
     } else {
       return null;
     }
-    
   } 
 
 }

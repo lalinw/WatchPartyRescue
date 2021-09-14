@@ -1,70 +1,55 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Watch Party Rescue 
 
-## Available Scripts
+An answer to the dreaded 'what-should-we-watch?!' when planning for an anime (or movie) night. WatchPartyRescue is here to **R**escue your **W**atch **P**arty! :)
+Watch Party Rescue currently only supports `plan to watch` list type from [MyAnimeList](https://myanimelist.net/).
 
-In the project directory, you can run:
+**Note:** Users' list settings must be set to `public` in order to fetch their data.
+***
+### Project Status
+This project is currently under development. MVP is available under the `main` branch
 
-### `npm start`
+### Developer notes
+Watch Party Rescue is a passion project as well as a self-demanded utility project. Currently, MyAnimeList offers the capability for comparison between one user's watchlist and one other user's. However, the results shows all anime from each user's list and their scoring, excluding group comparison and categorization details. 
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+This application allows the comparison between **multiple** users' lists with a quick look to each title's key information at a glance, and compares titles under the `plan to watch` list (more list type specification may be added as a future feature). 
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
 
-### `npm test`
+## Features
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+1. #### Compare yours and your friends' `plan to watch` list, and see the titles you have in common. 
+> (gif)
 
-### `npm run build`
+2. #### Display your name separate from your list account username.
+> - [x] Log in as an existing user
+> - [ ] Changing your display name
+> - [ ] Changing associated MyAnimelist account name 
+>  (image)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+3. #### Create & share sessions with your friends.
+> - [x] Session naming & re-naming
+> - [x] Share session by link
+>  (gif)
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+4. #### Remove any session member AND their movie titles when they are no longer attending your event.  
+>  (gif)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+5. #### QoL features 
+> - [x] Re-naming session name in component
+> - [x] Disable interactive elements when appropriate 
+> - [ ] Loading visuals to indicate when the firebase call is pending/completed
+> - [ ] Filtering based on common users, episodes, released date, etc.
 
-### `npm run eject`
+***
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+## The Technical Details
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+WatchPartyRescue is a web application written using [ReactJS](https://reactjs.org/).
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+Database: [Google Firestore](https://firebase.google.com/products/firestore)
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+API: 
+- [Jikan API](https://jikan.moe/)
+- *TBD: Letterboxd*
 
-## Learn More
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)

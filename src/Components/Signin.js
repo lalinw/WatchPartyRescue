@@ -1,5 +1,6 @@
 import React from 'react';
 import firebase from '../firebase';
+import ReactDOM from 'react-dom'
 
 class SignIn extends React.Component {
   constructor(props) {
@@ -12,8 +13,9 @@ class SignIn extends React.Component {
     this.handleNameSubmit = this.handleNameSubmit.bind(this);
 
     //micro-components
-    this.hasUserTrue = this.hasUserTrue.bind(this);
-    this.hasUserFalse = this.hasUserFalse.bind(this);
+    this.ActiveUserView = this.ActiveUserView.bind(this);
+    this.UserSignInView = this.UserSignInView.bind(this);
+    this.existingUsersDropdownFormat = this.existingUsersDropdownFormat.bind(this);
   }
   
 
@@ -42,28 +44,27 @@ class SignIn extends React.Component {
   }
 
 
-  hasUserTrue() {
-    return (
-      <div>
-        <p>Joined as: {this.props.user} <button onClick={this.props.resetUser}>Sign Out</button></p>
-      </div>
-    );
+  ActiveUserView() {
+    const parentElement = document.getElementById("banner");
+    return ReactDOM.createPortal(
+      <div id="profile-card">
+        <p><b>{this.props.user}</b> <button onClick={this.props.resetUser}>Sign Out</button></p>
+      </div>, 
+      parentElement);
   }
 
+  existingUsersDropdownFormat(eachUser) {
+    return 0;
+  }
 
-  hasUserFalse() {
+  UserSignInView() {
     const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
     const usersRef = sessionRef.collection("users");
 
     usersRef.onSnapshot((userDocs) => {
       var localUsers = [];
-      localUsers.push(
-        <option value="DEFAULT">select user</option>
-      );
       userDocs.forEach((theUser) => {
-        localUsers.push(
-          <option value={theUser.id}>{theUser.id}</option>
-        );
+        localUsers.push(theUser.id);
       });
       this.setState({
         existingUsers: localUsers
@@ -71,42 +72,41 @@ class SignIn extends React.Component {
     });
     
     return (
-      <div>
+      <div className="sign-in">
         <h2>Sign in:</h2>
+        <p>Select your name if you have been here before <i>or</i> just enter your display name!</p>
         <form>
-          <label>Log in as: </label>
+          <label>Join session as: </label>
           <select defaultValue={"DEFAULT"} onChange={this.handleNameChange}>
-            {this.state.existingUsers}
+            <option key={"default"} value="DEFAULT">select user</option>
+            {this.state.existingUsers.map((eachUser) => {
+              return <option key={eachUser} value={eachUser}>{eachUser}</option>
+            })}
           </select>
-        </form>
-        <p>OR</p>
-        <form>
-          <label>Enter your display name:</label>
-          <br/>
-          <input class="signin"
+        <span>    or    </span>
+          <input className="signin"
             type="text" 
-            placeholder="Display name"
+            placeholder="enter your display name"
             onChange={this.handleNameChange}
             />
           <br/>
           <p><button 
             onClick={this.handleNameSubmit} 
-            disabled={this.state.tempUser === ""}
-            >Continue</button></p>
+            disabled={this.state.tempUser === "" || this.state.tempUser === "DEFAULT"}>Continue</button>
+          </p>
         </form>
       </div>
     );
   }
 
 
-
   render() {
     return (
       <React.Fragment>
-        {this.props.sessionID !== null && <div class="sign-in">
+        {this.props.sessionID !== null && <div className="sign-in">
                                             {this.props.user !== null 
-                                              ? <this.hasUserTrue/> 
-                                              : <this.hasUserFalse/>}
+                                              ? <this.ActiveUserView/> 
+                                              : <this.UserSignInView/>}
                                           </div>}
 
       </React.Fragment>

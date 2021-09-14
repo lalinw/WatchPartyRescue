@@ -39,7 +39,7 @@ class FetchList extends React.Component {
       event.preventDefault();
     } else {
       event.preventDefault();
-      this.props.loadingGIF(true);
+      // this.props.loadingGIF(true);
 
       console.log("MAL usernam = " + this.props.usernameMAL);
       const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
@@ -65,8 +65,9 @@ class FetchList extends React.Component {
     const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
     const summaryMAL = sessionRef.collection("summary").doc("myanimelist");
 
-    await summaryMAL.collection("plan_to_watch").where("common_users", "array-contains", this.props.user).get()
-    .then((querySnapshot) => {
+    await summaryMAL.collection("plan_to_watch")
+                    .where("common_users", "array-contains", this.props.user)
+    .get().then((querySnapshot) => {
       querySnapshot.docs.map( (thisDoc) => {
         return summaryMAL.collection("plan_to_watch").doc(thisDoc.id).update({
           common_users: firebase.firestore.FieldValue.arrayRemove(this.props.user),
@@ -78,6 +79,7 @@ class FetchList extends React.Component {
     }).catch((error) => {});
   }
 
+
   fetchHelper(endpointMAL, page, paginationThreshold, thisUserDoc, summaryMAL) {
     console.log("making API call...");
     fetch(endpointMAL + page)
@@ -87,9 +89,13 @@ class FetchList extends React.Component {
         for (var i = 0; i < data.anime.length; i++) {
           // console.log(data.anime[i]);
           var thisAnime = data.anime[i];
-          var released = thisAnime.season_year;
-          if (released == null) {
-            released = "unknown";
+          var released; 
+          if (thisAnime.season_year == null) {
+            if (thisAnime.airing_status <= 2) {
+              released = thisAnime.start_date.substring(0,4);
+            } else {
+              released = "TBA";
+            }
           } else {
             released = thisAnime.season_name + " " + thisAnime.season_year;
           }
@@ -116,7 +122,24 @@ class FetchList extends React.Component {
     })
     .then(() => {
       console.log("API call successful.");
-      this.props.loadingGIF(false);
+      const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
+      const summaryMAL = sessionRef.collection("summary").doc("myanimelist");
+      const usersRef = sessionRef.collection("users");
+
+      usersRef.doc(this.props.user)
+      .set({
+        last_fetched: firebase.firestore.FieldValue.serverTimestamp()
+      }, { 
+        merge: true 
+      });
+
+      summaryMAL
+      .set({
+        latest_fetch: firebase.firestore.FieldValue.serverTimestamp()
+      }, { 
+        merge: true 
+      });
+      // this.props.loadingGIF(false);
     })
     .catch((error) => {
       console.log("API Unavailable: " + error);
@@ -132,7 +155,9 @@ class FetchList extends React.Component {
   UsernameMALView() {
     if (this.props.usernameMAL == null) {
       return (
-        <p>MyAnimeList account: <button onClick={this.showFormUsernameMAL}>+ Add your username</button>
+        <p>
+          MyAnimeList account: 
+          <button onClick={this.showFormUsernameMAL}>+ Add your username</button>
         </p>
       );
     } else {
@@ -151,8 +176,8 @@ class FetchList extends React.Component {
           onChange={this.handleTextChange}
           />
         <br/>
-        <button onClick={(e) => {
-          this.props.setUsernameMAL(e, this.state.tempUsernameMAL);
+        <button onClick={(event) => {
+          this.props.setUsernameMAL(event, this.state.tempUsernameMAL);
           this.setState({ 
             showFormUsernameMAL: false
           });

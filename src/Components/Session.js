@@ -1,6 +1,5 @@
 import React from 'react';
 import firebase from '../firebase';
-import UserList from "./UserList";
 
 class Session extends React.Component {
   constructor(props) {
@@ -24,8 +23,6 @@ class Session extends React.Component {
   
 
   componentDidMount() {
-    //var sessionRef = firebase.firestore().collection("session").doc(this.state.sessionID);
-    //var summaryMAL = sessionRef.collection("summary").doc("myanimelist");
   }
   
 
@@ -43,28 +40,31 @@ class Session extends React.Component {
     event.preventDefault();
 
     if (this.state.tempSessionName === "") {
-      this.props.createSession("WatchPartyRescue Session created on " + firebase.firestore.FieldValue.serverTimestamp());
+      var date = new Date();
+      this.props.createSession("WatchPartyRescue Session created on " + date.toString());
     } else {
-      this.props.createSession(this.state.tempSessionName);
+      var currentTempSessionName = this.state.tempSessionName;
+      this.props.createSession(currentTempSessionName);
     }
 
-    this.setState({ 
-      sessionName: this.state.tempSessionName 
-    });
+    this.setState((state) => ({ 
+      sessionName: state.tempSessionName 
+    }));
   }
 
   handleSessionNameUpdate(event) {
     event.preventDefault();
-    this.setState({ 
+    this.setState(state => ({ 
       editMode: false,
-      sessionName: this.state.tempSessionName
-    });
+      sessionName: state.tempSessionName
+    }));
 
-    this.props.loadingGIF(true);
+    // this.props.loadingGIF(true);
+
     firebase.firestore().collection("session").doc(this.props.sessionID).update({
       session_name: this.state.tempSessionName
     }).then(() => {
-      this.props.loadingGIF(false);
+      // this.props.loadingGIF(false);
       console.log("Session Name successfully updated!");
 
     }).catch((error) => {
@@ -75,13 +75,13 @@ class Session extends React.Component {
   }
 
 
-
   toggleEditMode() {
     this.setState({ 
       editMode: !this.state.editMode 
     });
   }
   
+
   EditableSessionNameView() {
     return (
       <React.Fragment>
@@ -90,6 +90,7 @@ class Session extends React.Component {
           defaultValue={this.state.sessionName}
           onChange={this.handleSessionNameChange}
           /> 
+        <br/>
         <button onClick={this.handleSessionNameUpdate}>Save</button>
         <button onClick={this.toggleEditMode}>Discard</button>
       </React.Fragment>
@@ -105,7 +106,9 @@ class Session extends React.Component {
     })
     return (
       <React.Fragment>
-        {this.state.sessionName}<button onClick={this.toggleEditMode}>edit</button>
+        {this.state.sessionName}
+        <br/>
+        <button onClick={this.toggleEditMode}>edit</button>
       </React.Fragment>
     );
   }
@@ -113,8 +116,8 @@ class Session extends React.Component {
 
   CreateSessionView() {
     return (
-      <div class="landing">
-        <input class="session"
+      <div className="landing">
+        <input className="session"
             type="text" 
             placeholder="Event/Session Name"
             onChange={this.handleSessionNameChange}
@@ -127,14 +130,12 @@ class Session extends React.Component {
 
   ActiveSessionView() {
     return (
-      <div class="session-banner">
+      <div className="session-banner">
         <div id="session-banner-content">
           <button id="session-leave" onClick={this.props.resetSession}>Leave Session</button>
-
           {this.state.editMode
             ? <this.EditableSessionNameView/> 
             : <this.TextSessionNameView/>}
-
           <button id="session-share" onClick={() => {
             navigator.clipboard.writeText(window.location.href.split("?")[0] + "?session=" + this.props.sessionID)}}>
             Copy Session Link!
@@ -148,13 +149,11 @@ class Session extends React.Component {
   render() {
     return (
       <React.Fragment>
-
-        <div class="session">
+        <div className="session">
           {this.props.sessionID != null 
             ? <this.ActiveSessionView/> 
             : <this.CreateSessionView/>}
         </div>
-
       </React.Fragment>
     );
   }

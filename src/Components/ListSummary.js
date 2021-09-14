@@ -1,104 +1,173 @@
 import '../App.css';
 import React from 'react';
+import ReactDOM from 'react-dom'
 import firebase from '../firebase';
+
 
 
 class ListSummary extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      listSummaryItems: [],
-      tempTier: [],
+      allItems: [],
+      countFilters: [{
+        count: 0,
+        show: false
+      }]
     };
-    this.constructItemTier = this.constructItemTier.bind(this);
-    this.updateSummaryList = this.updateSummaryList.bind(this);
+    this.retrieveAllItems = this.retrieveAllItems.bind(this);
+    this.animeItemFormat = this.animeItemFormat.bind(this);
+    this.toggleCollapsible = this.toggleCollapsible.bind(this)
+    this.setFiltersOnUsersCount = this.setFiltersOnUsersCount.bind(this)
   }
   
   componentDidMount() {
-    //this.updateSummaryList();
+    this.setFiltersOnUsersCount();
   }
 
   componentDidUpdate() {
-    this.props.loadingGIF(false);
-  }
-
-  updateSummaryList() {
-    this.props.loadingGIF(true);
-    console.log("ListSummary below:");
-    //list all items with 2+ common users
-    for (var i = this.props.usersInSessionCount; i > 1; i--) {
-      this.constructItemTier(i);
+    if (this.props.usersInSessionCount > 2) {
+      if (this.props.usersInSessionCount !== this.state.countFilters[0].count) {
+        this.setFiltersOnUsersCount();
+      }
     }
   }
 
-  async constructItemTier(usersCount) {
-    console.log("item tier called");
-    const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
-    const summaryMAL = sessionRef.collection("summary").doc("myanimelist");
-    const MALplantowatch = summaryMAL.collection("plan_to_watch");
-    
-    //clear tempTier state
+  setFiltersOnUsersCount() {
+    var filter = [];
+    for (var i = this.props.usersInSessionCount; i > 1; i--) {
+      var tier = {
+        count: i,
+        show: false
+      };
+      filter.push(tier);
+    }
     this.setState({
-      tempTier: []
+      countFilters: filter
     });
-    
-    console.log("users => " + usersCount);
-    await MALplantowatch.where('occurrences', "==", usersCount).get()
-    .then((querySnapshot) => {
-      var thisItemTier = [];
-      thisItemTier.push(
-        <div class="item-tier">
-          <p>Items with {usersCount} votes</p>
-        </div>
-      );
-      console.log(thisItemTier);
-      querySnapshot.docs.map( (plantowatchDoc)=> {
-          thisItemTier.push(
-            <div class="poster-image">
-              <img src={plantowatchDoc.data().image} alt={plantowatchDoc.data().title}/>
-              <div class="overlay-dim">
-                  <h3><span>{plantowatchDoc.data().title}</span></h3>
-                  <p><span class="field-name">Episodes:</span> 
-                  <br/>{plantowatchDoc.data().episodes}</p>
-                  <p><span class="field-name">Released:</span> 
-                  <br/>{plantowatchDoc.data().season}</p>
-                  <p>({plantowatchDoc.data().common_users.join(", ")})</p>
-                  <a href={plantowatchDoc.data().link}><button>see details on MyAnimeList</button></a>
-              </div>
-            </div>
-          );
-          this.setState({
-            tempTier: thisItemTier
-          });
-          console.log("temp tier -> " + this.state.tempTier);
-          return null;
-      });
-    }).catch((error) => {});
-    
-    this.setState({
-      listSummaryItems: this.state.listSummaryItems.concat(this.state.tempTier)
-    });
-    console.log("thisTier finished running with no errors");
   }
 
 
+  retrieveAllItems() {
+    //reset state
+    this.setState({
+      allItems: []
+    });
+
+    console.log("retrieveAllItems started...");
+    //retrieve all items and save to state
+    //array of objects 
+    const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
+    const summaryMAL = sessionRef.collection("summary").doc("myanimelist");
+    const MALplantowatch = summaryMAL.collection("plan_to_watch");
+
+    MALplantowatch.get()
+    .then((allItems) => {
+      allItems.docs.map((plantowatchDoc) => {
+        var item = 
+        {
+          image:          plantowatchDoc.data().image,
+          title:        plantowatchDoc.data().title,
+          episodes:          plantowatchDoc.data().episodes,
+          season:       plantowatchDoc.data().season,
+          common_users: plantowatchDoc.data().common_users.join(", "),
+          occurrences:  plantowatchDoc.data().occurrences,
+          link:         plantowatchDoc.data().link
+        };
+        // console.log(item.title);
+        this.setState(state => ({
+          allItems: [...state.allItems, item]
+        }));        
+      });
+      
+    })
+    .then(() => {
+      console.log("all items retrieved!");
+      const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
+      const summaryMAL = sessionRef.collection("summary").doc("myanimelist");
+      summaryMAL
+      .set({
+        latest_retrieval: firebase.firestore.FieldValue.serverTimestamp()
+      }, { 
+        merge: true 
+      });
+    });
+  }
+
+ 
+  animeItemFormat(itemObject) {
+    // console.log("item format called");
+    return (
+      <div className="poster-image" key={itemObject.id}>
+        <img src={itemObject.image} alt={itemObject.title}/>
+        <div className="overlay-dim">
+            <h3><span>{itemObject.title}</span></h3>
+            <p>
+              <span className="field-name">Episodes:</span> 
+              <br/>{itemObject.episodes}
+            </p>
+            <p>
+              <span className="field-name">Released:</span> 
+              <br/>{itemObject.season}
+            </p>
+            <p>({itemObject.common_users})</p>
+            <a href={itemObject.link}><button>see details on MyAnimeList</button></a>
+        </div>
+      </div>
+    );
+  }
+  
+  toggleCollapsible(countAsKey) {
+    console.log("toggle collapsible called");
+    console.log("toggle collapsible ///" + countAsKey);
+    console.log(this.state.countFilters);
+    var newCountFilters = this.state.countFilters.map(filter => 
+      (filter.count === countAsKey ? {...filter, show: !filter.show}: filter) 
+    )
+    console.log(newCountFilters);
+    this.setState({
+      countFilters: newCountFilters
+    });
+  }
 
   render() {
-    console.log("list summary items = " + this.state.listSummaryItems);
-    if (this.state.listSummaryItems.length === 0) {
+    // console.log(this.state.countFilters);
+    // console.log("list summary items (all) = " + this.state.allItems);
+    if (this.state.allItems.length > 0) {
       return (
         <div>
-          <button onClick={this.updateSummaryList}>Find titles everyone has in common!</button>
+          <h3>Titles you have in common! <button onClick={this.retrieveAllItems}>Reload</button></h3> 
+          <div id="tiers">
+            {
+              this.state.countFilters.map((thisFilter) => {
+                var thisTier = this.state.allItems.filter(item => item.occurrences == thisFilter.count);
+                return (
+                  <div key={"tier-" + thisFilter.count} className="item-tier">
+                    <button 
+                      key={"tierbtn-" + thisFilter.count} 
+                      onClick={ () => this.toggleCollapsible(thisFilter.count) }
+                      disabled={ thisTier.length === 0 }>
+                      <p>Titles sharing {thisFilter.count} common users ({thisTier.length}):</p>
+                    </button>
+                    <div key={"tiercontent-" + thisFilter.count} className={"tier-content" + (thisFilter.show ? ' open' : '')}>
+                      {
+                        thisTier.map((eachItem) => {
+                          return this.animeItemFormat(eachItem);
+                        })
+                      }
+                    </div>
+                  </div>
+                );
+              })
+            }
+          </div>
         </div>
       );
+      
     } else {
       return (
         <div>
-          <h3>Titles you have in common! <button onClick={this.updateSummaryList}>Reload</button></h3> 
-          
-          <div>
-            {this.state.listSummaryItems}
-          </div>
+          <button onClick={this.retrieveAllItems}>Find titles everyone has in common!</button>
         </div>
       );
     }
