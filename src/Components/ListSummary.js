@@ -61,12 +61,12 @@ class ListSummary extends React.Component {
       allItems.docs.map((plantowatchDoc) => {
         var item = 
         {
-          img:          plantowatchDoc.data().image,
+          image:          plantowatchDoc.data().image,
           title:        plantowatchDoc.data().title,
-          eps:          plantowatchDoc.data().episodes,
+          episodes:          plantowatchDoc.data().episodes,
           season:       plantowatchDoc.data().season,
           common_users: plantowatchDoc.data().common_users.join(", "),
-          users_count:  plantowatchDoc.data().occurrences,
+          occurrences:  plantowatchDoc.data().occurrences,
           link:         plantowatchDoc.data().link
         };
         // console.log(item.title);
@@ -86,12 +86,12 @@ class ListSummary extends React.Component {
     // console.log("item format called");
     return (
       <div className="poster-image" key={itemObject.id}>
-        <img src={itemObject.img} alt={itemObject.title}/>
+        <img src={itemObject.image} alt={itemObject.title}/>
         <div className="overlay-dim">
             <h3><span>{itemObject.title}</span></h3>
             <p>
               <span className="field-name">Episodes:</span> 
-              <br/>{itemObject.eps}
+              <br/>{itemObject.episodes}
             </p>
             <p>
               <span className="field-name">Released:</span> 
@@ -127,7 +127,7 @@ class ListSummary extends React.Component {
           <div id="tiers">
             {
               this.state.countFilters.map((thisFilter) => {
-                var thisTier = this.state.allItems.filter(item => item.users_count == thisFilter.count);
+                var thisTier = this.state.allItems.filter(item => item.occurrences == thisFilter.count);
                 return (
                   <div key={"tier-" + thisFilter.id} className="item-tier">
                     <button 
