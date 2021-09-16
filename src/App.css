@@ -1,41 +1,77 @@
-/* .App {
-  text-align: center;
-}
+/* https://www.canva.com/colors/color-palettes/garden-blur/ */
+/* https://www.canva.com/colors/color-palettes/ivy-swipe/ */
+/* https://www.canva.com/colors/color-palettes/cherry-blossom-canopy/ */
+/* https://coolors.co/bfb5af-ece2d0-d5b9b2-a26769-582c4d */
+/* https://coolors.co/d88c9a-f2d0a9-f1e3d3-99c1b9-8e7dbe */
+/* https://coolors.co/393d3f-f8f1ff-ecd444-62929e-546a7b */
+/* https://coolors.co/e2c044-777da7-161925-b8dbd9-f8f1ff */
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
+/* ============================================ GENERAL == */
 
-.App-header {
-  background-color: #282c34;
+body {
+  background-color: #161925;
+  clear: both;
+  position: relative;
   min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+} 
+
+
+div {
+  display: block;
+}
+
+div.app-content {
+  margin: 0 2em; 
+  padding-bottom: 15em; /* footer height */
+}
+
+div.outer {
+  margin: 0 auto;
+  padding: 0;
+}
+
+button {
+  padding: 0 0.5em;
+}
+
+a {
+  color: #F3EAC0;
+}
+
+h1, h2, h3, p, label {
   color: white;
 }
 
-.App-link {
-  color: #61dafb;
+/* ============================================ Announcement bar == */
+
+.announcement {
+  width: 100%;
+  background-color: #BDBFDB;
+  color: black;
+  float: left;
+  position:relative
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-} */
+span.announcement-text {
+  margin: 0.5em 1em;
+  position: absolute;
+}
+
+/* The close button */
+span.announcement-close {
+  color: black;
+  font-weight: bold;
+  float: right;
+  font-size: 20pt;
+  transition: 0.2s;
+  cursor: pointer;
+  margin-right: 1em;
+}
+
+.announcement-close:hover {
+  color: white;
+}
 
 /* ============================================ Banner == */
 
@@ -43,7 +79,7 @@ div.banner {
   width: 100%;
   /* height: auto; */
   /* top: 0; */
-  background-color: #605577;
+  background-color: #E2C044;
   /* padding: 1em 0; */
   display: inline-block;
   position: relative;
@@ -72,105 +108,6 @@ div.top-banner {
   display: inline-block;
 }
 
-.announcement {
-  width: 100%;
-  background-color: #f4c134;
-  color: black;
-  float: left;
-  position:relative
-}
-
-span.announcement-text {
-  margin: 0.5em 1em;
-  position: absolute;
-}
-
-/* The close button */
-span.announcement-close {
-  color: black;
-  font-weight: bold;
-  float: right;
-  font-size: 20pt;
-  transition: 0.2s;
-  cursor: pointer;
-  margin-right: 1em;
-}
-
-.announcement-close:hover {
-  color: white;
-}
-
-
-/* ============================================ Loading == */
-
-#popup-loading {
-  z-index : 500;   
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  margin: auto;
-  background-color: rgba(0, 0, 0, 0.5);
-}
-
-#popup-content {
-  max-width: 50%;
-  min-width: 200px;
-  max-height: 300px;
-  min-height: 150px;
-  position: absolute;
-  left: 25%;
-  right: 25%;
-  top: 25%;
-  bottom: 25%;
-  margin: auto;
-  text-align: center;
-}
-
-/* ============================================ GENERAL == */
-
-
-div {
-  display: block;
-}
-
-div.app-content {
-  margin: 0 2em; /* vertical/horizontal */
-}
-
-div.outer {
-  margin: 0 auto;
-  padding: 0;
-}
-
-button {
-  padding: 0 0.5em;
-}
-
-a {
-  color: #3a6b64;
-}
-
-/* ============================================ Credits footer == */
-
-div#footer {
-  position: absolute;
-  bottom: 0;
-  text-align: center;
-  background-color: #b4a2da;
-}
-
-.footer-inner {
-  padding: 1em 3em 3em 3em;
-  position: relative;
-  vertical-align: top;
-  text-align: center;
-  display: inline-block;
-  color: #392c53;
-}
 
 
 /* ============================================ Session == */
@@ -195,7 +132,7 @@ div.session-banner {
   width: 100%;
   height: auto;
   top: 0;
-  background-color: #afb7ff;
+  background-color: #777DA7;
 }
 
 div#session-banner-content {
@@ -247,22 +184,23 @@ img {
 }
 
 div.poster-image {
-  height: 300px;
-  width: 210px;
+  height: 318px;
+  width: 225px;
   display: inline-block;
   position: relative;
+  padding: 0.5em;
 }
 
 div.overlay-dim {
   background-color: rgba(0,0,0,0.8);
   color: white;
   text-align: center;
-  height: 100%;
-  width: 100%;
+  height: inherit;
+  width: inherit;
   opacity: 0;
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 0.5em;
+  left: 0.5em;
   transition: opacity .3s;
 }
 
@@ -271,8 +209,9 @@ div.overlay-dim:hover {
   transition: opacity .3s;
 }
 
-div.item-tier{
-  font-variant: small-caps; 
+div.item-tier {
+  padding: 1em;
+  margin-left: auto;
 }
 
 span.field-name {
@@ -282,6 +221,7 @@ span.field-name {
 }
 
 .tier-content {
+  margin: 0 1em;
   display: none
 }
 
@@ -289,5 +229,66 @@ span.field-name {
   display: block
 }
 
+.collapsible {
+  cursor: pointer;
+  background: #BDBFDB;
+  border-radius: 4pt;
+  border: none;
+  width: 100%;
+  text-align: left;
+  outline: none;
+  font-size: 12pt;
+}
+
+.collapsible.open, .collapsible:hover {
+  background-color: #777DA7;
+}
+
+/* ============================================ Credits footer == */
+
+div#footer {
+  position: absolute;
+  bottom: 0;
+  text-align: center;
+  background-color: #777DA7;
+}
+
+.footer-inner {
+  padding: 1em 3em 3em 3em;
+  vertical-align: top;
+  text-align: center;
+  display: inline-block;
+  color: #392c53;
+}
+
+
+/* ============================================ Loading == */
+
+#popup-loading {
+  z-index : 500;   
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin: auto;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+#popup-content {
+  max-width: 50%;
+  min-width: 200px;
+  max-height: 300px;
+  min-height: 150px;
+  position: absolute;
+  left: 25%;
+  right: 25%;
+  top: 25%;
+  bottom: 25%;
+  margin: auto;
+  text-align: center;
+}
 
 /* ============================================== */

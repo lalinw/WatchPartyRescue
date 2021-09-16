@@ -145,17 +145,43 @@ class ListSummary extends React.Component {
                   <div key={"tier-" + thisFilter.count} className="item-tier">
                     <button 
                       key={"tierbtn-" + thisFilter.count} 
-                      onClick={ () => this.toggleCollapsible(thisFilter.count) }
-                      disabled={ thisTier.length === 0 }>
+                      className={"collapsible" + (thisFilter.show ? ' open' : '')}
+                      onClick={ () => this.toggleCollapsible(thisFilter.count) }>
                       <p>Titles sharing {thisFilter.count} common users ({thisTier.length}):</p>
                     </button>
-                    <div key={"tiercontent-" + thisFilter.count} className={"tier-content" + (thisFilter.show ? ' open' : '')}>
+                    {/* {
+                      thisTier.length < 1
+                      ?
+                      <div 
+                        key={"tiercontent-" + thisFilter.count} 
+                        className={"tier-content" + (thisFilter.show ? ' open' : '')}>
+                        <p>There are no titles shared between {thisFilter.count} users</p>
+                      </div>
+                      :
+                      <div 
+                        key={"tiercontent-" + thisFilter.count} 
+                        className={"tier-content" + (thisFilter.show ? ' open' : '')}>
+                        {
+                          thisTier.map((eachItem) => {
+                            return this.animeItemFormat(eachItem);
+                          })
+                        }
+                      </div>
+                    } */}
+                    <div 
+                      key={"tiercontent-" + thisFilter.count} 
+                      className={"tier-content" + (thisFilter.show ? ' open' : '')}>
                       {
+                        thisTier.length < 1
+                        ?
+                        <p>There are no titles shared between {thisFilter.count} users</p>
+                        :
                         thisTier.map((eachItem) => {
                           return this.animeItemFormat(eachItem);
                         })
                       }
                     </div>
+                    
                   </div>
                 );
               })
