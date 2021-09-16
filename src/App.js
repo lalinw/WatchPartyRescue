@@ -126,6 +126,9 @@ class App extends Component {
           usernameMAL: thisDoc.data().myanimelist_username
         })
       }
+    })
+    .then(() => {
+      console.log("user created / set");
     });
   }
 
@@ -169,7 +172,7 @@ class App extends Component {
   
   setUsernameMAL(event, name) {
     // this.loadingGIF(true);
-    event.preventDefault();
+    // event.preventDefault();
 
     const usersRef = firebase.firestore().collection("session").doc(this.state.sessionID).collection("users");
 
@@ -184,6 +187,7 @@ class App extends Component {
     this.setState({
       usernameMAL: name
     })
+    event.preventDefault();
   }
 
 

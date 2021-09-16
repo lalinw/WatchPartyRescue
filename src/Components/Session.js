@@ -86,6 +86,7 @@ class Session extends React.Component {
     return (
       <React.Fragment>
         <input
+          className="session-banner"
           type="text"
           defaultValue={this.state.sessionName}
           onChange={this.handleSessionNameChange}

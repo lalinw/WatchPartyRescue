@@ -117,30 +117,35 @@ class FetchList extends React.Component {
         //check for more items after 1st page
         if (data.anime.length === paginationThreshold) {
           this.fetchHelper(endpointMAL, page++, paginationThreshold, thisUserDoc, summaryMAL);
+        } else {
+          
+          const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
+          const usersRef = sessionRef.collection("users");
+          usersRef.doc(this.props.user)
+          .set({
+            last_fetched: firebase.firestore.FieldValue.serverTimestamp()
+          }, { merge: true });
+
+          summaryMAL
+          .set({
+            latest_fetch: firebase.firestore.FieldValue.serverTimestamp()
+          }, { merge: true });
+          console.log("user last_fetched / latest_fetch updated");
         }
       }
     })
     .then(() => {
       console.log("API call successful.");
-      const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
-      const summaryMAL = sessionRef.collection("summary").doc("myanimelist");
-      const usersRef = sessionRef.collection("users");
+      // const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
+      // const summaryMAL = sessionRef.collection("summary").doc("myanimelist");
+      // const usersRef = sessionRef.collection("users");
 
-      usersRef.doc(this.props.user)
-      .set({
-        last_fetched: firebase.firestore.FieldValue.serverTimestamp()
-      }, { 
-        merge: true 
-      });
-
-      summaryMAL
-      .set({
-        latest_fetch: firebase.firestore.FieldValue.serverTimestamp()
-      }, { 
-        merge: true 
-      });
+      
       // this.props.loadingGIF(false);
     })
+    // .then(() => {
+    //   console.log("user last_fetched updated");
+    // })  
     .catch((error) => {
       console.log("API Unavailable: " + error);
     });
