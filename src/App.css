@@ -52,8 +52,12 @@ div.banner {
 div.banner-inner {
   color: white;
   margin: 0 1em;
-  font-variant: small-caps; 
+  
   display: inline-block;
+}
+
+div.top-banner {
+  font-variant: small-caps;
 }
 
 #profile-card {
@@ -146,14 +150,36 @@ button {
   padding: 0 0.5em;
 }
 
+a {
+  color: #3a6b64;
+}
+
+/* ============================================ Credits footer == */
+
+div#footer {
+  position: absolute;
+  bottom: 0;
+  text-align: center;
+  background-color: #b4a2da;
+}
+
+.footer-inner {
+  padding: 1em 3em 3em 3em;
+  position: relative;
+  vertical-align: top;
+  text-align: center;
+  display: inline-block;
+  color: #392c53;
+}
+
+
 /* ============================================ Session == */
 
 div.landing {
   text-align: center;
   position: relative;
-  margin: 25% 25%;
+  margin: 10% 25%;
   min-width: 10em;
-  max-width: 50em;
 }
 
 input[type=text].session {

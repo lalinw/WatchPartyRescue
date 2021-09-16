@@ -10,12 +10,14 @@ class ListSummary extends React.Component {
     super(props);
     this.state = {
       allItems: [],
-      countFilters: [{
-        count: 0,
-        show: false
-      }]
+      countFilters: [
+        {
+          count: 0,
+          show: false
+        }
+      ]
     };
-    this.retrieveAllItems = this.retrieveAllItems.bind(this);
+    this.retrieveAllItems = this.retrieveAllItems.bind(this); 
     this.animeItemFormat = this.animeItemFormat.bind(this);
     this.toggleCollapsible = this.toggleCollapsible.bind(this)
     this.setFiltersOnUsersCount = this.setFiltersOnUsersCount.bind(this)
@@ -26,10 +28,8 @@ class ListSummary extends React.Component {
   }
 
   componentDidUpdate() {
-    if (this.props.usersInSessionCount > 2) {
-      if (this.props.usersInSessionCount !== this.state.countFilters[0].count) {
-        this.setFiltersOnUsersCount();
-      }
+    if (this.props.usersInSessionCount > 2 && this.props.usersInSessionCount !== this.state.countFilters[0].count) {
+      this.setFiltersOnUsersCount();
     }
   }
 
