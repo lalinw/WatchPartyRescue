@@ -15,29 +15,8 @@ class UserList extends React.Component {
   }
   
   componentDidMount() {
-    // const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
-    // const usersRef = sessionRef.collection("users");
-
-    // this.retrieveUserList();
-    // this.retrieveExistingUsers(); ???? how to re-use this
   }
 
-  // retrieveUserList() {
-  //   //populate userList state for user management 
-  //   const usersRef = firebase.firestore().collection("session").doc(this.props.sessionID).collection("users");
-  //   const unsubscribe = usersRef.onSnapshot((userDocs) => {
-  //     var localUsers = [];
-  //     console.log("userDocs = " + userDocs.size);
-  //     userDocs.forEach((theUser) => {
-  //       localUsers.push(theUser.id);
-  //       console.log("user docs = " + theUser.id);
-  //     });
-  //     this.setState({
-  //       userList: localUsers
-  //     });
-  //   });
-  //   unsubscribe();
-  // }
 
   userItemFormat(eachUser) {
     return (
@@ -48,6 +27,7 @@ class UserList extends React.Component {
     );
   }
 
+  
   deleteUser(event) {
     const user = event.target.id;
     if (window.confirm("You are about to delete user " + user + " AND all their votes.\nProceed?")) {

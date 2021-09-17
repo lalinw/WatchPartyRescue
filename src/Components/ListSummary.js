@@ -22,6 +22,7 @@ class ListSummary extends React.Component {
     this.setFiltersOnUsersCount = this.setFiltersOnUsersCount.bind(this)
   }
   
+
   componentDidMount() {
     this.setFiltersOnUsersCount();
     const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
@@ -44,11 +45,13 @@ class ListSummary extends React.Component {
     });
   }
 
+
   componentDidUpdate() {
     if (this.props.userList.length > 2 && this.props.userList.length !== this.state.countFilters[0].count) {
       this.setFiltersOnUsersCount();
     }
   }
+
 
   setFiltersOnUsersCount() {
     var filter = [];
@@ -113,7 +116,6 @@ class ListSummary extends React.Component {
 
  
   animeItemFormat(itemObject) {
-    // console.log("item format called");
     return (
       <div className="poster-image" key={itemObject.id}>
         <img src={itemObject.image} alt={itemObject.title}/>
@@ -133,6 +135,7 @@ class ListSummary extends React.Component {
       </div>
     );
   }
+
   
   toggleCollapsible(countAsKey) {
     console.log("toggle collapsible called");
@@ -148,8 +151,6 @@ class ListSummary extends React.Component {
   }
 
   render() {
-    // console.log(this.state.countFilters);
-    // console.log("list summary items (all) = " + this.state.allItems);
     if (this.state.allItems.length > 0) {
       return (
         <div className="summary">
@@ -187,7 +188,6 @@ class ListSummary extends React.Component {
           </div>
         </div>
       );
-      
     } else {
       return (
         <div className="summary alt">

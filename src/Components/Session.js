@@ -1,6 +1,6 @@
 import React from 'react';
 import firebase from '../firebase';
-
+//components
 import SignIn from "./Signin";
 
 
@@ -10,22 +10,17 @@ class Session extends React.Component {
     this.state = {
       sessionID: null,
       sessionName: "",
-      // usersInSessionCount: null,
       tempSessionName: "",
       editMode: false
-      
     };
+    this.createSession = this.createSession.bind(this);
+    this.setSession = this.setSession.bind(this);
+    this.resetSession = this.resetSession.bind(this);
     this.handleSessionNameChange = this.handleSessionNameChange.bind(this);
     this.handleSessionNameSubmit = this.handleSessionNameSubmit.bind(this);
     this.handleSessionNameUpdate = this.handleSessionNameUpdate.bind(this);
     this.toggleEditMode = this.toggleEditMode.bind(this);
-
-    //session methods
-    this.resetSession = this.resetSession.bind(this);
-    this.createSession = this.createSession.bind(this);
-    this.setSession = this.setSession.bind(this);
-
-    //component views
+    //views
     this.EditableSessionNameView = this.EditableSessionNameView.bind(this);
     this.TextSessionNameView = this.TextSessionNameView.bind(this);
     this.ActiveSessionView = this.ActiveSessionView.bind(this);
@@ -42,9 +37,6 @@ class Session extends React.Component {
     const sessionID = urlParam.get('session');
 
     console.log("Session ID = " + sessionID);
-    // console.log(sessionID);
-    
-
     if (sessionID != null) {
       //check if session does actually exist/valid sessionID
       const sessionRef = firebase.firestore().collection("session").doc(sessionID);
@@ -62,7 +54,6 @@ class Session extends React.Component {
         //reset the URL in the address bar
         navigator.clipboard.writeText(window.location.href.split("?")[0]);         
       });
-      // console.log("users count = " + this.state.usersInSessionCount);
     }
   }
   
@@ -74,7 +65,6 @@ class Session extends React.Component {
       sessionID: null,
       user: null,
       usernameMAL: null
-      // usersInSessionCount: null
     })
     //remove sessionID from address bar
     window.location.href =  window.location.href.split("?")[0];
@@ -100,7 +90,6 @@ class Session extends React.Component {
     this.setState({
       sessionID: sessionID
     })
-    // this.recountUsers();
   }
 
 
@@ -130,10 +119,9 @@ class Session extends React.Component {
     }));
   }
 
+
   handleSessionNameUpdate(event) {
     event.preventDefault();
-    
-
     // this.props.loadingGIF(true);
 
     firebase.firestore().collection("session").doc(this.state.sessionID).update({
@@ -150,10 +138,7 @@ class Session extends React.Component {
       // The document probably doesn't exist.
       console.error("Error updating document: ", error);
     });
-    
   }
-
-
 
 
   toggleEditMode() {
@@ -178,6 +163,7 @@ class Session extends React.Component {
       </React.Fragment>
     );
   }
+
 
   TextSessionNameView() {
     const sessionRef = firebase.firestore().collection("session").doc(this.state.sessionID);
@@ -210,6 +196,7 @@ class Session extends React.Component {
     );
   }
 
+
   ActiveSessionView() {
     return (
       <div className="session-banner">
@@ -239,11 +226,6 @@ class Session extends React.Component {
         <div className="app-content">
           <SignIn
             sessionID = {this.state.sessionID}
-            // usersInSessionCount = {this.state.usersInSessionCount}
-            //methods
-            // resetSession = {this.resetSession}
-            // createSession = {this.createSession}
-            
             // loadingGIF = {this.loadingGIF}
           />
         </div>

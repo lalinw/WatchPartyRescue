@@ -1,7 +1,7 @@
 import React from 'react';
 import firebase from '../firebase';
 import ReactDOM from 'react-dom'
-
+//components
 import FetchList from "./FetchList";
 import ListSummary from "./ListSummary";
 import UserList from "./UserList";
@@ -17,26 +17,20 @@ class SignIn extends React.Component {
     };
     this.handleNameChange = this.handleNameChange.bind(this);
     this.handleNameSubmit = this.handleNameSubmit.bind(this);
-
-    //micro-components
-    this.ActiveUserView = this.ActiveUserView.bind(this);
-    this.UserSignInView = this.UserSignInView.bind(this);
-
-    //methods
     this.retrieveExistingUsers = this.retrieveExistingUsers.bind(this);
-
-    //user methods
     this.resetUser = this.resetUser.bind(this);
     this.setUser = this.setUser.bind(this);
-    // this.recountUsers = this.recountUsers.bind(this);
-    //MAL user methods
+    //MAL username methods
     this.setUsernameMAL = this.setUsernameMAL.bind(this);
     this.resetUsernameMAL = this.resetUsernameMAL.bind(this);
+
+    //views
+    this.ActiveUserView = this.ActiveUserView.bind(this);
+    this.UserSignInView = this.UserSignInView.bind(this);
   }
   
 
   componentDidMount() {
-    
   }
 
 
@@ -75,6 +69,7 @@ class SignIn extends React.Component {
     });
   }
 
+
   resetUser() {
     // this.loadingGIF(true);
     this.setState({
@@ -82,6 +77,7 @@ class SignIn extends React.Component {
       usernameMAL: null,
     })
   }
+
 
   setUser(name) {
     // this.loadingGIF(true);
@@ -95,10 +91,6 @@ class SignIn extends React.Component {
       if (!thisDoc.exists) {
         console.log("doc does not exist yet. Creating user...");
         this.retrieveExistingUsers();
-        
-        // this.setState((state) => ({
-        //   usersInSessionCount: state.usersInSessionCount + 1
-        // }))
 
         sessionRef.update({
           users_count: firebase.firestore.FieldValue.increment(1)
@@ -122,15 +114,12 @@ class SignIn extends React.Component {
 
   setUsernameMAL(event, name) {
     // this.loadingGIF(true);
-    // event.preventDefault();
-
+    event.preventDefault();
     this.setState({
       usernameMAL: name
     })
-    event.preventDefault();
-
+    
     const usersRef = firebase.firestore().collection("session").doc(this.props.sessionID).collection("users");
-
     usersRef.doc(this.state.user).get()
     .then((doc) => {
       // doc of user already exists if the user is trying to set their MAL username
@@ -143,7 +132,6 @@ class SignIn extends React.Component {
       console.log("Cannot set MAL username: " + error);
       this.resetUsernameMAL();
     });
-    
   }
 
 
@@ -154,7 +142,6 @@ class SignIn extends React.Component {
   }
 
 
-
   ActiveUserView() {
     const parentElement = document.getElementById("banner");
     return ReactDOM.createPortal(
@@ -163,6 +150,7 @@ class SignIn extends React.Component {
       </div>, 
       parentElement);
   }
+
 
   UserSignInView() {
     this.retrieveExistingUsers();
@@ -218,10 +206,7 @@ class SignIn extends React.Component {
             sessionID = {this.props.sessionID}
             user = {this.state.user}
             userList = {this.state.existingUsers}
-            
-            // recountUsers = {this.recountUsers}  ??
           />}
-
 
         {this.props.sessionID != null 
         && 
@@ -242,7 +227,6 @@ class SignIn extends React.Component {
           <ListSummary
             sessionID = {this.props.sessionID}
             userList = {this.state.existingUsers}
-            // usersInSessionCount = {this.props.usersInSessionCount}
             user = {this.state.user}
           />
         </React.Fragment>}
