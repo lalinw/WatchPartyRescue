@@ -99,9 +99,9 @@ class App extends Component {
 
   setUser(name) {
     // this.loadingGIF(true);
-    this.setState({
-      user: name
-    })
+    // this.setState({
+    //   user: name
+    // })
     const sessionRef = firebase.firestore().collection("session").doc(this.state.sessionID);
     const usersRef = sessionRef.collection("users");
 
@@ -279,6 +279,7 @@ class App extends Component {
                                                                   /> 
                                                                   <ListSummary
                                                                     sessionID = {this.state.sessionID}
+                                                                    user = {this.state.user}
                                                                     usersInSessionCount = {this.state.usersInSessionCount}
                                                                     loadingGIF = {this.loadingGIF}
                                                                   />

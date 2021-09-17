@@ -27,18 +27,21 @@ class ListSummary extends React.Component {
     this.setFiltersOnUsersCount();
     const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
     const usersRef = sessionRef.collection("users");
-    usersRef.doc(this.props.user).get()
-    .then( (doc) => {
+
+    usersRef.doc(this.props.user).get().then( (doc) => {
       if (doc.exists) {
-        console.log(doc);
-        console.log(doc.get('last_fetched'));
         if(doc.get('last_fetched') !== undefined){
           this.setState({
             fetched: true
           });
           console.log("last_fetched field exists");
         }
+      } else {
+        console.log("last_fetched cannot be found");
       }
+    })
+    .catch((error) => {
+      console.log("Error getting document:", error);
     });
   }
 
@@ -81,9 +84,9 @@ class ListSummary extends React.Component {
       allItems.docs.map((plantowatchDoc) => {
         var item = 
         {
-          image:          plantowatchDoc.data().image,
+          image:        plantowatchDoc.data().image,
           title:        plantowatchDoc.data().title,
-          episodes:          plantowatchDoc.data().episodes,
+          episodes:     plantowatchDoc.data().episodes,
           season:       plantowatchDoc.data().season,
           common_users: plantowatchDoc.data().common_users.join(", "),
           occurrences:  plantowatchDoc.data().occurrences,
