@@ -1,6 +1,5 @@
 import React from 'react';
 import firebase from '../firebase';
-// import ListSummary from './ListSummary';
 
 class FetchList extends React.Component {
   constructor(props) {
@@ -18,7 +17,7 @@ class FetchList extends React.Component {
     this.handleTextChange = this.handleTextChange.bind(this);
     this.showFormUsernameMAL = this.showFormUsernameMAL.bind(this);
 
-    //component views
+    //Views
     this.UsernameMALView = this.UsernameMALView.bind(this);
     this.FormUsernameMALView = this.FormUsernameMALView.bind(this);
   }
@@ -26,12 +25,14 @@ class FetchList extends React.Component {
   componentDidMount() {
   }
 
+
   handleTextChange(event) {
     event.preventDefault();
     this.setState({ 
       tempUsernameMAL: event.target.value 
     });
   }
+
 
   async onFetchSubmit(event) {
     if (this.props.usernameMAL == null) {
@@ -57,8 +58,8 @@ class FetchList extends React.Component {
       const paginationThreshold = 300;
       this.fetchHelper(endpointMAL, 1, paginationThreshold, usersRef.doc(this.props.user), summaryMAL);
     }
-
   }
+
 
   async preFetch() {
     console.log("preFetch() is called");
@@ -135,22 +136,13 @@ class FetchList extends React.Component {
       }
     })
     .then(() => {
-      console.log("API call successful.");
-      // const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
-      // const summaryMAL = sessionRef.collection("summary").doc("myanimelist");
-      // const usersRef = sessionRef.collection("users");
-
-      
-      // this.props.loadingGIF(false);
+      console.log("API call completed.");
     })
-    // .then(() => {
-    //   console.log("user last_fetched updated");
-    // })  
     .catch((error) => {
       console.log("API Unavailable: " + error);
     });
-    
   }
+
 
   getListEndPointMAL(usernameMAL, listTypeMAL) {
     return "https://api.jikan.moe/v3/user/" + usernameMAL + "/animelist/" + listTypeMAL + "/";
@@ -172,6 +164,7 @@ class FetchList extends React.Component {
     }
   }
 
+
   FormUsernameMALView() {
     return(
       <form>
@@ -181,17 +174,22 @@ class FetchList extends React.Component {
           onChange={this.handleTextChange}
           />
         <br/>
-        <button onClick={(event) => {
+        <button 
+          onClick={(event) => {
           this.props.setUsernameMAL(event, this.state.tempUsernameMAL);
-          this.setState({ 
-            showFormUsernameMAL: false
-          });
+          this.setState({ showFormUsernameMAL: false });
+          }}
+          onKeyPress={event => {
+            if (event.key === 'Enter') {
+              this.props.setUsernameMAL(event, this.state.tempUsernameMAL);
+              this.setState({ showFormUsernameMAL: false });
+            }
           }}>Save</button>
-        {/* <button onClick={this.onFetchSubmit}>Fetch Anime List</button> */}
       </form>
     );
   }
 
+  
   showFormUsernameMAL() {
     this.setState({ 
       showFormUsernameMAL: true

@@ -3,7 +3,6 @@ import React from 'react';
 import firebase from '../firebase';
 
 
-
 class ListSummary extends React.Component {
   constructor(props) {
     super(props);
@@ -23,6 +22,7 @@ class ListSummary extends React.Component {
     this.setFiltersOnUsersCount = this.setFiltersOnUsersCount.bind(this)
   }
   
+
   componentDidMount() {
     this.setFiltersOnUsersCount();
     const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
@@ -45,15 +45,17 @@ class ListSummary extends React.Component {
     });
   }
 
+
   componentDidUpdate() {
-    if (this.props.usersInSessionCount > 2 && this.props.usersInSessionCount !== this.state.countFilters[0].count) {
+    if (this.props.userList.length > 2 && this.props.userList.length !== this.state.countFilters[0].count) {
       this.setFiltersOnUsersCount();
     }
   }
 
+
   setFiltersOnUsersCount() {
     var filter = [];
-    for (var i = this.props.usersInSessionCount; i > 1; i--) {
+    for (var i = this.props.userList.length ; i > 1; i--) {
       var tier = {
         count: i,
         show: false
@@ -114,7 +116,6 @@ class ListSummary extends React.Component {
 
  
   animeItemFormat(itemObject) {
-    // console.log("item format called");
     return (
       <div className="poster-image" key={itemObject.id}>
         <img src={itemObject.image} alt={itemObject.title}/>
@@ -134,6 +135,7 @@ class ListSummary extends React.Component {
       </div>
     );
   }
+
   
   toggleCollapsible(countAsKey) {
     console.log("toggle collapsible called");
@@ -149,8 +151,6 @@ class ListSummary extends React.Component {
   }
 
   render() {
-    // console.log(this.state.countFilters);
-    // console.log("list summary items (all) = " + this.state.allItems);
     if (this.state.allItems.length > 0) {
       return (
         <div className="summary">
@@ -188,14 +188,13 @@ class ListSummary extends React.Component {
           </div>
         </div>
       );
-      
     } else {
       return (
         <div className="summary alt">
           {!this.state.fetched && <p>Warning: Your list has not been fetched</p>}
           <button 
             onClick={ () => {
-              if (this.props.usersInSessionCount < 2) {
+              if (this.props.userList.length  < 2) {
                 window.alert("Cannot compare list between fewer than 2 users.\nInvite more people and fetch their list(s) to proceed.");
               } else {
                 this.retrieveAllItems();
