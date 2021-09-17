@@ -74,6 +74,7 @@ class ListSummary extends React.Component {
       allItems: []
     });
 
+    this.props.loadingGIF(true);
     console.log("retrieveAllItems started...");
     //retrieve all items and save to state
     //array of objects 
@@ -103,6 +104,7 @@ class ListSummary extends React.Component {
     })
     .then(() => {
       console.log("all items retrieved!");
+      this.props.loadingGIF(false);
       const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
       const summaryMAL = sessionRef.collection("summary").doc("myanimelist");
       summaryMAL
@@ -118,8 +120,8 @@ class ListSummary extends React.Component {
   animeItemFormat(itemObject) {
     return (
       <div className="poster-image" key={itemObject.id}>
-        <img src={itemObject.image} alt={itemObject.title}/>
-        <div className="overlay-dim">
+        <img src={itemObject.image} alt={itemObject.title} key={"img-" + itemObject.id}/>
+        <div className="overlay-dim" key={"overlay-" + itemObject.id}>
             <h3><span>{itemObject.title}</span></h3>
             <p>
               <span className="field-name">Episodes:</span> 
@@ -130,7 +132,7 @@ class ListSummary extends React.Component {
               <br/>{itemObject.season}
             </p>
             <p>({itemObject.common_users})</p>
-            <a href={itemObject.link}><button>see details on MyAnimeList</button></a>
+            <a href={itemObject.link}><button key={"link-" + itemObject.id}>see details on MyAnimeList</button></a>
         </div>
       </div>
     );

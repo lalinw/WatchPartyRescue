@@ -132,7 +132,7 @@ div.session-banner {
   width: 100%;
   height: auto;
   top: 0;
-  background-color: #B4A5A5;
+  background-color: #3C415C;
   position: relative;
 }
 
@@ -243,7 +243,7 @@ span.field-name {
 
 .collapsible {
   cursor: pointer;
-  background: #BDBFDB;
+  background: #3C415C;
   border-radius: 4pt;
   border: none;
   width: 100%;
@@ -253,7 +253,7 @@ span.field-name {
 }
 
 .collapsible.open, .collapsible:hover {
-  background-color: #777DA7;
+  background-color: #3c415c80;
 }
 
 /* ============================================ Credits footer == */

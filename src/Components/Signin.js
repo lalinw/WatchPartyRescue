@@ -43,6 +43,7 @@ class SignIn extends React.Component {
 
 
   handleNameSubmit(event) {
+    this.props.loadingGIF(true);
     if (this.state.tempUser === "") {
       window.alert("Your display name cannot be empty!");
     } else {
@@ -84,6 +85,7 @@ class SignIn extends React.Component {
     this.setState({
       user: name
     })
+    this.props.loadingGIF(true);
     const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
     const usersRef = sessionRef.collection("users");
 
@@ -107,13 +109,14 @@ class SignIn extends React.Component {
       }
     })
     .then(() => {
+      this.props.loadingGIF(false);
       console.log("user created / set");
     });
   }
 
 
   setUsernameMAL(event, name) {
-    // this.loadingGIF(true);
+    this.props.loadingGIF(true);
     event.preventDefault();
     this.setState({
       usernameMAL: name
@@ -127,6 +130,7 @@ class SignIn extends React.Component {
       usersRef.doc(this.state.user).update({
         myanimelist_username: name
       });
+      this.props.loadingGIF(false);
     })
     .catch((error) => {
       console.log("Cannot set MAL username: " + error);
@@ -206,6 +210,7 @@ class SignIn extends React.Component {
             sessionID = {this.props.sessionID}
             user = {this.state.user}
             userList = {this.state.existingUsers}
+            loadingGIF = {this.props.loadingGIF}
           />}
 
         {this.props.sessionID != null 
@@ -222,12 +227,14 @@ class SignIn extends React.Component {
             setUsernameMAL = {this.setUsernameMAL}
             resetUser = {this.resetUser}
             resetUsernameMAL = {this.resetUsernameMAL} //might need to move MAL username state down to fetch list
+            loadingGIF = {this.props.loadingGIF}
           /> 
           
           <ListSummary
             sessionID = {this.props.sessionID}
             userList = {this.state.existingUsers}
             user = {this.state.user}
+            loadingGIF = {this.props.loadingGIF}
           />
         </React.Fragment>}
       </React.Fragment>

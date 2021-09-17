@@ -13,6 +13,8 @@ class FetchList extends React.Component {
     this.onFetchSubmit = this.onFetchSubmit.bind(this);
     this.fetchHelper = this.fetchHelper.bind(this);
     this.preFetch = this.preFetch.bind(this);
+
+    this.fetchDataMAL = this.fetchDataMAL.bind(this);
     //MAL username methods
     this.handleTextChange = this.handleTextChange.bind(this);
     this.showFormUsernameMAL = this.showFormUsernameMAL.bind(this);
@@ -40,7 +42,7 @@ class FetchList extends React.Component {
       event.preventDefault();
     } else {
       event.preventDefault();
-      // this.props.loadingGIF(true);
+      this.props.loadingGIF(true);
 
       console.log("MAL usernam = " + this.props.usernameMAL);
       const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
@@ -81,15 +83,27 @@ class FetchList extends React.Component {
   }
 
 
-  fetchHelper(endpointMAL, page, paginationThreshold, thisUserDoc, summaryMAL) {
+  async fetchHelper(endpointMAL, page, paginationThreshold, thisUserDoc, summaryMAL) {
     console.log("making API call...");
+
+    var data;
     fetch(endpointMAL + page)
-    .then(res => res.json())
-    .then((data) => {
-      if (data.anime !== undefined) {
-        for (var i = 0; i < data.anime.length; i++) {
-          // console.log(data.anime[i]);
-          var thisAnime = data.anime[i];
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        this.props.loadingGIF(false);
+        throw Error(response.statusText);
+      }
+    })
+    .then(resJSON => data = resJSON.anime)
+    .then(() => {
+      console.log(data);
+
+      if (data !== undefined) {
+        for (var i = 0; i < data.length; i++) {
+          // console.log(data[i].title);
+          var thisAnime = data[i];
           var released; 
           if (thisAnime.season_year == null) {
             if (thisAnime.airing_status <= 2) {
@@ -112,40 +126,137 @@ class FetchList extends React.Component {
             season: released
           }, { 
             merge: true 
+          })
+          .then(() => {
+            console.log("anime written to firestore");
           });
         }
         
         //check for more items after 1st page
-        if (data.anime.length === paginationThreshold) {
+        if (data.length === paginationThreshold) {
           this.fetchHelper(endpointMAL, page++, paginationThreshold, thisUserDoc, summaryMAL);
         } else {
           
           const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
           const usersRef = sessionRef.collection("users");
+          
           usersRef.doc(this.props.user)
           .set({
             last_fetched: firebase.firestore.FieldValue.serverTimestamp()
-          }, { merge: true });
-
+          }, { merge: true })
+          .then(() => {
+            console.log("last_fetched updated");
+          });
+          
           summaryMAL
           .set({
             latest_fetch: firebase.firestore.FieldValue.serverTimestamp()
-          }, { merge: true });
-          console.log("user last_fetched / latest_fetch updated");
+          }, { merge: true })
+          .then(() => {
+            console.log("last_fetched updated");
+          });
+
         }
       }
-    })
-    .then(() => {
-      console.log("API call completed.");
-    })
-    .catch((error) => {
-      console.log("API Unavailable: " + error);
+      this.props.loadingGIF(false);
     });
+
+    
+
+    
+
+    // fetch(endpointMAL + page)
+    // .then(response => {
+    //   if (response.status >= 200 && response.status <= 299) {
+    //     return response.json();
+    //   } else {
+    //     this.props.loadingGIF(false);
+    //     throw Error(response.statusText);
+    //   }
+    // })
+    // .then((data) => {
+    //   if (data.anime !== undefined) {
+    //     for (var i = 0; i < data.anime.length; i++) {
+    //       // console.log(data.anime[i]);
+    //       var thisAnime = data.anime[i];
+    //       var released; 
+    //       if (thisAnime.season_year == null) {
+    //         if (thisAnime.airing_status <= 2) {
+    //           released = thisAnime.start_date.substring(0,4);
+    //         } else {
+    //           released = "TBA";
+    //         }
+    //       } else {
+    //         released = thisAnime.season_name + " " + thisAnime.season_year;
+    //       }
+          
+    //       summaryMAL.collection("plan_to_watch").doc(thisAnime.mal_id.toString())
+    //       .set({
+    //         common_users: firebase.firestore.FieldValue.arrayUnion(this.props.user),
+    //         occurrences: firebase.firestore.FieldValue.increment(1),
+    //         title: thisAnime.title,
+    //         episodes: thisAnime.total_episodes,
+    //         image: thisAnime.image_url,
+    //         link: thisAnime.url,
+    //         season: released
+    //       }, { 
+    //         merge: true 
+    //       });
+    //     }
+        
+    //     //check for more items after 1st page
+    //     if (data.anime.length === paginationThreshold) {
+    //       this.fetchHelper(endpointMAL, page++, paginationThreshold, thisUserDoc, summaryMAL);
+    //     } else {
+          
+    //       const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
+    //       const usersRef = sessionRef.collection("users");
+    //       usersRef.doc(this.props.user)
+    //       .set({
+    //         last_fetched: firebase.firestore.FieldValue.serverTimestamp()
+    //       }, { merge: true });
+
+    //       summaryMAL
+    //       .set({
+    //         latest_fetch: firebase.firestore.FieldValue.serverTimestamp()
+    //       }, { merge: true });
+    //       console.log("user last_fetched / latest_fetch updated");
+    //     }
+    //   }
+    // })
+    // .then(() => {
+    //   this.props.loadingGIF(false);
+    //   console.log("API call completed.");
+    // })
+    // .catch((error) => {
+    //   console.log("API Unavailable: " + error);
+    // });
   }
 
 
   getListEndPointMAL(usernameMAL, listTypeMAL) {
     return "https://api.jikan.moe/v3/user/" + usernameMAL + "/animelist/" + listTypeMAL + "/";
+  }
+
+
+  async fetchDataMAL(endpoint) {
+    this.props.loadingGIF(true);
+    // var result;
+    // fetch(endpoint)
+    // .then(response => {
+    //   if (response.ok) {
+    //     return response.json();
+    //   } else {
+    //     this.props.loadingGIF(false);
+    //     throw Error(response.statusText);
+    //   }
+    // })
+    // .then(data => result = data.anime)
+    // .then(() => {
+    //   console.log(result);
+    //   this.props.loadingGIF(false);
+    //   return result;
+    // });
   }
 
 
@@ -159,7 +270,12 @@ class FetchList extends React.Component {
       );
     } else {
       return (
-        <p>MyAnimeList account: {this.props.usernameMAL} <button onClick={this.onFetchSubmit}>Fetch latest</button></p>
+        <p>MyAnimeList account: {this.props.usernameMAL} <button onClick={this.onFetchSubmit}>Fetch latest</button>
+        <button onClick={() => {
+          this.fetchDataMAL("https://api.jikan.moe/v3/user/pipsqueakma/animelist/plantowatch");
+          }}>fetch test</button>
+        </p>
+        
       );
     }
   }

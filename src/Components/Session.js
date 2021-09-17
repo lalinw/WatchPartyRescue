@@ -72,7 +72,7 @@ class Session extends React.Component {
 
 
   createSession(sessionName) {
-    // this.loadingGIF(true);
+    this.loadingGIF(true);
     
     firebase.firestore().collection("session").add({
       session_name: sessionName,
@@ -86,7 +86,7 @@ class Session extends React.Component {
 
 
   setSession(sessionID) {
-    // this.loadingGIF(true);
+    this.loadingGIF(true);
     this.setState({
       sessionID: sessionID
     })
@@ -104,6 +104,7 @@ class Session extends React.Component {
 
 
   handleSessionNameSubmit(event) {
+    // this.loadingGIF(true);
     event.preventDefault();
 
     if (this.state.tempSessionName === "") {
@@ -120,20 +121,21 @@ class Session extends React.Component {
   }
 
 
-  handleSessionNameUpdate(event) {
+  async handleSessionNameUpdate(event) {
     event.preventDefault();
-    // this.props.loadingGIF(true);
+    this.props.loadingGIF(true);
 
-    firebase.firestore().collection("session").doc(this.state.sessionID).update({
+    await firebase.firestore().collection("session").doc(this.state.sessionID).update({
       session_name: this.state.tempSessionName
-    }).then(() => {
-      // this.props.loadingGIF(false);
+    })
+    .then(() => {
+      
       console.log("Session Name successfully updated!");
       this.setState(state => ({ 
         editMode: false,
         sessionName: state.tempSessionName
       }));
-
+      this.props.loadingGIF(false);
     }).catch((error) => {
       // The document probably doesn't exist.
       console.error("Error updating document: ", error);
@@ -226,7 +228,7 @@ class Session extends React.Component {
         <div className="app-content">
           <SignIn
             sessionID = {this.state.sessionID}
-            // loadingGIF = {this.loadingGIF}
+            loadingGIF = {this.props.loadingGIF}
           />
         </div>
       </React.Fragment>

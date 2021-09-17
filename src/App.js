@@ -57,8 +57,8 @@ class App extends Component {
       document.getElementById("popup-loading").style.display = "block";
       document.getElementById("popup-content").style.display = "block";
     } else {
-      document.getElementById("popup-content").style.display = "none";
       document.getElementById("popup-loading").style.display = "none";
+      document.getElementById("popup-content").style.display = "none";
     }
   }
 
