@@ -1,16 +1,8 @@
 import './App.css';
 import React, { Component } from "react";
 //Components
-import FetchList from "./Components/FetchList";
-import ListSummary from "./Components/ListSummary";
-import SignIn from "./Components/Signin";
-import UserList from "./Components/UserList";
+
 import Session from "./Components/Session";
-
-//keys
-import firebase from './firebase';
-
-//import logo from './logo.svg';
 
 class App extends Component {
   constructor() {
@@ -42,51 +34,51 @@ class App extends Component {
 
   componentDidMount() {
 
-    //Sample address: http://localhost:3000/?param1=55&param2=test
-    //note: 
-    //  All URL parameters are strings
-    //  When a parameter doesn't exist in the URL address, queryParams.get() method will return null
-    const urlParam = new URLSearchParams(window.location.search);
-    const sessionID = urlParam.get('session');
+    // //Sample address: http://localhost:3000/?param1=55&param2=test
+    // //note: 
+    // //  All URL parameters are strings
+    // //  When a parameter doesn't exist in the URL address, queryParams.get() method will return null
+    // const urlParam = new URLSearchParams(window.location.search);
+    // const sessionID = urlParam.get('session');
 
-    console.log("Session ID = " + sessionID);
-    // console.log(sessionID);
+    // console.log("Session ID = " + sessionID);
+    // // console.log(sessionID);
     
 
-    if (sessionID != null) {
-      //check if session does actually exist/valid sessionID
-      const sessionRef = firebase.firestore().collection("session").doc(sessionID);
-      sessionRef.get().then((thisSession) => {
-        if (thisSession.exists) {
-          //if session already exist, access the session
-          sessionRef.collection("users")
-          .get().then((usersCollection) => {
-            this.setState({
-              sessionID: sessionID,
-              usersInSessionCount: usersCollection.size
-            });
-          });
-        }
-        //reset the URL in the address bar
-        navigator.clipboard.writeText(window.location.href.split("?")[0]);         
-      });
-      console.log("users count = " + this.state.usersInSessionCount);
-    }
-    this.loadingGIF(false);
+    // if (sessionID != null) {
+    //   //check if session does actually exist/valid sessionID
+    //   const sessionRef = firebase.firestore().collection("session").doc(sessionID);
+    //   sessionRef.get().then((thisSession) => {
+    //     if (thisSession.exists) {
+    //       //if session already exist, access the session
+    //       sessionRef.collection("users")
+    //       .get().then((usersCollection) => {
+    //         this.setState({
+    //           sessionID: sessionID,
+    //           usersInSessionCount: usersCollection.size
+    //         });
+    //       });
+    //     }
+    //     //reset the URL in the address bar
+    //     navigator.clipboard.writeText(window.location.href.split("?")[0]);         
+    //   });
+    //   console.log("users count = " + this.state.usersInSessionCount);
+    // }
+    // this.loadingGIF(false);
   }
 
   
   
 
   
-  recountUsers() {
-    firebase.firestore().collection("session").doc(this.state.sessionID)
-    .get().then((thisSession) => {
-      this.setState({
-        usersInSessionCount: thisSession.data().users_count
-      })
-    });
-  }
+  // recountUsers() {
+  //   firebase.firestore().collection("session").doc(this.state.sessionID)
+  //   .get().then((thisSession) => {
+  //     this.setState({
+  //       usersInSessionCount: thisSession.data().users_count
+  //     })
+  //   });
+  // }
 
 
   // resetUser() {

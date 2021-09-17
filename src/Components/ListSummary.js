@@ -45,14 +45,14 @@ class ListSummary extends React.Component {
   }
 
   componentDidUpdate() {
-    if (this.props.usersInSessionCount > 2 && this.props.usersInSessionCount !== this.state.countFilters[0].count) {
+    if (this.props.userList.length > 2 && this.props.userList.length !== this.state.countFilters[0].count) {
       this.setFiltersOnUsersCount();
     }
   }
 
   setFiltersOnUsersCount() {
     var filter = [];
-    for (var i = this.props.usersInSessionCount; i > 1; i--) {
+    for (var i = this.props.userList.length ; i > 1; i--) {
       var tier = {
         count: i,
         show: false
@@ -194,7 +194,7 @@ class ListSummary extends React.Component {
           {!this.state.fetched && <p>Warning: Your list has not been fetched</p>}
           <button 
             onClick={ () => {
-              if (this.props.usersInSessionCount < 2) {
+              if (this.props.userList.length  < 2) {
                 window.alert("Cannot compare list between fewer than 2 users.\nInvite more people and fetch their list(s) to proceed.");
               } else {
                 this.retrieveAllItems();

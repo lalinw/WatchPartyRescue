@@ -85,19 +85,20 @@ class SignIn extends React.Component {
 
   setUser(name) {
     // this.loadingGIF(true);
-    // this.setState({
-    //   user: name
-    // })
+    this.setState({
+      user: name
+    })
     const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
     const usersRef = sessionRef.collection("users");
 
     usersRef.doc(name).get().then((thisDoc) => {
       if (!thisDoc.exists) {
         console.log("doc does not exist yet. Creating user...");
+        this.retrieveExistingUsers();
         
-        this.setState((state) => ({
-          usersInSessionCount: state.usersInSessionCount + 1
-        }))
+        // this.setState((state) => ({
+        //   usersInSessionCount: state.usersInSessionCount + 1
+        // }))
 
         sessionRef.update({
           users_count: firebase.firestore.FieldValue.increment(1)
@@ -123,20 +124,26 @@ class SignIn extends React.Component {
     // this.loadingGIF(true);
     // event.preventDefault();
 
+    this.setState({
+      usernameMAL: name
+    })
+    event.preventDefault();
+
     const usersRef = firebase.firestore().collection("session").doc(this.props.sessionID).collection("users");
 
-    usersRef.doc(this.state.user)
-    .get().then((doc) => {
+    usersRef.doc(this.state.user).get()
+    .then((doc) => {
       // doc of user already exists if the user is trying to set their MAL username
       console.log("setting user's MAL username as..." + name);
       usersRef.doc(this.state.user).update({
         myanimelist_username: name
       });
-    });
-    this.setState({
-      usernameMAL: name
     })
-    event.preventDefault();
+    .catch((error) => {
+      console.log("Cannot set MAL username: " + error);
+      this.resetUsernameMAL();
+    });
+    
   }
 
 
@@ -178,9 +185,15 @@ class SignIn extends React.Component {
             onChange={this.handleNameChange}
             />
           <br/>
-          <p><button 
-            onClick={this.handleNameSubmit} 
-            disabled={this.state.tempUser === "" || this.state.tempUser === "DEFAULT"}>Continue</button>
+          <p>
+            <button 
+              onClick={this.handleNameSubmit} 
+              onKeyPress={event => {
+                if (event.key === 'Enter') {
+                  this.handleNameSubmit(event)
+                }
+              }}
+              disabled={this.state.tempUser === "" || this.state.tempUser === "DEFAULT"}>Continue</button>
           </p>
         </form>
       </div>
@@ -228,7 +241,8 @@ class SignIn extends React.Component {
           
           <ListSummary
             sessionID = {this.props.sessionID}
-            usersInSessionCount = {this.props.usersInSessionCount}
+            userList = {this.state.existingUsers}
+            // usersInSessionCount = {this.props.usersInSessionCount}
             user = {this.state.user}
           />
         </React.Fragment>}

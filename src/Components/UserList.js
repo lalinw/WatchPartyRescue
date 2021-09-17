@@ -15,8 +15,8 @@ class UserList extends React.Component {
   }
   
   componentDidMount() {
-    const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
-    const usersRef = sessionRef.collection("users");
+    // const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
+    // const usersRef = sessionRef.collection("users");
 
     // this.retrieveUserList();
     // this.retrieveExistingUsers(); ???? how to re-use this

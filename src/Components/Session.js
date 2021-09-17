@@ -10,7 +10,7 @@ class Session extends React.Component {
     this.state = {
       sessionID: null,
       sessionName: "",
-      usersInSessionCount: null,
+      // usersInSessionCount: null,
       tempSessionName: "",
       editMode: false
       
@@ -55,14 +55,14 @@ class Session extends React.Component {
           .get().then((usersCollection) => {
             this.setState({
               sessionID: sessionID,
-              usersInSessionCount: usersCollection.size
+              // usersInSessionCount: usersCollection.size
             });
           });
         }
         //reset the URL in the address bar
         navigator.clipboard.writeText(window.location.href.split("?")[0]);         
       });
-      console.log("users count = " + this.state.usersInSessionCount);
+      // console.log("users count = " + this.state.usersInSessionCount);
     }
   }
   
@@ -73,8 +73,8 @@ class Session extends React.Component {
     this.setState({
       sessionID: null,
       user: null,
-      usernameMAL: null,
-      usersInSessionCount: null
+      usernameMAL: null
+      // usersInSessionCount: null
     })
     //remove sessionID from address bar
     window.location.href =  window.location.href.split("?")[0];
@@ -100,7 +100,7 @@ class Session extends React.Component {
     this.setState({
       sessionID: sessionID
     })
-    this.recountUsers();
+    // this.recountUsers();
   }
 
 
@@ -239,7 +239,7 @@ class Session extends React.Component {
         <div className="app-content">
           <SignIn
             sessionID = {this.state.sessionID}
-            usersInSessionCount = {this.state.usersInSessionCount}
+            // usersInSessionCount = {this.state.usersInSessionCount}
             //methods
             // resetSession = {this.resetSession}
             // createSession = {this.createSession}

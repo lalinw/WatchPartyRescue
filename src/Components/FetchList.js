@@ -134,17 +134,8 @@ class FetchList extends React.Component {
       }
     })
     .then(() => {
-      console.log("API call successful.");
-      // const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
-      // const summaryMAL = sessionRef.collection("summary").doc("myanimelist");
-      // const usersRef = sessionRef.collection("users");
-
-      
-      // this.props.loadingGIF(false);
+      console.log("API call completed.");
     })
-    // .then(() => {
-    //   console.log("user last_fetched updated");
-    // })  
     .catch((error) => {
       console.log("API Unavailable: " + error);
     });
@@ -180,11 +171,16 @@ class FetchList extends React.Component {
           onChange={this.handleTextChange}
           />
         <br/>
-        <button onClick={(event) => {
+        <button 
+          onClick={(event) => {
           this.props.setUsernameMAL(event, this.state.tempUsernameMAL);
-          this.setState({ 
-            showFormUsernameMAL: false
-          });
+          this.setState({ showFormUsernameMAL: false });
+          }}
+          onKeyPress={event => {
+            if (event.key === 'Enter') {
+              this.props.setUsernameMAL(event, this.state.tempUsernameMAL);
+              this.setState({ showFormUsernameMAL: false });
+            }
           }}>Save</button>
         {/* <button onClick={this.onFetchSubmit}>Fetch Anime List</button> */}
       </form>
