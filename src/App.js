@@ -16,8 +16,6 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-      user: null,
-      usernameMAL: null,
       sessionID: null,
       usersInSessionCount: null,
       isLoading: false
@@ -26,17 +24,17 @@ class App extends Component {
     this.TopBannerView = this.TopBannerView.bind(this);
     this.CreditsBannerView = this.CreditsBannerView.bind(this);
     
-    //session methods
-    this.resetSession = this.resetSession.bind(this);
-    this.createSession = this.createSession.bind(this);
-    this.setSession = this.setSession.bind(this);
-    //user methods
-    this.resetUser = this.resetUser.bind(this);
-    this.setUser = this.setUser.bind(this);
-    this.recountUsers = this.recountUsers.bind(this);
-    //MAL user methods
-    this.setUsernameMAL = this.setUsernameMAL.bind(this);
-    this.resetUsernameMAL = this.resetUsernameMAL.bind(this);
+    // //session methods
+    // this.resetSession = this.resetSession.bind(this);
+    // this.createSession = this.createSession.bind(this);
+    // this.setSession = this.setSession.bind(this);
+    // //user methods
+    // this.resetUser = this.resetUser.bind(this);
+    // this.setUser = this.setUser.bind(this);
+    // this.recountUsers = this.recountUsers.bind(this);
+    // //MAL user methods
+    // this.setUsernameMAL = this.setUsernameMAL.bind(this);
+    // this.resetUsernameMAL = this.resetUsernameMAL.bind(this);
 
     this.loadingGIF = this.loadingGIF.bind(this);
     
@@ -78,13 +76,7 @@ class App extends Component {
   }
 
   
-  resetUser() {
-    // this.loadingGIF(true);
-    this.setState({
-      user: null,
-      usernameMAL: null,
-    })
-  }
+  
 
   
   recountUsers() {
@@ -97,105 +89,113 @@ class App extends Component {
   }
 
 
-  setUser(name) {
-    // this.loadingGIF(true);
-    // this.setState({
-    //   user: name
-    // })
-    const sessionRef = firebase.firestore().collection("session").doc(this.state.sessionID);
-    const usersRef = sessionRef.collection("users");
+  // resetUser() {
+  //   // this.loadingGIF(true);
+  //   this.setState({
+  //     user: null,
+  //     usernameMAL: null,
+  //   })
+  // }
 
-    usersRef.doc(name).get().then((thisDoc) => {
-      if (!thisDoc.exists) {
-        console.log("doc does not exist yet. Creating user...");
+  // setUser(name) {
+  //   // this.loadingGIF(true);
+  //   // this.setState({
+  //   //   user: name
+  //   // })
+  //   const sessionRef = firebase.firestore().collection("session").doc(this.state.sessionID);
+  //   const usersRef = sessionRef.collection("users");
+
+  //   usersRef.doc(name).get().then((thisDoc) => {
+  //     if (!thisDoc.exists) {
+  //       console.log("doc does not exist yet. Creating user...");
         
-        this.setState((state) => ({
-          usersInSessionCount: state.usersInSessionCount + 1
-        }))
+  //       this.setState((state) => ({
+  //         usersInSessionCount: state.usersInSessionCount + 1
+  //       }))
 
-        sessionRef.update({
-          users_count: firebase.firestore.FieldValue.increment(1)
-        });
+  //       sessionRef.update({
+  //         users_count: firebase.firestore.FieldValue.increment(1)
+  //       });
 
-        usersRef.doc(name).set({
-          myanimelist_username: null
-        });
-      } else {
-        this.setState({
-          user: name,
-          usernameMAL: thisDoc.data().myanimelist_username
-        })
-      }
-    })
-    .then(() => {
-      console.log("user created / set");
-    });
-  }
-
-
-  resetSession() {
-    // this.loadingGIF(true);
-    //log out of session && sign out of current user
-    this.setState({
-      sessionID: null,
-      user: null,
-      usernameMAL: null,
-      usersInSessionCount: null
-    })
-    //remove sessionID from address bar
-    window.location.href =  window.location.href.split("?")[0];
-  }
+  //       usersRef.doc(name).set({
+  //         myanimelist_username: null
+  //       });
+  //     } else {
+  //       this.setState({
+  //         user: name,
+  //         usernameMAL: thisDoc.data().myanimelist_username
+  //       })
+  //     }
+  //   })
+  //   .then(() => {
+  //     console.log("user created / set");
+  //   });
+  // }
 
 
-  createSession(sessionName) {
-    // this.loadingGIF(true);
+  // resetSession() {
+  //   // this.loadingGIF(true);
+  //   //log out of session && sign out of current user
+  //   this.setState({
+  //     sessionID: null,
+  //     user: null,
+  //     usernameMAL: null,
+  //     usersInSessionCount: null
+  //   })
+  //   //remove sessionID from address bar
+  //   window.location.href =  window.location.href.split("?")[0];
+  // }
+
+
+  // createSession(sessionName) {
+  //   // this.loadingGIF(true);
     
-    firebase.firestore().collection("session").add({
-      session_name: sessionName,
-      date_created: firebase.firestore.FieldValue.serverTimestamp(),
-      users_count: 0
-    }).then((doc) => {
-      console.log("new session ID: " + doc.id);
-      this.setSession(doc.id);
-    }).catch((error) => {});
-  }
+  //   firebase.firestore().collection("session").add({
+  //     session_name: sessionName,
+  //     date_created: firebase.firestore.FieldValue.serverTimestamp(),
+  //     users_count: 0
+  //   }).then((doc) => {
+  //     console.log("new session ID: " + doc.id);
+  //     this.setSession(doc.id);
+  //   }).catch((error) => {});
+  // }
 
 
-  setSession(sessionID) {
-    // this.loadingGIF(true);
-    this.setState({
-      sessionID: sessionID
-    })
-    this.recountUsers();
-  }
+  // setSession(sessionID) {
+  //   // this.loadingGIF(true);
+  //   this.setState({
+  //     sessionID: sessionID
+  //   })
+  //   this.recountUsers();
+  // }
 
   
-  setUsernameMAL(event, name) {
-    // this.loadingGIF(true);
-    // event.preventDefault();
+  // setUsernameMAL(event, name) {
+  //   // this.loadingGIF(true);
+  //   // event.preventDefault();
 
-    const usersRef = firebase.firestore().collection("session").doc(this.state.sessionID).collection("users");
+  //   const usersRef = firebase.firestore().collection("session").doc(this.state.sessionID).collection("users");
 
-    usersRef.doc(this.state.user)
-    .get().then((doc) => {
-      // doc of user already exists if the user is trying to set their MAL username
-      console.log("setting user's MAL username as..." + name);
-      usersRef.doc(this.state.user).update({
-        myanimelist_username: name
-      });
-    });
-    this.setState({
-      usernameMAL: name
-    })
-    event.preventDefault();
-  }
+  //   usersRef.doc(this.state.user)
+  //   .get().then((doc) => {
+  //     // doc of user already exists if the user is trying to set their MAL username
+  //     console.log("setting user's MAL username as..." + name);
+  //     usersRef.doc(this.state.user).update({
+  //       myanimelist_username: name
+  //     });
+  //   });
+  //   this.setState({
+  //     usernameMAL: name
+  //   })
+  //   event.preventDefault();
+  // }
 
 
-  resetUsernameMAL() {
-    this.setState({
-      usernameMAL: null
-    })
-  }
+  // resetUsernameMAL() {
+  //   this.setState({
+  //     usernameMAL: null
+  //   })
+  // }
 
 
 
@@ -243,12 +243,12 @@ class App extends Component {
           <this.TopBannerView/>
         </div>
           <Session
-            sessionID = {this.state.sessionID}
-            resetSession = {this.resetSession}
-            createSession = {this.createSession}
+            // sessionID = {this.state.sessionID}
+            // resetSession = {this.resetSession}
+            // createSession = {this.createSession}
             loadingGIF = {this.loadingGIF}
           />
-        <div className="app-content"> 
+        {/* <div className="app-content"> 
           <SignIn
             user = {this.state.user}
             sessionID = {this.state.sessionID}
@@ -263,11 +263,11 @@ class App extends Component {
 
             loadingGIF = {this.loadingGIF}
           />
-          {/* {this.state.sessionID != null && <UserList
+          {this.state.sessionID != null && <UserList
                                       user = {this.state.user}
                                       sessionID = {this.state.sessionID}
                                       recountUsers = {this.recountUsers}
-                                    />} */}
+                                    />}
           {this.state.sessionID != null && this.state.user !== null && <React.Fragment>
                                                                   <FetchList
                                                                     user = {this.state.user}
@@ -284,7 +284,7 @@ class App extends Component {
                                                                     loadingGIF = {this.loadingGIF}
                                                                   />
                                                                 </React.Fragment>}
-        </div>
+        </div> */}
         <div className="banner" id="footer">
           <this.CreditsBannerView/>
         </div>

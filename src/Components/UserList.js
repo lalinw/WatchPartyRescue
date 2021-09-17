@@ -18,26 +18,26 @@ class UserList extends React.Component {
     const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
     const usersRef = sessionRef.collection("users");
 
-    this.retrieveUserList();
+    // this.retrieveUserList();
     // this.retrieveExistingUsers(); ???? how to re-use this
   }
 
-  retrieveUserList() {
-    //populate userList state for user management 
-    const usersRef = firebase.firestore().collection("session").doc(this.props.sessionID).collection("users");
-    const unsubscribe = usersRef.onSnapshot((userDocs) => {
-      var localUsers = [];
-      console.log("userDocs = " + userDocs.size);
-      userDocs.forEach((theUser) => {
-        localUsers.push(theUser.id);
-        console.log("user docs = " + theUser.id);
-      });
-      this.setState({
-        userList: localUsers
-      });
-    });
-    unsubscribe();
-  }
+  // retrieveUserList() {
+  //   //populate userList state for user management 
+  //   const usersRef = firebase.firestore().collection("session").doc(this.props.sessionID).collection("users");
+  //   const unsubscribe = usersRef.onSnapshot((userDocs) => {
+  //     var localUsers = [];
+  //     console.log("userDocs = " + userDocs.size);
+  //     userDocs.forEach((theUser) => {
+  //       localUsers.push(theUser.id);
+  //       console.log("user docs = " + theUser.id);
+  //     });
+  //     this.setState({
+  //       userList: localUsers
+  //     });
+  //   });
+  //   unsubscribe();
+  // }
 
   userItemFormat(eachUser) {
     return (
@@ -105,7 +105,7 @@ class UserList extends React.Component {
             : <React.Fragment>
               <p>Users in this session:</p>
               <ul>
-                {this.state.userList.map((eachUser) => {
+                {this.props.userList.map((eachUser) => {
                   return this.userItemFormat(eachUser);
                 })}
               </ul>

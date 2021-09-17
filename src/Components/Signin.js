@@ -6,6 +6,8 @@ class SignIn extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      user: null,
+      usernameMAL: null,
       tempUser: "",
       existingUsers: []
     };
@@ -15,7 +17,17 @@ class SignIn extends React.Component {
     //micro-components
     this.ActiveUserView = this.ActiveUserView.bind(this);
     this.UserSignInView = this.UserSignInView.bind(this);
+
+    //methods
     this.retrieveExistingUsers = this.retrieveExistingUsers.bind(this);
+
+    //user methods
+    this.resetUser = this.resetUser.bind(this);
+    this.setUser = this.setUser.bind(this);
+    // this.recountUsers = this.recountUsers.bind(this);
+    //MAL user methods
+    this.setUsernameMAL = this.setUsernameMAL.bind(this);
+    this.resetUsernameMAL = this.resetUsernameMAL.bind(this);
   }
   
 
@@ -36,7 +48,7 @@ class SignIn extends React.Component {
     if (this.state.tempUser === "") {
       window.alert("Your display name cannot be empty!");
     } else {
-      this.props.setUser(this.state.tempUser);
+      this.setUser(this.state.tempUser);
     }
     event.preventDefault();
     this.setState({ 
@@ -59,11 +71,84 @@ class SignIn extends React.Component {
     });
   }
 
+  resetUser() {
+    // this.loadingGIF(true);
+    this.setState({
+      user: null,
+      usernameMAL: null,
+    })
+  }
+
+  setUser(name) {
+    // this.loadingGIF(true);
+    // this.setState({
+    //   user: name
+    // })
+    const sessionRef = firebase.firestore().collection("session").doc(this.state.sessionID);
+    const usersRef = sessionRef.collection("users");
+
+    usersRef.doc(name).get().then((thisDoc) => {
+      if (!thisDoc.exists) {
+        console.log("doc does not exist yet. Creating user...");
+        
+        this.setState((state) => ({
+          usersInSessionCount: state.usersInSessionCount + 1
+        }))
+
+        sessionRef.update({
+          users_count: firebase.firestore.FieldValue.increment(1)
+        });
+
+        usersRef.doc(name).set({
+          myanimelist_username: null
+        });
+      } else {
+        this.setState({
+          user: name,
+          usernameMAL: thisDoc.data().myanimelist_username
+        })
+      }
+    })
+    .then(() => {
+      console.log("user created / set");
+    });
+  }
+
+
+  setUsernameMAL(event, name) {
+    // this.loadingGIF(true);
+    // event.preventDefault();
+
+    const usersRef = firebase.firestore().collection("session").doc(this.state.sessionID).collection("users");
+
+    usersRef.doc(this.state.user)
+    .get().then((doc) => {
+      // doc of user already exists if the user is trying to set their MAL username
+      console.log("setting user's MAL username as..." + name);
+      usersRef.doc(this.state.user).update({
+        myanimelist_username: name
+      });
+    });
+    this.setState({
+      usernameMAL: name
+    })
+    event.preventDefault();
+  }
+
+
+  resetUsernameMAL() {
+    this.setState({
+      usernameMAL: null
+    })
+  }
+
+
+
   ActiveUserView() {
     const parentElement = document.getElementById("banner");
     return ReactDOM.createPortal(
       <div id="profile-card">
-        <p><b>{this.props.user}</b> <button onClick={this.props.resetUser}>Sign Out</button></p>
+        <p><b>{this.state.user}</b> <button onClick={this.resetUser}>Sign Out</button></p>
       </div>, 
       parentElement);
   }
@@ -102,12 +187,47 @@ class SignIn extends React.Component {
   render() {
     return (
       <React.Fragment>
-        {this.props.sessionID !== null && <div className="sign-in">
-                                            {this.props.user !== null 
-                                              ? <this.ActiveUserView/> 
-                                              : <this.UserSignInView/>}
-                                          </div>}
+        {this.props.sessionID !== null 
+        && 
+          <div className="sign-in">
+            {this.state.user !== null 
+              ? <this.ActiveUserView/> 
+              : <this.UserSignInView/>}
+          </div>}
+        
+        {this.state.sessionID != null 
+        && 
+          <UserList
+            sessionID = {this.props.sessionID}
+            user = {this.state.user}
+            userList = {this.state.existingUsers}
+            
+            // recountUsers = {this.recountUsers}  ??
+          />}
 
+
+        {this.props.sessionID != null 
+        && 
+        this.state.user !== null 
+        && 
+          <React.Fragment>
+          <FetchList
+            sessionID = {this.props.sessionID}
+            user = {this.state.user}
+            usernameMAL = {this.state.usernameMAL}
+            //methods
+            setUser = {this.setUser}
+            setUsernameMAL = {this.setUsernameMAL}
+            resetUser = {this.resetUser}
+            resetUsernameMAL = {this.resetUsernameMAL} //might need to move MAL username state down to fetch list
+            
+          /> 
+          <ListSummary
+            sessionID = {this.props.sessionID}
+            usersInSessionCount = {this.props.usersInSessionCount}
+            user = {this.state.user}
+          />
+        </React.Fragment>}
       </React.Fragment>
     );
   }
