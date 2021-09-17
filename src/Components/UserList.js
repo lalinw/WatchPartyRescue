@@ -19,12 +19,13 @@ class UserList extends React.Component {
     const usersRef = sessionRef.collection("users");
 
     this.retrieveUserList();
+    // this.retrieveExistingUsers(); ???? how to re-use this
   }
 
   retrieveUserList() {
     //populate userList state for user management 
     const usersRef = firebase.firestore().collection("session").doc(this.props.sessionID).collection("users");
-    usersRef.onSnapshot((userDocs) => {
+    const unsubscribe = usersRef.onSnapshot((userDocs) => {
       var localUsers = [];
       console.log("userDocs = " + userDocs.size);
       userDocs.forEach((theUser) => {
@@ -35,6 +36,7 @@ class UserList extends React.Component {
         userList: localUsers
       });
     });
+    unsubscribe();
   }
 
   userItemFormat(eachUser) {
@@ -74,7 +76,7 @@ class UserList extends React.Component {
       }).catch((error) => {});
       
       summaryMAL.collection("plan_to_watch").where("occurrences", "==", 0)
-      .onSnapshot((querySnapshot) => {
+      .get().then((querySnapshot) => {
         querySnapshot.forEach( (doc) => {
           summaryMAL.collection("plan_to_watch").doc(doc.id).delete().then(() => {
             console.log("Document successfully deleted!");

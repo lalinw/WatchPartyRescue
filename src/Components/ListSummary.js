@@ -1,6 +1,5 @@
 import '../App.css';
 import React from 'react';
-import ReactDOM from 'react-dom'
 import firebase from '../firebase';
 
 
@@ -10,12 +9,15 @@ class ListSummary extends React.Component {
     super(props);
     this.state = {
       allItems: [],
-      countFilters: [{
-        count: 0,
-        show: false
-      }]
+      countFilters: [
+        {
+          count: 0,
+          show: false
+        }
+      ],
+      fetched: false
     };
-    this.retrieveAllItems = this.retrieveAllItems.bind(this);
+    this.retrieveAllItems = this.retrieveAllItems.bind(this); 
     this.animeItemFormat = this.animeItemFormat.bind(this);
     this.toggleCollapsible = this.toggleCollapsible.bind(this)
     this.setFiltersOnUsersCount = this.setFiltersOnUsersCount.bind(this)
@@ -23,13 +25,29 @@ class ListSummary extends React.Component {
   
   componentDidMount() {
     this.setFiltersOnUsersCount();
+    const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
+    const usersRef = sessionRef.collection("users");
+
+    usersRef.doc(this.props.user).get().then( (doc) => {
+      if (doc.exists) {
+        if(doc.get('last_fetched') !== undefined){
+          this.setState({
+            fetched: true
+          });
+          console.log("last_fetched field exists");
+        }
+      } else {
+        console.log("last_fetched cannot be found");
+      }
+    })
+    .catch((error) => {
+      console.log("Error getting document:", error);
+    });
   }
 
   componentDidUpdate() {
-    if (this.props.usersInSessionCount > 2) {
-      if (this.props.usersInSessionCount !== this.state.countFilters[0].count) {
-        this.setFiltersOnUsersCount();
-      }
+    if (this.props.usersInSessionCount > 2 && this.props.usersInSessionCount !== this.state.countFilters[0].count) {
+      this.setFiltersOnUsersCount();
     }
   }
 
@@ -66,16 +84,16 @@ class ListSummary extends React.Component {
       allItems.docs.map((plantowatchDoc) => {
         var item = 
         {
-          image:          plantowatchDoc.data().image,
+          image:        plantowatchDoc.data().image,
           title:        plantowatchDoc.data().title,
-          episodes:          plantowatchDoc.data().episodes,
+          episodes:     plantowatchDoc.data().episodes,
           season:       plantowatchDoc.data().season,
           common_users: plantowatchDoc.data().common_users.join(", "),
           occurrences:  plantowatchDoc.data().occurrences,
           link:         plantowatchDoc.data().link
         };
         // console.log(item.title);
-        this.setState(state => ({
+        return this.setState(state => ({
           allItems: [...state.allItems, item]
         }));        
       });
@@ -135,27 +153,34 @@ class ListSummary extends React.Component {
     // console.log("list summary items (all) = " + this.state.allItems);
     if (this.state.allItems.length > 0) {
       return (
-        <div>
+        <div className="summary">
           <h3>Titles you have in common! <button onClick={this.retrieveAllItems}>Reload</button></h3> 
           <div id="tiers">
             {
               this.state.countFilters.map((thisFilter) => {
-                var thisTier = this.state.allItems.filter(item => item.occurrences == thisFilter.count);
+                var thisTier = this.state.allItems.filter(item => item.occurrences === thisFilter.count);
                 return (
                   <div key={"tier-" + thisFilter.count} className="item-tier">
                     <button 
                       key={"tierbtn-" + thisFilter.count} 
-                      onClick={ () => this.toggleCollapsible(thisFilter.count) }
-                      disabled={ thisTier.length === 0 }>
+                      className={"collapsible" + (thisFilter.show ? ' open' : '')}
+                      onClick={ () => this.toggleCollapsible(thisFilter.count) }>
                       <p>Titles sharing {thisFilter.count} common users ({thisTier.length}):</p>
                     </button>
-                    <div key={"tiercontent-" + thisFilter.count} className={"tier-content" + (thisFilter.show ? ' open' : '')}>
+                    <div 
+                      key={"tiercontent-" + thisFilter.count} 
+                      className={"tier-content" + (thisFilter.show ? ' open' : '')}>
                       {
+                        thisTier.length < 1
+                        ?
+                        <p>There are no titles shared between {thisFilter.count} users</p>
+                        :
                         thisTier.map((eachItem) => {
                           return this.animeItemFormat(eachItem);
                         })
                       }
                     </div>
+                    
                   </div>
                 );
               })
@@ -166,8 +191,18 @@ class ListSummary extends React.Component {
       
     } else {
       return (
-        <div>
-          <button onClick={this.retrieveAllItems}>Find titles everyone has in common!</button>
+        <div className="summary alt">
+          {!this.state.fetched && <p>Warning: Your list has not been fetched</p>}
+          <button 
+            onClick={ () => {
+              if (this.props.usersInSessionCount < 2) {
+                window.alert("Cannot compare list between fewer than 2 users.\nInvite more people and fetch their list(s) to proceed.");
+              } else {
+                this.retrieveAllItems();
+              }
+            }}>
+            Compare everyone's lists!
+          </button>
         </div>
       );
     }

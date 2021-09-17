@@ -15,11 +15,12 @@ class SignIn extends React.Component {
     //micro-components
     this.ActiveUserView = this.ActiveUserView.bind(this);
     this.UserSignInView = this.UserSignInView.bind(this);
-    this.existingUsersDropdownFormat = this.existingUsersDropdownFormat.bind(this);
+    this.retrieveExistingUsers = this.retrieveExistingUsers.bind(this);
   }
   
 
   componentDidMount() {
+    
   }
 
 
@@ -43,6 +44,20 @@ class SignIn extends React.Component {
     });
   }
 
+  retrieveExistingUsers() {
+    const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
+    const usersRef = sessionRef.collection("users");
+
+    return usersRef.get().then((userDocs) => {
+      var localUsers = [];
+      userDocs.forEach((theUser) => {
+        localUsers.push(theUser.id);
+      });
+      this.setState({
+        existingUsers: localUsers
+      })
+    });
+  }
 
   ActiveUserView() {
     const parentElement = document.getElementById("banner");
@@ -53,24 +68,8 @@ class SignIn extends React.Component {
       parentElement);
   }
 
-  existingUsersDropdownFormat(eachUser) {
-    return 0;
-  }
-
   UserSignInView() {
-    const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
-    const usersRef = sessionRef.collection("users");
-
-    usersRef.onSnapshot((userDocs) => {
-      var localUsers = [];
-      userDocs.forEach((theUser) => {
-        localUsers.push(theUser.id);
-      });
-      this.setState({
-        existingUsers: localUsers
-      })
-    });
-    
+    this.retrieveExistingUsers();
     return (
       <div className="sign-in">
         <h2>Sign in:</h2>
