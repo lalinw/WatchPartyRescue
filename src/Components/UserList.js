@@ -1,16 +1,16 @@
 import '../App.css';
 import React from 'react';
 import firebase from '../firebase';
-
+ 
 
 class UserList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      userList: []
+      // userList: []
     }
     this.deleteUser = this.deleteUser.bind(this);
-    this.retrieveUserList = this.retrieveUserList.bind(this);
+    // this.retrieveUserList = this.retrieveUserList.bind(this);
     this.userItemFormat = this.userItemFormat.bind(this);
   }
   
@@ -100,7 +100,7 @@ class UserList extends React.Component {
     if (this.props.sessionID != null) {
       return (
         <div className="user-list">
-          {this.state.userList.length === 0 
+          {this.props.userList.length === 0 
             ? <p><i>There are no users in this session yet</i></p> 
             : <React.Fragment>
               <p>Users in this session:</p>

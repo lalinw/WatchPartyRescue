@@ -3,7 +3,6 @@ import React from 'react';
 import firebase from '../firebase';
 
 
-
 class ListSummary extends React.Component {
   constructor(props) {
     super(props);

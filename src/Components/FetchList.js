@@ -1,6 +1,6 @@
 import React from 'react';
 import firebase from '../firebase';
-// import ListSummary from './ListSummary';
+
 
 class FetchList extends React.Component {
   constructor(props) {

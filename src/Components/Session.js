@@ -1,6 +1,9 @@
 import React from 'react';
 import firebase from '../firebase';
 
+import SignIn from "./Components/Signin";
+import Session from "./Components/Session";
+
 class Session extends React.Component {
   constructor(props) {
     super(props);
