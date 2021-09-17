@@ -2,10 +2,9 @@ import React from 'react';
 import firebase from '../firebase';
 import ReactDOM from 'react-dom'
 
-import FetchList from "./Components/FetchList";
-import ListSummary from "./Components/ListSummary";
-import SignIn from "./Components/Signin";
-import UserList from "./Components/UserList";
+import FetchList from "./FetchList";
+import ListSummary from "./ListSummary";
+import UserList from "./UserList";
 
 class SignIn extends React.Component {
   constructor(props) {
@@ -61,11 +60,11 @@ class SignIn extends React.Component {
     });
   }
 
-  retrieveExistingUsers() {
+  async retrieveExistingUsers() {
     const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
     const usersRef = sessionRef.collection("users");
 
-    return usersRef.get().then((userDocs) => {
+    await usersRef.get().then((userDocs) => {
       var localUsers = [];
       userDocs.forEach((theUser) => {
         localUsers.push(theUser.id);
@@ -89,7 +88,7 @@ class SignIn extends React.Component {
     // this.setState({
     //   user: name
     // })
-    const sessionRef = firebase.firestore().collection("session").doc(this.state.sessionID);
+    const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
     const usersRef = sessionRef.collection("users");
 
     usersRef.doc(name).get().then((thisDoc) => {
@@ -124,7 +123,7 @@ class SignIn extends React.Component {
     // this.loadingGIF(true);
     // event.preventDefault();
 
-    const usersRef = firebase.firestore().collection("session").doc(this.state.sessionID).collection("users");
+    const usersRef = firebase.firestore().collection("session").doc(this.props.sessionID).collection("users");
 
     usersRef.doc(this.state.user)
     .get().then((doc) => {
@@ -200,7 +199,7 @@ class SignIn extends React.Component {
               : <this.UserSignInView/>}
           </div>}
         
-        {this.state.sessionID != null 
+        {this.props.sessionID != null 
         && 
           <UserList
             sessionID = {this.props.sessionID}
@@ -225,8 +224,8 @@ class SignIn extends React.Component {
             setUsernameMAL = {this.setUsernameMAL}
             resetUser = {this.resetUser}
             resetUsernameMAL = {this.resetUsernameMAL} //might need to move MAL username state down to fetch list
-            
           /> 
+          
           <ListSummary
             sessionID = {this.props.sessionID}
             usersInSessionCount = {this.props.usersInSessionCount}

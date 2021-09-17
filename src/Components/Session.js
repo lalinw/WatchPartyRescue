@@ -1,8 +1,8 @@
 import React from 'react';
 import firebase from '../firebase';
 
-import SignIn from "./Components/Signin";
-import Session from "./Components/Session";
+import SignIn from "./Signin";
+
 
 class Session extends React.Component {
   constructor(props) {
@@ -34,6 +34,36 @@ class Session extends React.Component {
   
 
   componentDidMount() {
+    //Sample address: http://localhost:3000/?param1=55&param2=test
+    //note: 
+    //  All URL parameters are strings
+    //  When a parameter doesn't exist in the URL address, queryParams.get() method will return null
+    const urlParam = new URLSearchParams(window.location.search);
+    const sessionID = urlParam.get('session');
+
+    console.log("Session ID = " + sessionID);
+    // console.log(sessionID);
+    
+
+    if (sessionID != null) {
+      //check if session does actually exist/valid sessionID
+      const sessionRef = firebase.firestore().collection("session").doc(sessionID);
+      sessionRef.get().then((thisSession) => {
+        if (thisSession.exists) {
+          //if session already exist, access the session
+          sessionRef.collection("users")
+          .get().then((usersCollection) => {
+            this.setState({
+              sessionID: sessionID,
+              usersInSessionCount: usersCollection.size
+            });
+          });
+        }
+        //reset the URL in the address bar
+        navigator.clipboard.writeText(window.location.href.split("?")[0]);         
+      });
+      console.log("users count = " + this.state.usersInSessionCount);
+    }
   }
   
 
@@ -211,8 +241,8 @@ class Session extends React.Component {
             sessionID = {this.state.sessionID}
             usersInSessionCount = {this.state.usersInSessionCount}
             //methods
-            resetSession = {this.resetSession}
-            createSession = {this.createSession}
+            // resetSession = {this.resetSession}
+            // createSession = {this.createSession}
             
             // loadingGIF = {this.loadingGIF}
           />

@@ -1,7 +1,6 @@
 import React from 'react';
 import firebase from '../firebase';
 
-
 class FetchList extends React.Component {
   constructor(props) {
     super(props);
