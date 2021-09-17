@@ -10,7 +10,7 @@
 /* ============================================ GENERAL == */
 
 body {
-  background-color: #161925;
+  background-color: #151515;
   clear: both;
   position: relative;
   min-height: 100vh;
@@ -47,7 +47,7 @@ h1, h2, h3, p, label {
 
 .announcement {
   width: 100%;
-  background-color: #BDBFDB;
+  background-color: #E2C044;
   color: black;
   float: left;
   position:relative
@@ -79,7 +79,7 @@ div.banner {
   width: 100%;
   /* height: auto; */
   /* top: 0; */
-  background-color: #E2C044;
+  background-color: #301B3F;
   /* padding: 1em 0; */
   display: inline-block;
   position: relative;
@@ -132,7 +132,7 @@ div.session-banner {
   width: 100%;
   height: auto;
   top: 0;
-  background-color: #777DA7;
+  background-color: #B4A5A5;
   position: relative;
 }
 
@@ -262,7 +262,7 @@ div#footer {
   position: absolute;
   bottom: 0;
   text-align: center;
-  background-color: #777DA7;
+  background-color: #3C415C;
 }
 
 .footer-inner {

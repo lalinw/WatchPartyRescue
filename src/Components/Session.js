@@ -54,10 +54,7 @@ class Session extends React.Component {
 
   handleSessionNameUpdate(event) {
     event.preventDefault();
-    this.setState(state => ({ 
-      editMode: false,
-      sessionName: state.tempSessionName
-    }));
+    
 
     // this.props.loadingGIF(true);
 
@@ -66,6 +63,10 @@ class Session extends React.Component {
     }).then(() => {
       // this.props.loadingGIF(false);
       console.log("Session Name successfully updated!");
+      this.setState(state => ({ 
+        editMode: false,
+        sessionName: state.tempSessionName
+      }));
 
     }).catch((error) => {
       // The document probably doesn't exist.
