@@ -7,10 +7,8 @@ class UserList extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      // userList: []
     }
     this.deleteUser = this.deleteUser.bind(this);
-    // this.retrieveUserList = this.retrieveUserList.bind(this);
     this.userItemFormat = this.userItemFormat.bind(this);
   }
   
@@ -29,6 +27,7 @@ class UserList extends React.Component {
 
   
   deleteUser(event) {
+    this.props.loadingGIF(true);
     const user = event.target.id;
     if (window.confirm("You are about to delete user " + user + " AND all their votes.\nProceed?")) {
       const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
@@ -53,10 +52,11 @@ class UserList extends React.Component {
         })
       }).then(() => {
         console.log("summary list has been decremented with user");
+        this.props.loadingGIF(false);
       }).catch((error) => {});
       
-      summaryMAL.collection("plan_to_watch").where("occurrences", "==", 0)
-      .get().then((querySnapshot) => {
+      var unsub = summaryMAL.collection("plan_to_watch").where("occurrences", "<=", 0)
+      .onSnapshot((querySnapshot) => {
         querySnapshot.forEach( (doc) => {
           summaryMAL.collection("plan_to_watch").doc(doc.id).delete().then(() => {
             console.log("Document successfully deleted!");
@@ -65,11 +65,10 @@ class UserList extends React.Component {
           });
         }) 
       });
+      unsub();
       
       sessionRef.update({
         users_count: firebase.firestore.FieldValue.increment(-1)
-      }).then(() => {
-        this.props.recountUsers();
       });
 
     } 

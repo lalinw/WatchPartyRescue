@@ -28,7 +28,7 @@ class ListSummary extends React.Component {
     const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
     const usersRef = sessionRef.collection("users");
 
-    usersRef.doc(this.props.user).get().then( (doc) => {
+    return usersRef.doc(this.props.user).onSnapshot( (doc) => {
       if (doc.exists) {
         if(doc.get('last_fetched') !== undefined){
           this.setState({
@@ -39,10 +39,10 @@ class ListSummary extends React.Component {
       } else {
         console.log("last_fetched cannot be found");
       }
-    })
-    .catch((error) => {
-      console.log("Error getting document:", error);
     });
+    // .catch((error) => {
+    //   console.log("Error getting document:", error);
+    // });
   }
 
 
@@ -62,17 +62,13 @@ class ListSummary extends React.Component {
       };
       filter.push(tier);
     }
-    this.setState({
-      countFilters: filter
-    });
+    this.setState({ countFilters: filter });
   }
 
 
   retrieveAllItems() {
     //reset state
-    this.setState({
-      allItems: []
-    });
+    this.setState({ allItems: [] });
 
     this.props.loadingGIF(true);
     console.log("retrieveAllItems started...");
@@ -82,8 +78,31 @@ class ListSummary extends React.Component {
     const summaryMAL = sessionRef.collection("summary").doc("myanimelist");
     const MALplantowatch = summaryMAL.collection("plan_to_watch");
 
-    MALplantowatch.get()
-    .then((allItems) => {
+    
+    // .then(() => {
+    //   console.log("all items retrieved!");
+    //   this.props.loadingGIF(false);
+    //   const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
+    //   const summaryMAL = sessionRef.collection("summary").doc("myanimelist");
+    //   summaryMAL
+    //   .set({
+    //     latest_retrieval: firebase.firestore.FieldValue.serverTimestamp()
+    //   }, { 
+    //     merge: true 
+    //   });
+    // });
+    console.log("all items retrieved!");
+    this.props.loadingGIF(false);
+    // const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
+    // const summaryMAL = sessionRef.collection("summary").doc("myanimelist");
+    summaryMAL
+    .set({
+      latest_retrieval: firebase.firestore.FieldValue.serverTimestamp()
+    }, { 
+      merge: true 
+    });
+    return MALplantowatch
+    .onSnapshot((allItems) => {
       allItems.docs.map((plantowatchDoc) => {
         var item = 
         {
@@ -96,24 +115,10 @@ class ListSummary extends React.Component {
           link:         plantowatchDoc.data().link
         };
         // console.log(item.title);
-        return this.setState(state => ({
-          allItems: [...state.allItems, item]
-        }));        
+        return this.setState(state => ({ allItems: [...state.allItems, item] }));        
       });
       
     })
-    .then(() => {
-      console.log("all items retrieved!");
-      this.props.loadingGIF(false);
-      const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
-      const summaryMAL = sessionRef.collection("summary").doc("myanimelist");
-      summaryMAL
-      .set({
-        latest_retrieval: firebase.firestore.FieldValue.serverTimestamp()
-      }, { 
-        merge: true 
-      });
-    });
   }
 
  
@@ -147,9 +152,7 @@ class ListSummary extends React.Component {
       (filter.count === countAsKey ? {...filter, show: !filter.show}: filter) 
     )
     console.log(newCountFilters);
-    this.setState({
-      countFilters: newCountFilters
-    });
+    this.setState({ countFilters: newCountFilters });
   }
 
   render() {
