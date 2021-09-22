@@ -27,7 +27,10 @@ class UserInfoMAL extends React.Component {
     const usersRef = firebase.firestore().collection("session").doc(this.props.sessionID).collection("users");
     usersRef.doc(this.props.user).get()
     .then((doc) => {
-      this.setState({ usernameMAL: doc.data().myanimelist_username });
+      var response = doc.data();
+      if (response !== undefined && response.myanimelist_username !== null) {
+        this.setState({ usernameMAL: response.myanimelist_username });
+      }
     });
   }
 
@@ -38,36 +41,34 @@ class UserInfoMAL extends React.Component {
 
 
   handleTextSubmit(event) {
-    this.props.loadingGIF(true);
+    event.preventDefault();
+    // this.props.loadingGIF(true);
     if (this.state.tempUser === "") {
       window.alert("Your display name cannot be empty!");
     } else {
       this.setUser(this.state.tempUsernameMAL);
     }
-    event.preventDefault();
+    
   }
 
 
-  setUsernameMAL(event, name) {
-    this.props.loadingGIF(true);
+  async setUsernameMAL(event, name) {
     event.preventDefault();
-    this.setState({ usernameMAL: name });
-    
+    this.props.loadingGIF(true);
+
     const usersRef = firebase.firestore().collection("session").doc(this.props.sessionID).collection("users");
-    usersRef.doc(this.state.user).get()
-    .then((doc) => {
-      // doc of user already exists if the user is trying to set their MAL username
+    
+    try {
       console.log("setting user's MAL username as..." + name);
-      usersRef.doc(this.state.user).update({
+      const setUsername = await usersRef.doc(this.props.user).set({
         myanimelist_username: name
-      });
+      }, { merge: true} );
       this.setState({ usernameMAL: name });
-      this.props.loadingGIF(false);
-    })
-    .catch((error) => {
+    } catch (error) {
       console.log("Cannot set MAL username: " + error);
       this.resetUsernameMAL();
-    });
+    }
+    this.props.loadingGIF(false);
   }
 
 
@@ -83,16 +84,11 @@ class UserInfoMAL extends React.Component {
           {
             this.state.usernameMAL == null
             ? 
-              <button onClick={this.showFormUsernameMAL}>+ Add your username</button>
+            <button onClick={this.showFormUsernameMAL}>+ Add your username</button>
             : 
-              <React.Fragment>
-                {this.state.usernameMAL} <button onClick={this.onFetchSubmit}>Fetch latest</button>
-              </React.Fragment>
+            <span>{this.state.usernameMAL}</span>
           }
         </p>
-        <button onClick={() => {
-          this.fetchDataMAL("https://api.jikan.moe/v3/user/pipsqueakma/animelist/plantowatch");
-          }}>fetch test</button>
       </div>
     );
   }
@@ -114,12 +110,12 @@ class UserInfoMAL extends React.Component {
         <br/>
         <button 
           onClick={(event) => {
-          this.props.setUsernameMAL(event, this.state.tempUsernameMAL);
+          this.setUsernameMAL(event, this.state.tempUsernameMAL);
           this.setState({ showFormUsernameMAL: false });
           }}
           onKeyPress={event => {
             if (event.key === 'Enter') {
-              this.props.setUsernameMAL(event, this.state.tempUsernameMAL);
+              this.setUsernameMAL(event, this.state.tempUsernameMAL);
               this.setState({ showFormUsernameMAL: false });
             }
           }}>Save</button>
@@ -135,13 +131,15 @@ class UserInfoMAL extends React.Component {
         <this.UsernameMALView/>
         {this.state.showFormUsernameMAL && <this.FormUsernameMALView/>}
 
+        {this.state.usernameMAL != null 
+        &&
         <FetchList
           sessionID = {this.props.sessionID}
           user = {this.props.user}
           usernameMAL = {this.state.usernameMAL}
 
           loadingGIF = {this.props.loadingGIF}
-        /> 
+        />}
       </div>
     );
   }

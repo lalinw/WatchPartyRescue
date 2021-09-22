@@ -1,4 +1,3 @@
-import './App.css';
 import React, { Component } from "react";
 
 
@@ -28,12 +27,12 @@ class Banner extends Component {
   CreditsBannerView() {
     return(
       <div className="banner-inner footer">
-        <div className="footer-inner">
+        <div className="footer-inner footer">
           <h3>Developer:</h3>
           <p>Irene W.</p>
           <a href="https://github.com/lalinw/WatchPartyRescue/">Github</a>
         </div>
-        <div className="footer-inner">
+        <div className="footer-inner footer">
           <h3>Brought to you using:</h3>
           <a href="https://reactjs.org/">ReactJS</a>
           <br/>

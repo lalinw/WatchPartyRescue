@@ -1,3 +1,12 @@
+/* 
+
+CURRENT ISSUES:
+
+1. Need to reload when user's fetched timestamp is updated to reflect the most updated warning
+
+*/
+
+
 import '../App.css';
 import React from 'react';
 import firebase from '../firebase';
@@ -14,7 +23,7 @@ class ListSummary extends React.Component {
           show: false
         }
       ],
-      fetched: false
+      usersFetched: []
     };
     this.retrieveAllItems = this.retrieveAllItems.bind(this); 
     this.animeItemFormat = this.animeItemFormat.bind(this);
@@ -25,37 +34,30 @@ class ListSummary extends React.Component {
 
   componentDidMount() {
     this.setFiltersOnUsersCount();
-    const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
-    const usersRef = sessionRef.collection("users");
 
-    return usersRef.doc(this.props.user).onSnapshot( (doc) => {
-      if (doc.exists) {
-        if(doc.get('last_fetched') !== undefined){
-          this.setState({
-            fetched: true
-          });
-          console.log("last_fetched field exists");
-        }
-      } else {
-        console.log("last_fetched cannot be found");
-      }
+    const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
+    return sessionRef.onSnapshot( (doc) => {
+      this.setState({ usersFetched: doc.data().users_fetched });
     });
-    // .catch((error) => {
-    //   console.log("Error getting document:", error);
-    // });
   }
 
 
   componentDidUpdate() {
-    if (this.props.userList.length > 2 && this.props.userList.length !== this.state.countFilters[0].count) {
+    if (this.props.existingUsers.length > 2 && this.props.existingUsers.length !== this.state.countFilters[0].count) {
       this.setFiltersOnUsersCount();
     }
+    
+    // const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
+    // const usersRef = sessionRef.collection("users");
+    // return sessionRef.onSnapshot( (doc) => {
+    //   this.setState({ usersFetched: doc.data().users_fetched });
+    // });
   }
 
 
   setFiltersOnUsersCount() {
     var filter = [];
-    for (var i = this.props.userList.length ; i > 1; i--) {
+    for (var i = this.props.existingUsers.length ; i > 1; i--) {
       var tier = {
         count: i,
         show: false
@@ -70,13 +72,13 @@ class ListSummary extends React.Component {
     //reset state
     this.setState({ allItems: [] });
 
-    this.props.loadingGIF(true);
+    // this.props.loadingGIF(true);
     console.log("retrieveAllItems started...");
     //retrieve all items and save to state
     //array of objects 
     const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
-    const summaryMAL = sessionRef.collection("summary").doc("myanimelist");
-    const MALplantowatch = summaryMAL.collection("plan_to_watch");
+    const summaryMAL = sessionRef.collection("summary_myanimelist");
+    // const MALplantowatch = summaryMAL.collection("plan_to_watch");
 
     
     // .then(() => {
@@ -91,17 +93,16 @@ class ListSummary extends React.Component {
     //     merge: true 
     //   });
     // });
-    console.log("all items retrieved!");
-    this.props.loadingGIF(false);
+    // console.log("all items retrieved!");
+    // this.props.loadingGIF(false);
     // const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
     // const summaryMAL = sessionRef.collection("summary").doc("myanimelist");
-    summaryMAL
-    .set({
-      latest_retrieval: firebase.firestore.FieldValue.serverTimestamp()
-    }, { 
-      merge: true 
-    });
-    return MALplantowatch
+    // summaryMAL
+    // .set({
+    //   latest_retrieval: firebase.firestore.FieldValue.serverTimestamp()
+    // }, { merge: true });
+    
+    return summaryMAL
     .onSnapshot((allItems) => {
       allItems.docs.map((plantowatchDoc) => {
         var item = 
@@ -160,6 +161,7 @@ class ListSummary extends React.Component {
       return (
         <div className="summary">
           <h3>Titles you have in common! <button onClick={this.retrieveAllItems}>Reload</button></h3> 
+          <p>Summary contains titles fetched from the following users: [{this.state.usersFetched.join(", ")}]</p>
           <div id="tiers">
             {
               this.state.countFilters.map((thisFilter) => {
@@ -196,10 +198,11 @@ class ListSummary extends React.Component {
     } else {
       return (
         <div className="summary alt">
-          {!this.state.fetched && <p>Warning: Your list has not been fetched</p>}
+          {!this.state.usersFetched.includes(this.props.user) && <p>Warning: Your list has not been fetched</p>}
+          
           <button 
             onClick={ () => {
-              if (this.props.userList.length  < 2) {
+              if (this.props.existingUsers.length  < 2) {
                 window.alert("Cannot compare list between fewer than 2 users.\nInvite more people and fetch their list(s) to proceed.");
               } else {
                 this.retrieveAllItems();

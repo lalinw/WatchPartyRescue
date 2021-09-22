@@ -1,8 +1,22 @@
+/* 
+
+CURRENT ISSUES:
+
+1. Writing to Firestore takes ~1min to write, which seems super slow 
+(currently circumventing UX issue by updating frontend before backend 
+is finished writing)
+
+2. Will need to disable button while that operation is not completed 
+to prevent duplicate calls 
+
+*/
+
+
+
 import React from 'react';
 import firebase from '../firebase';
 //components
 import SignIn from "./Signin";
-
 
 class Session extends React.Component {
   constructor(props) {
@@ -15,6 +29,7 @@ class Session extends React.Component {
     };
     this.createSession = this.createSession.bind(this);
     this.setSession = this.setSession.bind(this);
+    this.setSessionName = this.setSessionName.bind(this);
     this.resetSession = this.resetSession.bind(this);
     this.handleSessionNameChange = this.handleSessionNameChange.bind(this);
     this.handleSessionNameSubmit = this.handleSessionNameSubmit.bind(this);
@@ -42,49 +57,52 @@ class Session extends React.Component {
       const sessionRef = firebase.firestore().collection("session").doc(sessionID);
       return sessionRef.onSnapshot((thisSession) => {
         if (thisSession.exists) {
-          //if session already exist, access the session
-          return sessionRef.collection("users")
-          .onSnapshot((usersCollection) => {
-            this.setState({
-              sessionID: sessionID
-            });
-          });
-        }
-        //reset the URL in the address bar
-        navigator.clipboard.writeText(window.location.href.split("?")[0]);         
+          //if session already exist, set as current session
+          this.setSession(sessionID);
+        } else {
+          this.resetSession();
+        } 
       });
     }
+
   }
   
 
   resetSession() {
-    // this.loadingGIF(true);
-    //log out of session
     this.setState({ sessionID: null })
     //remove sessionID from address bar
     window.location.href =  window.location.href.split("?")[0];
   }
 
 
-  createSession(sessionName) {
+  async createSession(sessionName) {
     this.props.loadingGIF(true);
-    
-    firebase.firestore().collection("session").add({
-      session_name: sessionName,
-      date_created: firebase.firestore.FieldValue.serverTimestamp(),
-      users_count: 0
-    }).then((doc) => {
-      console.log("new session ID: " + doc.id);
-      this.setSession(doc.id);
-      this.props.loadingGIF(false);
-    }).catch((error) => {});
+
+    try {
+      const newSession = await firebase.firestore().collection("session")
+      .add({
+        session_name: sessionName,
+        users: [],
+        users_fetched: []
+      });
+
+      console.log("new session ID: " + newSession.id);
+      this.setSession(newSession.id);
+
+    } catch (error) {
+      console.log("Error creating session: " + error);
+    }
+    this.props.loadingGIF(false);
   }
 
 
   setSession(sessionID) {
-    this.props.loadingGIF(true);
     this.setState({ sessionID: sessionID });
-    this.props.loadingGIF(false);
+  }
+
+
+  setSessionName(sessionName) {
+    this.setState({ sessionName: sessionName });
   }
 
 
@@ -97,42 +115,44 @@ class Session extends React.Component {
 
 
   handleSessionNameSubmit(event) {
-    // this.loadingGIF(true);
     event.preventDefault();
-
     if (this.state.tempSessionName === "") {
       var date = new Date();
       this.createSession("WatchPartyRescue Session created on " + date.toString());
     } else {
-      var currentTempSessionName = this.state.tempSessionName;
-      this.createSession(currentTempSessionName);
+      this.createSession(this.state.tempSessionName);
+      this.setSessionName(this.state.tempSessionName);
     }
 
-    this.setState((state) => ({ sessionName: state.tempSessionName }));
+    // this.setState((state) => ({ sessionName: state.tempSessionName }));
+    
   }
 
 
-  handleSessionNameUpdate(event) {
+  async handleSessionNameUpdate(event) {
     event.preventDefault();
     this.props.loadingGIF(true);
 
-    firebase.firestore().collection("session").doc(this.state.sessionID).set({
-      session_name: this.state.tempSessionName
-    }, { 
-      merge: true 
-    })
-    .then(() => {
+    this.setSessionName(this.state.tempSessionName);
+    this.setState({ editMode: false });
+    
+    try {
+       
+      const thisSession = await firebase.firestore().collection("session").doc(this.state.sessionID)
+      .update({
+        session_name: this.state.tempSessionName
+      });
+
       console.log("Session Name successfully updated!");
-      this.setState(state => ({ 
-        editMode: false,
-        sessionName: state.tempSessionName
-      }));
-      this.props.loadingGIF(false);
-    })
-    .catch((error) => {
+      
+    } catch (error) {
       // The document probably doesn't exist.
       console.error("Error updating document: ", error);
-    });
+      this.setState({ editMode: true });
+    } finally {
+      this.props.loadingGIF(false);
+    }
+
   }
 
 
@@ -161,11 +181,11 @@ class Session extends React.Component {
   TextSessionNameView() {
     const sessionRef = firebase.firestore().collection("session").doc(this.state.sessionID);
     sessionRef.onSnapshot((doc) => {
-      this.setState({ sessionName: doc.data().session_name });
+      this.setSessionName(doc.data().session_name);
     })
     return (
       <React.Fragment>
-        {this.state.sessionName}
+        <span>{this.state.sessionName}</span>
         <br/>
         <button onClick={this.toggleEditMode}>edit</button>
       </React.Fragment>
@@ -215,10 +235,11 @@ class Session extends React.Component {
             : <this.CreateSessionView/>}
         </div>
         <div className="app-content">
-          <SignIn
+          {this.state.sessionID !== null 
+          && <SignIn
             sessionID = {this.state.sessionID}
             loadingGIF = {this.props.loadingGIF}
-          />
+          />}
         </div>
       </React.Fragment>
     );

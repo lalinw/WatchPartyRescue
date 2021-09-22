@@ -13,7 +13,6 @@ class FetchList extends React.Component {
     this.onFetchSubmit = this.onFetchSubmit.bind(this);
     this.fetchHelper = this.fetchHelper.bind(this);
     this.preFetch = this.preFetch.bind(this);
-
     // this.fetchDataMAL = this.fetchDataMAL.bind(this);
   }
   
@@ -110,9 +109,7 @@ class FetchList extends React.Component {
             image: thisAnime.image_url,
             link: thisAnime.url,
             season: released
-          }, { 
-            merge: true 
-          })
+          }, { merge: true })
           .then(() => {
             console.log("anime written to firestore");
           });
@@ -157,15 +154,18 @@ class FetchList extends React.Component {
     this.props.loadingGIF(true);
   }
 
-  
+
   render() {
     return (
       <div>
 
         <h3>Fetch your list</h3>
-        <this.UsernameMALView/>
-        {this.state.showFormUsernameMAL && <this.FormUsernameMALView/>}
-
+        <React.Fragment>
+          <button onClick={this.onFetchSubmit}>Fetch latest</button>
+        </React.Fragment>
+        <button onClick={() => {
+          this.fetchDataMAL("https://api.jikan.moe/v3/user/pipsqueakma/animelist/plantowatch");
+          }}>fetch test</button>
       </div>
     );
   }

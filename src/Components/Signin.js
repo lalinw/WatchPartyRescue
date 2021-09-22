@@ -3,6 +3,7 @@ import firebase from '../firebase';
 import ReactDOM from 'react-dom'
 //components
 import ListSummary from "./ListSummary";
+import Manage from './Manage';
 import UserList from "./UserList";
 import UserInfoMAL from './UserInfoMAL';
 
@@ -12,7 +13,12 @@ class SignIn extends React.Component {
     this.state = {
       user: null,
       tempUser: "",
-      existingUsers: []
+      existingUsers: [],
+      page: {
+        manage: false,
+        summary: false,
+        menu: false
+      }
     };
     this.handleNameChange = this.handleNameChange.bind(this);
     this.handleNameSubmit = this.handleNameSubmit.bind(this);
@@ -22,10 +28,12 @@ class SignIn extends React.Component {
     //views
     this.ActiveUserView = this.ActiveUserView.bind(this);
     this.UserSignInView = this.UserSignInView.bind(this);
+    this.SettingsMenuView = this.SettingsMenuView.bind(this);
   }
   
 
   componentDidMount() {
+    this.retrieveExistingUsers();
   }
 
 
@@ -36,76 +44,120 @@ class SignIn extends React.Component {
 
 
   handleNameSubmit(event) {
-    this.props.loadingGIF(true);
+    event.preventDefault();
+    // this.props.loadingGIF(true);
     if (this.state.tempUser === "") {
       window.alert("Your display name cannot be empty!");
     } else {
       this.setUser(this.state.tempUser);
     }
-    event.preventDefault();
-    this.setState({ tempUser: "" });
   }
 
-  async retrieveExistingUsers() {
+  retrieveExistingUsers() {
     const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
-    const usersRef = sessionRef.collection("users");
+    // const usersRef = sessionRef.collection("users");
 
-    return usersRef.onSnapshot((userDocs) => {
-      var localUsers = [];
-      userDocs.forEach((theUser) => {
-        localUsers.push(theUser.id);
-      });
-      this.setState({ existingUsers: localUsers });
-    });
+    return sessionRef.onSnapshot((snapshot) => {
+      this.setState({ existingUsers: snapshot.data().users });
+      // var localUsers = [];
+      // snapshot.forEach((theUser) => {
+      //   localUsers.push(theUser.id);
+      // });
+      // this.setState({ existingUsers: localUsers });
+    })
+    
   }
 
 
   resetUser() {
-    // this.loadingGIF(true);
     this.setState({ user: null });
   }
 
 
-  setUser(name) {
-    // this.loadingGIF(true);
-    this.setState({ user: name });
+  async setUser(name) {
     this.props.loadingGIF(true);
+    this.setState({ user: name });
+
+    var pageStatus = {...this.state.page};
+    pageStatus.summary = true;
+    this.setState({ page: pageStatus });
+    
     const sessionRef = firebase.firestore().collection("session").doc(this.props.sessionID);
-    const usersRef = sessionRef.collection("users");
+    //const usersRef = sessionRef.collection("users");
+    try {
+      
+      sessionRef.set({
+        users: firebase.firestore.FieldValue.arrayUnion(name)
+      }, { merge: true });
+      // const createUser = usersRef.doc(name).set({
+      //   myanimelist_username: null
+      // });
+      
+      // const incrementUserCount = sessionRef.update({
+      //   users_count: firebase.firestore.FieldValue.increment(1)
+      // });
+      
+      // const complete = await Promise.all([createUser, incrementUserCount]);
 
-    return usersRef.doc(name).onSnapshot((thisDoc) => {
-      if (!thisDoc.exists) {
-        console.log("doc does not exist yet. Creating user...");
-        
-        sessionRef.update({
-          users_count: firebase.firestore.FieldValue.increment(1)
-        });
-
-        usersRef.doc(name).set({
-          myanimelist_username: null
-        });
-      } else {
-        this.setState({ user: name });
-      }
-      this.props.loadingGIF(false);
+    } catch (error) {
+      this.resetUser();
+      console.log(error);
+    } finally {
       this.retrieveExistingUsers();
-      console.log("user created / set");
-    });
+      this.props.loadingGIF(false);
+    }
+
   }
 
+  SettingsMenuView() {
+    return (
+      <div id="settings-menu">
+        <button onClick={() => {
+          var pageStatus = {...this.state.page};
+          pageStatus.manage = true;
+          pageStatus.summary = false;
+          this.setState({ page: pageStatus });
+          }}>
+          Settings
+        </button>
+        <br/>
+        <button onClick={ () => {
+          this.resetUser();
+          var pageStatus = {...this.state.page};
+          pageStatus.menu = false;
+          pageStatus.summary = false;
+          pageStatus.manage = false;
+          this.setState({ page: pageStatus });
+          }}>
+          Sign Out
+        </button>
+      </div>
+    );
+  }
 
   ActiveUserView() {
     const parentElement = document.getElementById("banner");
     return ReactDOM.createPortal(
       <div id="profile-card">
-        <p><b>{this.state.user}</b> <button onClick={this.resetUser}>Sign Out</button></p>
+        <p>
+          <b>{this.state.user}</b> 
+          <button onClick={ () => {
+            //toggle
+            var pageStatus = {...this.state.page};
+            pageStatus.menu = !this.state.page.menu;
+            this.setState({ page: pageStatus });
+          }}>
+            ↓
+          </button>
+          {this.state.page.menu && <this.SettingsMenuView/>}
+        </p>
       </div>, 
       parentElement);
   }
 
 
   UserSignInView() {
-    this.retrieveExistingUsers();
+    // this.retrieveExistingUsers();
     return (
       <div className="sign-in">
         <h2>Sign in:</h2>
@@ -118,7 +170,7 @@ class SignIn extends React.Component {
               return <option key={eachUser} value={eachUser}>{eachUser}</option>
             })}
           </select>
-        <span>    or    </span>
+        <span>or</span>
           <input className="signin"
             type="text" 
             placeholder="enter your display name"
@@ -144,43 +196,32 @@ class SignIn extends React.Component {
   render() {
     return (
       <React.Fragment>
-        {this.props.sessionID !== null 
-        && 
         <div className="sign-in">
           {this.state.user !== null 
-          ? <this.ActiveUserView/> 
-          : <this.UserSignInView/>}
-        </div>}
+            ? <this.ActiveUserView/> 
+            : <this.UserSignInView/>}
+        </div>
         
-        {this.props.sessionID != null 
-        && 
-        <UserInfoMAL
+        {this.state.page.manage
+        &&
+        <Manage
           sessionID = {this.props.sessionID}
+          sessionName = {this.props.sessionName}
           user = {this.state.user}
+          existingUsers = {this.state.existingUsers}
+
           loadingGIF = {this.props.loadingGIF}
         />}
 
-        {this.props.sessionID != null 
-        && 
-        this.state.user !== null 
-        && 
+        {this.state.page.summary
+        &&
         <ListSummary
           sessionID = {this.props.sessionID}
-          userList = {this.state.existingUsers}
-          // user = {this.state.user}
+          existingUsers = {this.state.existingUsers}
+          user = {this.state.user}
           loadingGIF = {this.props.loadingGIF}
         />}
 
-        {this.props.sessionID != null 
-        && 
-        this.state.user !== null 
-        && 
-        <UserList
-          sessionID = {this.props.sessionID}
-          user = {this.state.user}
-          userList = {this.state.existingUsers}
-          loadingGIF = {this.props.loadingGIF}
-        />}
       </React.Fragment>
     );
   }
